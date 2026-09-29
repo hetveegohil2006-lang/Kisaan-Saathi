@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KisaanSaathi - Login Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+            transition: background 0.8s ease-in-out;
+        }
+
+        /* 5 Themes Color Palettes (Matching Landing Page) */
+        body.theme-light-yellow {
+            background: linear-gradient(to bottom, #fef08a 0%, #fef9c3 50%, #e2e8f0 100%);
+        }
+        body.theme-light-pink {
+            background: linear-gradient(to bottom, #fbcfe8 0%, #fce7f3 50%, #e2e8f0 100%);
+        }
+        body.theme-light-orange {
+            background: linear-gradient(to bottom, #fed7aa 0%, #ffedd5 50%, #e2e8f0 100%);
+        }
+        body.theme-light-blue {
+            background: linear-gradient(to bottom, #bae6fd 0%, #e0f2fe 50%, #cbd5e1 100%);
+        }
+        body.theme-light-black {
+            background: linear-gradient(to bottom, #1e293b 0%, #0f172a 50%, #020617 100%);
+        }
+
+        .page-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Top Navigation Bar */
+        .top-nav {
+            position: absolute;
+            top: 25px;
+            left: 35px;
+            right: 35px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 40;
+        }
+
+        .brand-badge {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(74, 124, 54, 0.3);
+            padding: 10px 18px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            text-decoration: none;
+        }
+
+        .brand-text strong {
+            display: block;
+            color: #1f3818;
+            font-size: 1rem;
+        }
+
+        .brand-text small {
+            display: block;
+            color: #4a7c36;
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        /* Sun/Moon Control with Tap Badge */
+        .theme-switcher-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 50;
+        }
+
+        .tap-badge {
+            background: rgba(255, 255, 255, 0.85);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #386641;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(8px);
+        }
+
+        .sun-control-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.85);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            transition: transform 0.2s ease;
+        }
+
+        .sun-control-box:hover {
+            transform: scale(1.1);
+        }
+
+        .sun-icon {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: #facc15;
+            box-shadow: 0 0 20px rgba(250, 204, 21, 0.9);
+            transition: all 0.5s ease;
+        }
+
+        /* Theme-based Icon Shifts */
+        body.theme-light-yellow .sun-icon { background: #facc15; box-shadow: 0 0 20px rgba(250, 204, 21, 0.9); }
+        body.theme-light-pink .sun-icon { background: #f472b6; box-shadow: 0 0 20px rgba(244, 114, 182, 0.9); }
+        body.theme-light-orange .sun-icon { background: #fb923c; box-shadow: 0 0 20px rgba(251, 146, 60, 0.9); }
+        body.theme-light-blue .sun-icon { background: #38bdf8; box-shadow: 0 0 20px rgba(56, 189, 248, 0.9); }
+        body.theme-light-black .sun-icon { 
+            background: transparent; 
+            box-shadow: -6px 2px 0 0 #f8fafc; 
+            width: 22px;
+            height: 22px;
+        }
+
+        /* Dark theme styling updates */
+        body.theme-light-black .brand-badge, 
+        body.theme-light-black .tap-badge, 
+        body.theme-light-black .sun-control-box,
+        body.theme-light-black .form-card { 
+            background: rgba(30, 41, 59, 0.9); 
+            border-color: rgba(255,255,255,0.1); 
+        }
+        body.theme-light-black .brand-text strong, 
+        body.theme-light-black .tap-badge,
+        body.theme-light-black .form-card h2,
+        body.theme-light-black .form-group label { color: #ffffff; }
+        body.theme-light-black .form-card p,
+        body.theme-light-black .form-group input { color: #f1f5f9; }
+        body.theme-light-black .form-group input { background: rgba(15, 23, 42, 0.6); border-color: rgba(255,255,255,0.15); }
+
+        /* Center Glassmorphism Form Card */
+        .form-card {
+            position: absolute;
+            top: 140px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(16px);
+            padding: 35px 45px;
+            border-radius: 24px;
+            width: 100%;
+            max-width: 480px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.12);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            z-index: 30;
+        }
+
+        .form-card h2 {
+            color: #1b3818;
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .form-card p {
+            color: #4f6f52;
+            font-size: 0.95rem;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #2d4a27;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            border: 1px solid rgba(74, 124, 54, 0.3);
+            background: rgba(255, 255, 255, 0.7);
+            font-size: 0.95rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            border-color: #386641;
+            box-shadow: 0 0 0 3px rgba(56, 102, 65, 0.15);
+            background: #ffffff;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1rem;
+            border: none;
+            cursor: pointer;
+            background: linear-gradient(135deg, #386641 0%, #588157 100%);
+            color: #ffffff;
+            box-shadow: 0 8px 20px rgba(56, 102, 65, 0.3);
+            transition: transform 0.2s ease;
+            margin-top: 10px;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+        }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.85rem;
+            color: #557c55;
+        }
+
+        .form-footer a {
+            color: #386641;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .form-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .guide-widget {
+            position: fixed;
+            right: 28px;
+            bottom: 26px;
+            z-index: 60;
+            display: flex;
+            align-items: flex-end;
+            gap: 10px;
+        }
+
+        .guide-avatar {
+            width: 64px;
+            height: 64px;
+            padding: 5px;
+            border: 3px solid #386641;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.9);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.16);
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .guide-avatar:hover { transform: translateY(-4px) scale(1.05); }
+        .guide-avatar img { width: 100%; height: 100%; object-fit: contain; }
+        .guide-avatar.is-speaking { animation: guideBounce 0.7s ease-in-out infinite alternate; }
+        @keyframes guideBounce {
+            from { transform: translateY(0) rotate(-2deg); }
+            to { transform: translateY(-6px) rotate(2deg); }
+        }
+
+        .guide-message {
+            width: 230px;
+            padding: 11px 13px;
+            border-radius: 15px;
+            background: #fff;
+            color: #386641;
+            font-size: 0.78rem;
+            line-height: 1.4;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.14);
+            border: 1px solid rgba(56,102,65,0.2);
+        }
+
+        .guide-message button {
+            margin-top: 7px;
+            border: 0;
+            border-radius: 999px;
+            padding: 5px 9px;
+            background: rgba(56,102,65,0.12);
+            color: #386641;
+            font-size: 0.7rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        body.theme-light-black .guide-avatar { background: #1e293b; }
+        body.theme-light-black .guide-message { background: #1e293b; color: #e2e8f0; }
+        body.theme-light-black .guide-message button { background: rgba(56,189,248,0.15); color: #bae6fd; }
+
+        /* Top-Layer Floating Clouds */
+        .clouds-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 35;
+        }
+
+        .cloud {
+            fill: rgba(255, 255, 255, 0.75);
+            animation: driftCloud 25s linear infinite alternate;
+        }
+
+        @keyframes driftCloud {
+            from { transform: translateX(0); }
+            to { transform: translateX(35px); }
+        }
+
+        /* Bottom Ghibli Landscape */
+        .landscape-svg-container {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 280px;
+            pointer-events: none;
+            z-index: 20;
+        }
+
+        .landscape-svg-container svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+    </style>
+    <style>
+        @media (max-width: 600px) {
+            body, html { min-height: 100%; height: auto; overflow-x: hidden; overflow-y: auto; }
+            .top-nav { top: 15px; left: 15px; right: 15px; }
+            .tap-badge { display: none; }
+            .form-card { top: 95px; width: calc(100% - 30px); padding: 28px 22px; }
+            .guide-widget { right: 15px; bottom: 15px; }
+            .guide-message { width: 190px; }
+            .landscape-svg-container { min-height: 160px; }
+        }
+    </style>
+</head>
+<body class="theme-light-yellow" id="appBody">
+
+    <div class="page-container">
+        <!-- Top-Layer Floating Clouds -->
+        <svg class="clouds-layer" viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+            <g class="cloud">
+                <path d="M 120 180 Q 145 155 180 175 Q 215 150 250 180 Q 275 195 260 215 L 105 215 Q 90 195 120 180 Z" />
+                <path d="M 1150 130 Q 1175 105 1210 125 Q 1245 100 1280 130 Q 1305 145 1290 165 L 1135 165 Q 1120 145 1150 130 Z" />
+            </g>
+        </svg>
+
+        <!-- Top Navigation Bar -->
+        <header class="top-nav">
+            <a href="index.html" class="brand-badge">
+                <span style="font-size: 1.3rem;">🌱</span>
+                <div class="brand-text">
+                    <strong>KisaanSaathi</strong>
+                    <small>SMART AGRICULTURE PORTAL</small>
+                </div>
+            </a>
+
+            <!-- Sun/Moon Theme Switcher -->
+            <div class="theme-switcher-group">
+                <div class="tap-badge">✨ Tap to Change Theme</div>
+                <div class="sun-control-box" onclick="switchThemeCycle()" title="Tap to switch theme">
+                    <div class="sun-icon"></div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Login Glassmorphism Card -->
+        <main class="form-card">
+            <h2>Welcome Back!</h2>
+            <p>Access your mandi rates, crop scans & expert advice.</p>
+            
+            <form onsubmit="loginUser(event)">
+                <div class="form-group">
+                    <label for="email">Phone Number or Email</label>
+                    <input type="text" id="email" placeholder="Enter your registered mobile number" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Enter your password" required>
+                </div>
+
+                <button type="submit" class="btn-submit">Login to Portal</button>
+            </form>
+
+            <div class="form-footer">
+                Don't have an account? <a href="signup.html">Sign Up</a>
+            </div>
+        </main>
+
+        <aside class="guide-widget" aria-live="polite">
+            <div class="guide-message">
+                <span id="guideMessage">Welcome back! Enter your registered mobile number and password to continue.</span>
+                <br>
+                <button type="button" onclick="speakGuide()">🔊 Hear guide</button>
+            </div>
+            <div class="guide-avatar" id="guideAvatar" onclick="speakGuide()" role="button" tabindex="0" aria-label="Hear login guidance">
+                <img src="images/malechild.png" alt="AI guide">
+            </div>
+        </aside>
+
+        <!-- Bottom Landscape -->
+        <div class="landscape-svg-container">
+            <svg viewBox="0 0 1440 320" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+                <path d="M0,160 C320,100 640,110 960,150 C1280,190 1380,140 1440,130 L1440,320 L0,320 Z" fill="#86efac" opacity="0.5"></path>
+                <path d="M0,200 C360,150 720,170 1080,190 C1260,200 1380,180 1440,170 L1440,320 L0,320 Z" fill="#4ade80" opacity="0.8"></path>
+                <path d="M0,240 C400,190 800,210 1440,220 L1440,320 L0,320 Z" fill="#16a34a"></path>
+
+                <!-- Wooden Fences -->
+                <g fill="#854d0e">
+                    <rect x="150" y="210" width="8" height="45" rx="2" />
+                    <rect x="175" y="215" width="8" height="45" rx="2" />
+                    <rect x="145" y="222" width="40" height="5" />
+                    <rect x="145" y="240" width="40" height="5" />
+
+                    <rect x="1220" y="200" width="8" height="45" rx="2" />
+                    <rect x="1245" y="205" width="8" height="45" rx="2" />
+                    <rect x="1215" y="212" width="40" height="5" />
+                    <rect x="1215" y="230" width="40" height="5" />
+                </g>
+
+                <!-- Sunflowers -->
+                <g>
+                    <circle cx="280" cy="275" r="7" fill="#facc15" /><circle cx="280" cy="275" r="3" fill="#78350f" />
+                    <circle cx="310" cy="290" r="8" fill="#facc15" /><circle cx="310" cy="290" r="3" fill="#78350f" />
+                    <circle cx="720" cy="280" r="8" fill="#facc15" /><circle cx="720" cy="280" r="3" fill="#78350f" />
+                    <circle cx="1120" cy="275" r="7" fill="#facc15" /><circle cx="1120" cy="275" r="3" fill="#78350f" />
+                </g>
+            </svg>
+        </div>
+    </div>
+
+    <script>
+        const guideMessages = {
+            email: 'Use the same 10-digit mobile number you used during sign up.',
+            password: 'Enter your password, then select Login to Portal. Need an account? Choose Sign Up below.'
+        };
+
+        function speakGuide(message) {
+            const text = message || document.getElementById('guideMessage').innerText;
+            if (!('speechSynthesis' in window)) {
+                return;
+            }
+            window.speechSynthesis.cancel();
+            const avatar = document.getElementById('guideAvatar');
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'en-IN';
+            avatar.classList.add('is-speaking');
+            utterance.onend = () => avatar.classList.remove('is-speaking');
+            utterance.onerror = () => avatar.classList.remove('is-speaking');
+            window.speechSynthesis.speak(utterance);
+        }
+
+        ['email', 'password'].forEach((fieldId) => {
+            document.getElementById(fieldId).addEventListener('focus', () => {
+                document.getElementById('guideMessage').innerText = guideMessages[fieldId];
+            });
+        });
+
+        function loginUser(event) {
+            event.preventDefault();
+
+            const identifier = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const savedUser = JSON.parse(localStorage.getItem('kisaanSaathiUser') || 'null');
+
+            if (!savedUser || identifier !== savedUser.phone) {
+                alert('No matching account found. Please sign up first.');
+                return;
+            }
+            if (password !== savedUser.password) {
+                alert('Incorrect password. Please try again.');
+                return;
+            }
+
+            localStorage.setItem('kisaanSaathiLoggedIn', 'true');
+            window.location.href = 'dashboard.html';
+        }
+
+        const themes = [
+            'theme-light-yellow',
+            'theme-light-pink',
+            'theme-light-orange',
+            'theme-light-blue',
+            'theme-light-black'
+        ];
+        
+        let currentThemeIndex = 0;
+
+        function switchThemeCycle() {
+            currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+            const bodyElement = document.getElementById('appBody');
+            bodyElement.className = themes[currentThemeIndex];
+        }
+    </script>
+</body>
+</html>

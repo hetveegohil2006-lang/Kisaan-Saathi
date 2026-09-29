@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KisaanSaathi - Choose Your AI Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body, html {
+            width: 100%;
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: background 0.8s ease-in-out;
+        }
+
+        /* 5 Themes Color Palettes */
+        body.theme-light-yellow { background: linear-gradient(to bottom, #fef08a 0%, #fef9c3 50%, #e2e8f0 100%); }
+        body.theme-light-pink { background: linear-gradient(to bottom, #fbcfe8 0%, #fce7f3 50%, #e2e8f0 100%); }
+        body.theme-light-orange { background: linear-gradient(to bottom, #fed7aa 0%, #ffedd5 50%, #e2e8f0 100%); }
+        body.theme-light-blue { background: linear-gradient(to bottom, #bae6fd 0%, #e0f2fe 50%, #cbd5e1 100%); }
+        body.theme-light-black { background: linear-gradient(to bottom, #1e293b 0%, #0f172a 50%, #020617 100%); }
+
+        .page-container {
+            position: relative;
+            width: 100%;
+            min-height: 100vh;
+            padding-bottom: 60px;
+        }
+
+        /* Top Navigation Bar */
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 30px;
+            z-index: 40;
+        }
+
+        .brand-badge {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(74, 124, 54, 0.3);
+            padding: 8px 16px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            text-decoration: none;
+        }
+
+        .brand-text strong { display: block; color: #1f3818; font-size: 0.95rem; }
+        .brand-text small { display: block; color: #4a7c36; font-size: 0.6rem; font-weight: 700; letter-spacing: 1px; }
+
+        .theme-switcher-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 50;
+        }
+
+        .tap-badge {
+            background: rgba(255, 255, 255, 0.85);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: #386641;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+        }
+
+        .sun-control-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.85);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease;
+            border: none;
+        }
+
+        .sun-control-box:hover { transform: scale(1.1); }
+
+        .sun-icon {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #facc15;
+            box-shadow: 0 0 15px rgba(250, 204, 21, 0.9);
+            transition: all 0.5s ease;
+        }
+
+        body.theme-light-yellow .sun-icon { background: #facc15; box-shadow: 0 0 15px rgba(250, 204, 21, 0.9); }
+        body.theme-light-pink .sun-icon { background: #f472b6; box-shadow: 0 0 15px rgba(244, 114, 182, 0.9); }
+        body.theme-light-orange .sun-icon { background: #fb923c; box-shadow: 0 0 15px rgba(251, 146, 60, 0.9); }
+        body.theme-light-blue .sun-icon { background: #38bdf8; box-shadow: 0 0 15px rgba(56, 189, 248, 0.9); }
+        body.theme-light-black .sun-icon { background: transparent; box-shadow: -5px 2px 0 0 #f8fafc; width: 18px; height: 18px; }
+
+        body.theme-light-black .brand-badge, 
+        body.theme-light-black .tap-badge, 
+        body.theme-light-black .sun-control-box,
+        body.theme-light-black .char-card,
+        body.theme-light-black .form-card { 
+            background: rgba(30, 41, 59, 0.9); 
+            border-color: rgba(255,255,255,0.1); 
+        }
+        body.theme-light-black .brand-text strong, body.theme-light-black .tap-badge, body.theme-light-black .form-card h2, body.theme-light-black label { color: #ffffff; }
+        body.theme-light-black .form-card p { color: #94a3b8; }
+        body.theme-light-black .char-card { color: #fff; }
+        body.theme-light-black select, body.theme-light-black input { background: rgba(15, 23, 42, 0.6); color: #fff; border-color: rgba(255,255,255,0.15); }
+
+        /* Center Glassmorphism Card */
+        .form-card {
+            margin: 20px auto 40px auto;
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(16px);
+            padding: 24px 30px;
+            border-radius: 24px;
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.12);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            z-index: 30;
+        }
+
+        .form-card h2 {
+            color: #1b3818;
+            font-size: 1.4rem;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+
+        .form-card p {
+            color: #4f6f52;
+            font-size: 0.78rem;
+            margin-bottom: 16px;
+        }
+
+        .setup-group {
+            margin-bottom: 14px;
+            text-align: left;
+        }
+
+        .setup-group label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #2d4a27;
+            margin-bottom: 4px;
+        }
+
+        .char-options {
+            display: flex;
+            gap: 12px;
+        }
+
+        .char-card {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid rgba(74, 124, 54, 0.3);
+            border-radius: 14px;
+            cursor: pointer;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.7);
+            transition: all 0.2s ease;
+        }
+
+        .char-card img {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .char-card.selected {
+            border-color: #386641;
+            background: rgba(56, 102, 65, 0.15);
+            box-shadow: 0 4px 15px rgba(56, 102, 65, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .setup-group select, .setup-group input {
+            width: 100%;
+            padding: 8px 12px;
+            border-radius: 12px;
+            border: 1px solid rgba(74, 124, 54, 0.3);
+            background: rgba(255, 255, 255, 0.7);
+            font-size: 0.85rem;
+            outline: none;
+        }
+
+        .setup-group input:focus, .setup-group select:focus {
+            border-color: #386641;
+            box-shadow: 0 0 8px rgba(56, 102, 65, 0.2);
+        }
+
+        .btn-continue {
+            width: 100%;
+            padding: 10px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            border: none;
+            cursor: pointer;
+            background: linear-gradient(135deg, #386641 0%, #588157 100%);
+            color: #ffffff;
+            box-shadow: 0 8px 20px rgba(56, 102, 65, 0.3);
+            transition: transform 0.2s ease;
+            margin-top: 4px;
+        }
+
+        .btn-continue:hover { transform: translateY(-2px); }
+
+        /* Floating Clouds & Landscape */
+        .clouds-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 35; }
+        .cloud { fill: rgba(255, 255, 255, 0.75); animation: driftCloud 25s linear infinite alternate; }
+        @keyframes driftCloud { from { transform: translateX(0); } to { transform: translateX(35px); } }
+
+        .landscape-svg-container { position: absolute; bottom: 0; left: 0; width: 100%; height: 200px; pointer-events: none; z-index: 20; }
+        .landscape-svg-container svg { width: 100%; height: 100%; display: block; }
+
+        @media (max-width: 600px) {
+            .top-nav { padding: 15px; }
+            .tap-badge { display: none; }
+            .form-card { width: calc(100% - 30px); padding: 20px 16px; }
+        }
+    </style>
+</head>
+<body class="theme-light-yellow" id="appBody">
+
+    <div class="page-container">
+        <!-- Clouds -->
+        <svg class="clouds-layer" viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+            <g class="cloud">
+                <path d="M 120 180 Q 145 155 180 175 Q 215 150 250 180 Q 275 195 260 215 L 105 215 Q 90 195 120 180 Z" />
+                <path d="M 1150 130 Q 1175 105 1210 125 Q 1245 100 1280 130 Q 1305 145 1290 165 L 1135 165 Q 1120 145 1150 130 Z" />
+            </g>
+        </svg>
+
+        <!-- Top Navigation -->
+        <header class="top-nav">
+            <a href="index.html" class="brand-badge">
+                <span style="font-size: 1.2rem;">🌱</span>
+                <div class="brand-text">
+                    <strong>KisaanSaathi</strong>
+                    <small>SMART AGRICULTURE PORTAL</small>
+                </div>
+            </a>
+
+            <div class="theme-switcher-group">
+                <div class="tap-badge">✨ Change Theme</div>
+                <button type="button" class="sun-control-box" id="themeToggleButton" title="Tap to switch theme" aria-label="Change color theme">
+                    <div class="sun-icon"></div>
+                </button>
+            </div>
+        </header>
+
+        <!-- Character Setup Card -->
+        <main class="form-card">
+            <h2 id="headingText">Select Your AI Guide</h2>
+            <p id="subText">First select your avatar, then customize its name, and choose your preferred language.</p>
+
+            <form id="setupForm">
+                <!-- Step 1: Select Avatar with ARIA and Keyboard Support -->
+                <div class="setup-group">
+                    <label id="labelCompanion">1. Choose AI Companion Avatar</label>
+                    <div class="char-options" role="radiogroup" aria-label="Choose AI companion">
+                        <button type="button" class="char-card selected" id="charBoy" data-character="boy" aria-pressed="true" aria-label="Select boy companion">
+                            <img src="images/malechild.png" alt="Boy Avatar">
+                        </button>
+                        <button type="button" class="char-card" id="charGirl" data-character="girl" aria-pressed="false" aria-label="Select girl companion">
+                            <img src="images/femalechild.png" alt="Girl Avatar">
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 2: Customize Name -->
+                <div class="setup-group">
+                    <label for="companionName" id="labelName">2. Customize Companion Name</label>
+                    <input type="text" id="companionName" maxlength="20" minlength="2" placeholder="Enter guide name..." aria-label="Companion name">
+                </div>
+
+                <!-- Step 3: Select Language -->
+                <div class="setup-group">
+                    <label for="langSelect" id="labelLang">3. Select Language (भाषा)</label>
+                    <select id="langSelect">
+                        <option value="en">English</option>
+                        <option value="hi" selected>हिन्दी (Hindi)</option>
+                        <option value="mr">मराठी (Marathi)</option>
+                        <option value="pa">ਪੰਜਾਬੀ (Punjabi)</option>
+                        <option value="gu">ગુજરાતી (Gujarati)</option>
+                        <option value="bn">বাংলা (Bengali)</option>
+                        <option value="te">తెలుగు (Telugu)</option>
+                        <option value="ta">தமிழ் (Tamil)</option>
+                        <option value="kn">ಕನ್ನಡ (Kannada)</option>
+                        <option value="ml">മലയാളം (Malayalam)</option>
+                        <option value="or">ଓଡ଼ିଆ (Odia)</option>
+                        <option value="as">অসমীয়া (Assamese)</option>
+                        <option value="ur">اردو (Urdu)</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn-continue" id="btnText">Continue to Portal</button>
+            </form>
+        </main>
+
+        <!-- Bottom Landscape -->
+        <div class="landscape-svg-container">
+            <svg viewBox="0 0 1440 320" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+                <path d="M0,160 C320,100 640,110 960,150 C1280,190 1380,140 1440,130 L1440,320 L0,320 Z" fill="#86efac" opacity="0.5"></path>
+                <path d="M0,200 C360,150 720,170 1080,190 C1260,200 1380,180 1440,170 L1440,320 L0,320 Z" fill="#4ade80" opacity="0.8"></path>
+                <path d="M0,240 C400,190 800,210 1440,220 L1440,320 L0,320 Z" fill="#16a34a"></path>
+            </svg>
+        </div>
+    </div>
+
+    <script>
+        const THEME_KEY = 'kisaan-theme';
+        const themes = ['theme-light-yellow', 'theme-light-pink', 'theme-light-orange', 'theme-light-blue', 'theme-light-black'];
+        let currentThemeIndex = 0;
+
+        function setTheme(index) {
+            currentThemeIndex = index;
+            document.getElementById('appBody').className = themes[currentThemeIndex];
+            localStorage.setItem(THEME_KEY, String(index));
+        }
+
+        function switchThemeCycle() {
+            const nextIndex = (currentThemeIndex + 1) % themes.length;
+            setTheme(nextIndex);
+        }
+
+        let selectedCompanion = localStorage.getItem('aiCompanion') || 'boy';
+
+        function updateCompanionSelection(char) {
+            selectedCompanion = char;
+            document.querySelectorAll('.char-card').forEach((el) => {
+                const isSelected = el.dataset.character === selectedCompanion;
+                el.classList.toggle('selected', isSelected);
+                el.setAttribute('aria-pressed', String(isSelected));
+            });
+        }
+
+        function getDefaultName() {
+            return selectedCompanion === 'boy' ? 'Aarav' : 'Aanya';
+        }
+
+        // Multi-language UI translations
+        const i18n = {
+            en: { heading: "Select Your AI Guide", sub: "First select your avatar, then customize its name, and choose your preferred language.", companion: "1. Choose AI Companion Avatar", nameLabel: "2. Customize Companion Name", lang: "3. Select Language", btn: "Continue to Portal" },
+            hi: { heading: "अपना AI गाइड चुनें", sub: "पहले अपना अवतार चुनें, फिर उसका नाम कस्टमाइज़ करें और अपनी भाषा चुनें।", companion: "1. AI साथी अवतार चुनें", nameLabel: "2. साथी का नाम बदलें", lang: "3. भाषा चुनें", btn: "पोर्टल पर आगे बढ़ें" },
+            mr: { heading: "तुमचा AI मार्गदर्शक निवडा", sub: "प्रथम तुमचा अवतार निवडा, नंतर नाव सानुकूलित करा आणि भाषा निवडा.", companion: "1. AI सोबती अवतार निवडा", nameLabel: "2. सोबत्याचे नाव बदला", lang: "3. भाषा निवडा", btn: "पुढील पोर्टलवर जा" },
+            pa: { heading: "अपना AI गाइड चुनो", sub: "ਪਹਿਲਾਂ ਆਪਣਾ ਅਵਤਾਰ ਚੁਣੋ, ਫਿਰ ਨਾਮ ਕਸਟਮਾਈਜ਼ ਕਰੋ ਅਤੇ ਭਾਸ਼ਾ ਚੁਣੋ।", companion: "1. AI ਸਾਥੀ ਅਵਤਾਰ ਚੁਣੋ", nameLabel: "2. ਸਾਥੀ ਦਾ ਨਾਮ ਬਦਲੋ", lang: "3. ਭਾਸ਼ਾ ਚੁਣੋ", btn: "ਪੋਰਟਲ ਤੇ ਜਾਓ" },
+            gu: { heading: "તમારો AI માર્ગદર્શક પસંદ કરો", sub: "પહેલા તમારો અવતાર પસંદ કરો, પછી નામ કસ્ટમાઇઝ કરો અને ભાષા પસંદ કરો.", companion: "1. AI સાથી અવતાર પસંદ કરો", nameLabel: "2. સાથીનું નામ કસ્ટમાઇઝ કરો", lang: "3. ભાષા પસંદ કરો", btn: "આગળ વધો" },
+            bn: { heading: "আপনার এআই গাইড নির্বাচন করুন", sub: "প্রথমে আপনার অবতার চয়ন করুন, তারপরে এর নাম কাস্টমাইজ করুন এবং ভাষা বেছে নিন।", companion: "1. এআই সঙ্গী অবতার চয়ন করুন", nameLabel: "2. সঙ্গীর নাম কাস্টমাইজ করুন", lang: "3. ভাষা নির্বাচন করুন", btn: "পোর্টালে এগিয়ে যান" },
+            te: { heading: "మీ AI గైడ్‌ని ఎంచుకోండి", sub: "ముందుగా మీ అవతారాన్ని ఎంచుకోండి, ఆపై దాని పేరును అనుకూలీకరించండి మరియు భాషను ఎంచుకోండి.", companion: "1. AI సహచర అవతారాన్ని ఎంచుకోండి", nameLabel: "2. సహచరుడి పేరును మార్చండి", lang: "3. భాషను ఎంచుకోండి", btn: "పోర్టల్‌కి వెళ్లండి" },
+            ta: { heading: "உங்கள் AI வழிகாட்டியைத் தேர்ந்தெடுக்கவும்", sub: "முதலில் உங்கள் அவதாரத்தைத் தேர்ந்தெடுக்கவும், பின்னர் அதன் பெயரைத் தனிப்பயனாக்கவும், மொழியைத் தேர்ந்தெடுக்கவும்.", companion: "1. AI துணை அவதாரத்தைத் தேர்ந்தெடுக்கவும்", nameLabel: "2. துணையின் பெயரைத் தனிப்பயனாக்குங்கள்", lang: "3. மொழியைத் தேர்ந்தெடுக்கவும்", btn: "போர்ட்டலுக்குச் செல்லவும்" },
+            kn: { heading: "ನಿಮ್ಮ AI ಮಾರ್ಗದರ್ಶಿಯನ್ನು ಆಯ್ಕೆಮಾಡಿ", sub: "ಮೊದಲು ನಿಮ್ಮ ಅವತಾರವನ್ನು ಆಯ್ಕೆಮಾಡಿ, ನಂತರ ಅದರ ಹೆಸರನ್ನು ಕಸ್ಟಮೈಸ್ ಮಾಡಿ ಮತ್ತು ಭಾಷೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ.", companion: "1. AI ಸಹಚರ ಅವತಾರವನ್ನು ಆಯ್ಕೆಮಾಡಿ", nameLabel: "2. ಸಹಚರರ ಹೆಸರನ್ನು ಕಸ್ಟಮೈಸ್ ಮಾಡಿ", lang: "3. ಭಾಷೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ", btn: "ಪೋರ್ಟಲ್‌ಗೆ ಮುಂದುವರಿಯಿರಿ" },
+            ml: { heading: "നിങ്ങളുടെ AI ഗൈഡ് തിരഞ്ഞെടുക്കുക", sub: "ആദ്യം നിങ്ങളുടെ അവതാർ തിരഞ്ഞെടുക്കുക, തുടർന്ന് അതിൻ്റെ പേര് ഇഷ്ടാനുസൃതമാക്കുക, ഭാഷ തിരഞ്ഞെടുക്കുക.", companion: "1. AI കൂട്ടാളി അവതാർ തിരഞ്ഞെടുക്കുക", nameLabel: "2. കൂട്ടാളിയുടെ പേര് നൽകുക", lang: "3. ഭാഷ തിരഞ്ഞെടുക്കുക", btn: "പോർട്ടലിലേക്ക് തുടരുക" },
+            or: { heading: "ଆପଣଙ୍କର AI ଗାଇଡ୍ ଚୟନ କରନ୍ତୁ", sub: "ପ୍ରଥମେ ଆପଣଙ୍କର ଅବତାର ଚୟନ କରନ୍ତୁ, ତା'ପରେ ଏହାର ନାମ କଷ୍ଟମାଇଜ୍ କରନ୍ତୁ ଏବଂ ଭାଷା ବାଛନ୍ତୁ।", companion: "1. AI ସାଥୀ ଅବତାର ଚୟନ କରନ୍ତୁ", nameLabel: "2. ସାଥୀଙ୍କ ନାମ କଷ୍ଟମାଇଜ୍ କରନ୍ତୁ", lang: "3. ଭାଷା ଚୟନ କରନ୍ତୁ", btn: "ପୋର୍ଟାଲକୁ ଜାରି ରଖନ୍ତୁ" },
+            as: { heading: "আপোনাৰ AI গাইড বাছক", sub: "প্ৰথমে আপোনাৰ অৱতাৰ বাছক, তাৰ পিছত ইয়াৰ নাম কাষ্টমাইজ কৰক আৰু ভাষা বাছনি কৰক।", companion: "1. AI সংগী অৱতাৰ বাছক", nameLabel: "2. সংগীৰ নাম কাষ্টমাইজ কৰক", lang: "3. ভাষা বাছক", btn: "প’ৰ্টেললৈ আগবাঢ়ক" },
+            ur: { heading: "اپنا AI گائیڈ منتخب کریں", sub: "پہلے اپنا اوتار منتخب کریں، پھر اس کا نام حسب ضرورت تبدیل کریں اور اپنی زبان منتخب کریں۔", companion: "1. AI ساتھی اوتار منتخب کریں", nameLabel: "2. ساتھی کا نام تبدیل کریں", lang: "3. زبان منتخب کریں", btn: "پورٹل پر آگے بڑھیں" }
+        };
+
+        function updateLanguageText() {
+            const lang = document.getElementById('langSelect').value;
+            if(i18n[lang]) {
+                document.getElementById('headingText').innerText = i18n[lang].heading;
+                document.getElementById('subText').innerText = i18n[lang].sub;
+                document.getElementById('labelCompanion').innerText = i18n[lang].companion;
+                document.getElementById('labelName').innerText = i18n[lang].nameLabel;
+                document.getElementById('labelLang').innerText = i18n[lang].lang;
+                document.getElementById('btnText').innerText = i18n[lang].btn;
+            }
+        }
+
+        function savePreferencesAndRedirect(event) {
+            event.preventDefault();
+            const language = document.getElementById('langSelect').value;
+            const companionNameInput = document.getElementById('companionName');
+            const companionName = companionNameInput.value.trim() || getDefaultName();
+
+            localStorage.setItem('aiCompanion', selectedCompanion);
+            localStorage.setItem('aiCompanionName', companionName);
+            localStorage.setItem('aiLanguage', language);
+
+            window.location.href = 'greetings.html';
+        }
+
+        // Initialize state on DOM Load
+        document.addEventListener('DOMContentLoaded', () => {
+            // Restore theme
+            const savedTheme = Number(localStorage.getItem(THEME_KEY) || 0);
+            setTheme(isNaN(savedTheme) ? 0 : savedTheme);
+
+            // Restore language
+            const savedLang = localStorage.getItem('aiLanguage');
+            if (savedLang && i18n[savedLang]) {
+                document.getElementById('langSelect').value = savedLang;
+                updateLanguageText();
+            }
+
+            // Restore companion selection
+            updateCompanionSelection(selectedCompanion);
+
+            // Restore input name or set placeholder fallback
+            const savedName = localStorage.getItem('aiCompanionName');
+            const companionNameInput = document.getElementById('companionName');
+            if (savedName) {
+                companionNameInput.value = savedName;
+            }
+            companionNameInput.placeholder = getDefaultName();
+
+            // Event Listeners setup
+            document.getElementById('themeToggleButton').addEventListener('click', switchThemeCycle);
+            
+            document.querySelectorAll('.char-card').forEach((card) => {
+                card.addEventListener('click', () => {
+                    updateCompanionSelection(card.dataset.character);
+                    if (!companionNameInput.value.trim()) {
+                        companionNameInput.placeholder = getDefaultName();
+                    }
+                });
+            });
+
+            document.getElementById('langSelect').addEventListener('change', updateLanguageText);
+            document.getElementById('setupForm').addEventListener('submit', savePreferencesAndRedirect);
+        });
+    </script>
+</body>
+</html>
