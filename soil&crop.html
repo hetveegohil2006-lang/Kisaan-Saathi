@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soil & Crop Predictions - KisaanSaathi Smart Agriculture Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chart.js for Interactive Soil Graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* 5 Themes Color Palettes */
+        body.theme-light-yellow { background: linear-gradient(to bottom, #fef08a 0%, #fef9c3 50%, #e2e8f0 100%); --panel-bg: rgba(255, 255, 255, 0.88); --text-primary: #1b3818; --text-muted: #4b6b48; --accent: #386641; --input-bg: #ffffff; --border-color: #fde047; }
+        body.theme-light-pink { background: linear-gradient(to bottom, #fbcfe8 0%, #fce7f3 50%, #e2e8f0 100%); --panel-bg: rgba(255, 255, 255, 0.88); --text-primary: #500724; --text-muted: #831843; --accent: #be185d; --input-bg: #ffffff; --border-color: #f472b6; }
+        body.theme-light-orange { background: linear-gradient(to bottom, #fed7aa 0%, #ffedd5 50%, #e2e8f0 100%); --panel-bg: rgba(255, 255, 255, 0.88); --text-primary: #431407; --text-muted: #7c2d12; --accent: #c2410c; --input-bg: #ffffff; --border-color: #fb923c; }
+        body.theme-light-blue { background: linear-gradient(to bottom, #bae6fd 0%, #e0f2fe 50%, #cbd5e1 100%); --panel-bg: rgba(255, 255, 255, 0.88); --text-primary: #082f49; --text-muted: #0369a1; --accent: #0369a1; --input-bg: #ffffff; --border-color: #38bdf8; }
+        body.theme-light-black { background: linear-gradient(to bottom, #1e293b 0%, #0f172a 50%, #020617 100%); --panel-bg: rgba(15, 23, 42, 0.88); --text-primary: #f8fafc; --text-muted: #94a3b8; --accent: #38bdf8; --input-bg: #0f172a; --border-color: #334155; }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+        body { color: var(--text-primary); min-height: 100vh; display: flex; transition: background 0.3s, color 0.3s; }
+
+        /* Sidebar Structure */
+        .sidebar { width: 260px; background: var(--panel-bg); backdrop-filter: blur(10px); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; padding: 20px; height: 100vh; position: fixed; top: 0; left: 0; z-index: 40; }
+        
+        /* Exact Brand Logo Badge matching design reference */
+        .brand-badge { display: flex; align-items: center; gap: 12px; margin-bottom: 25px; background: #ffffff; padding: 10px 14px; border-radius: 20px; border: 1px solid #fde047; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
+        .brand-logo-icon { font-size: 24px; line-height: 1; }
+        .brand-text strong { font-size: 15px; font-weight: 700; color: #1b3818; display: block; line-height: 1.2; letter-spacing: -0.2px; }
+        .brand-text small { font-size: 8.5px; color: #386641; font-weight: 700; letter-spacing: 0.4px; display: block; margin-top: 1px; }
+
+        .nav-links { display: flex; flex-direction: column; gap: 5px; flex: 1; overflow-y: auto; }
+        .nav-item { display: flex; align-items: center; gap: 12px; padding: 11px 14px; border-radius: 12px; font-size: 13px; font-weight: 500; color: var(--text-primary); text-decoration: none; transition: 0.2s; }
+        .nav-item:hover { background: rgba(0, 0, 0, 0.05); color: var(--accent); }
+        .nav-item.active { background: var(--accent); color: #fff; font-weight: 600; }
+
+        /* Main Content */
+        .main-content { margin-left: 260px; flex: 1; padding: 30px; display: flex; flex-direction: column; height: 100vh; overflow-y: auto; }
+
+        /* Top Header & Controls */
+        .top-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .header-title-box h1 { font-size: 24px; font-weight: 700; color: var(--text-primary); }
+        .header-title-box p { font-size: 13px; color: var(--text-muted); font-weight: 500; margin-top: 2px; }
+        
+        .header-controls { display: flex; gap: 12px; align-items: center; }
+        .control-select { background: var(--input-bg); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 20px; cursor: pointer; font-weight: 500; font-size: 13px; color: var(--text-primary); outline: none; }
+        
+        .sun-control-box { display: flex; align-items: center; justify-content: center; cursor: pointer; background: var(--panel-bg); width: 42px; height: 42px; border-radius: 50%; backdrop-filter: blur(10px); box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 1px solid var(--border-color); transition: transform 0.2s; }
+        .sun-control-box:hover { transform: scale(1.1); }
+        .sun-icon { width: 20px; height: 20px; border-radius: 50%; background: #facc15; box-shadow: 0 0 12px rgba(250, 204, 21, 0.9); transition: all 0.5s; }
+        body.theme-light-black .sun-icon { background: transparent; box-shadow: -4px 2px 0 0 #f8fafc; width: 16px; height: 16px; }
+
+        /* Grid Layout */
+        .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+        .card { background: var(--panel-bg); backdrop-filter: blur(12px); border-radius: 24px; border: 1px solid var(--border-color); padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.04); display: flex; flex-direction: column; gap: 16px; }
+        .card h3 { font-size: 17px; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 8px; }
+
+        /* Soil Analysis Card Components */
+        .soil-edit-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .input-group { display: flex; flex-direction: column; gap: 6px; }
+        .input-group label { font-size: 12px; font-weight: 600; color: var(--text-muted); }
+        .input-field { background: var(--input-bg); border: 1px solid var(--border-color); padding: 10px 14px; border-radius: 12px; font-size: 13px; font-weight: 600; color: var(--text-primary); outline: none; width: 100%; }
+        
+        .badge { padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 700; text-transform: uppercase; display: inline-block; }
+        .badge.green { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+        .badge.orange { background: #ffedd5; color: #c2410c; border: 1px solid #fed7aa; }
+        .badge.red { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+
+        .ai-tip-box { background: rgba(56, 102, 65, 0.08); border: 1px dashed var(--accent); padding: 12px 16px; border-radius: 12px; font-size: 12px; font-weight: 500; color: var(--text-primary); display: flex; gap: 10px; align-items: center; }
+
+        /* Recommended Crops Card */
+        .crops-grid-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+        .crop-card-item { background: var(--input-bg); border-radius: 16px; border: 1px solid var(--border-color); overflow: hidden; display: flex; flex-direction: column; transition: transform 0.2s; }
+        .crop-card-item:hover { transform: translateY(-3px); }
+        .crop-img-box { position: relative; height: 110px; width: 100%; }
+        .crop-img-box img { width: 100%; height: 100%; object-fit: cover; }
+        .crop-badge-tag { position: absolute; top: 8px; left: 8px; background: rgba(255,255,255,0.9); padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; color: var(--text-primary); }
+        
+        .crop-info-body { padding: 12px; display: flex; flex-direction: column; gap: 6px; }
+        .crop-info-body h4 { font-size: 14px; font-weight: 700; color: var(--text-primary); }
+        .suitability-bar-bg { background: #e2e8f0; border-radius: 6px; height: 8px; width: 100%; overflow: hidden; margin-top: 4px; }
+        .suitability-bar-fill { background: var(--accent); height: 100%; border-radius: 6px; transition: width 0.4s ease; }
+        .btn-sm { background: var(--panel-bg); border: 1px solid var(--border-color); color: var(--accent); padding: 6px; border-radius: 8px; font-size: 11px; font-weight: 600; cursor: pointer; text-align: center; margin-top: 4px; }
+        .btn-sm:hover { background: var(--accent); color: #fff; }
+
+        /* Upcoming Risks Card */
+        .risk-alert-item { border-radius: 14px; padding: 14px; display: flex; gap: 12px; align-items: flex-start; border: 1px solid transparent; margin-bottom: 10px; }
+        .risk-alert-item.high { background: rgba(239, 68, 68, 0.08); border-color: rgba(239, 68, 68, 0.3); }
+        .risk-alert-item.moderate { background: rgba(245, 158, 11, 0.08); border-color: rgba(245, 158, 11, 0.3); }
+        .risk-content h4 { font-size: 13px; font-weight: 700; }
+        .risk-alert-item.high h4 { color: #dc2626; }
+        .risk-alert-item.moderate h4 { color: #d97706; }
+        .risk-content p { font-size: 12px; color: var(--text-primary); margin-top: 3px; line-height: 1.4; }
+
+        /* Action Buttons & Charts Row */
+        .full-card { background: var(--panel-bg); backdrop-filter: blur(12px); border-radius: 24px; border: 1px solid var(--border-color); padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.04); margin-bottom: 30px; }
+        .action-buttons-row { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-top: 20px; }
+        .btn { padding: 12px 24px; border-radius: 14px; font-weight: 700; font-size: 13px; cursor: pointer; border: 1px solid transparent; display: flex; align-items: center; gap: 8px; transition: transform 0.2s; }
+        .btn:hover { transform: translateY(-2px); }
+        .btn-primary { background: var(--accent); color: #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .btn-secondary { background: var(--input-bg); color: var(--text-primary); border-color: var(--border-color); }
+        
+        .chart-wrapper { position: relative; height: 180px; width: 100%; margin-top: 15px; }
+
+        /* Responsive Breakpoints */
+        @media (max-width: 1024px) {
+            .dashboard-grid { grid-template-columns: 1fr; }
+            .crops-grid-container { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 768px) {
+            .sidebar { display: none; }
+            .main-content { margin-left: 0; padding: 15px; }
+            .soil-edit-row { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body id="appBody" class="theme-light-yellow">
+
+    <!-- Sidebar Structure with Exact Brand Logo Badge -->
+    <aside class="sidebar">
+        <div class="brand-badge">
+            <div class="brand-logo-icon"> 🌱</div>
+            <div class="brand-text">
+                <strong>KisaanSaathi</strong>
+                <small>SMART AGRICULTURE PORTAL</small>
+            </div>
+        </div>
+        <div class="nav-links">
+            <a href="dashboard.html" class="nav-item">🏠 Overview & Guide</a>
+            <a href="chatbotai.html" class="nav-item">🤖 AI Chatbot (Gemini)</a>
+            <a href="soil.html" class="nav-item active">🧪 Soil & Crop Predictions</a>
+            <a href="weather.html" class="nav-item">🌦 Weather & Alerts</a>
+            <a href="tutorials.html" class="nav-item">🎥 Plant Tutorials & AI Video</a>
+            <a href="market.html" class="nav-item">💰 Market & Expense</a>
+            <a href="schemes.html" class="nav-item">🏛️ Government Schemes</a>
+            <a href="profile.html" class="nav-item">👤 Profile Settings</a>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+        <header class="top-header">
+            <div class="header-title-box">
+                <h1 id="pageHeading">🧪 Soil & Crop Predictions</h1>
+                <p id="subBannerText">AI-powered analytics and real-time crop suitability engine</p>
+            </div>
+            <div class="header-controls">
+                <select class="control-select" id="langToggle" onchange="toggleLanguage()">
+                    <option value="en" selected>English</option>
+                    <option value="hi">हिंदी (Hindi)</option>
+                    <option value="mr">मराठी (Marathi)</option>
+                    <option value="pa">ਪੰਜਾਬੀ (Punjabi)</option>
+                    <option value="gu">ગુજરાતી (Gujarati)</option>
+                    <option value="bn">বাংলা (Bengali)</option>
+                    <option value="te">తెలుగు (Telugu)</option>
+                    <option value="ta">தமிழ் (Tamil)</option>
+                    <option value="kn">ಕನ್ನಡ (Kannada)</option>
+                    <option value="ml">മലയാളം (Malayalam)</option>
+                    <option value="or">ଓଡ଼ିଆ (Odia)</option>
+                    <option value="as">অসমীয়া (Assamese)</option>
+                    <option value="ur">اردو (Urdu)</option>
+                </select>
+
+                <div class="sun-control-box" onclick="switchThemeCycle()" title="Toggle Theme Palette">
+                    <div class="sun-icon"></div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Top Grid: Soil Analysis & Upcoming Risks -->
+        <div class="dashboard-grid">
+            
+            <!-- Card 1: Soil Analysis (Editable & Interactive) -->
+            <div class="card">
+                <h3>📊 Soil Analysis & Parameters</h3>
+                <div class="soil-edit-row">
+                    <div class="input-group">
+                        <label>💧 Moisture Level (%)</label>
+                        <input type="number" id="moistureInput" class="input-field" value="42" min="10" max="100" oninput="updatePredictions()">
+                    </div>
+                    <div class="input-group">
+                        <label>🧪 pH Level</label>
+                        <input type="number" step="0.1" id="phInput" class="input-field" value="6.8" min="3.0" max="10.0" oninput="updatePredictions()">
+                    </div>
+                </div>
+                <div class="soil-edit-row">
+                    <div class="input-group">
+                        <label>🌿 Nitrogen (N - mg/kg)</label>
+                        <input type="number" id="nInput" class="input-field" value="35" min="5" max="150" oninput="updatePredictions()">
+                    </div>
+                    <div class="input-group">
+                        <label>⚡ Potassium (K - mg/kg)</label>
+                        <input type="number" id="kInput" class="input-field" value="78" min="10" max="200" oninput="updatePredictions()">
+                    </div>
+                </div>
+                <div class="ai-tip-box" id="aiSuggestionBox">
+                    <span>💡</span> <strong id="aiTipText">Add compost for nitrogen balance and maintain current irrigation schedule.</strong>
+                </div>
+                <input type="file" id="soilReportUpload" style="display:none;" accept="image/*,.pdf" onchange="handleReportUpload(event)">
+                <button class="btn btn-secondary" style="width:100%; justify-content:center;" onclick="document.getElementById('soilReportUpload').click()">📁 Upload Soil Lab Report / Leaf Photo</button>
+            </div>
+
+            <!-- Card 2: Upcoming Risks -->
+            <div class="card">
+                <h3>⚠️ Upcoming Risks & Severity</h3>
+                <div class="risk-alert-item high">
+                    <span style="font-size: 20px;">🚨</span>
+                    <div class="risk-content">
+                        <h4 id="riskTitle1">Late Blight Risk Detected (High Severity)</h4>
+                        <p id="riskDesc1">Humidity expected above 85% in your region. Apply organic bio-fungicide preventive spray immediately.</p>
+                    </div>
+                </div>
+                <div class="risk-alert-item moderate">
+                    <span style="font-size: 20px;">⚠️</span>
+                    <div class="risk-content">
+                        <h4 id="riskTitle2">Aphid Pest Warning (Moderate Severity)</h4>
+                        <p id="riskDesc2">Recent temperature shifts favor aphid growth on mustard crops. Monitor leaf underside closely.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Middle Card: Recommended Crops with Dynamic Suitability Scores -->
+        <div class="full-card" style="margin-bottom: 24px;">
+            <h3>🌾 Recommended Crops & Suitability Scores</h3>
+            <div class="crops-grid-container">
+                
+                <!-- Crop 1 -->
+                <div class="crop-card-item">
+                    <div class="crop-img-box">
+                        <span class="crop-badge-tag">Wheat</span>
+                        <img src="https://images.unsplash.com/photo-1574943320219-553eb213f72d?auto=format&fit=crop&w=300&q=80" alt="Wheat">
+                    </div>
+                    <div class="crop-info-body">
+                        <h4>Wheat</h4>
+                        <div style="font-size: 11px; font-weight:600; color:var(--text-muted); display:flex; justify-content:space-between;">
+                            <span>Suitability Match:</span>
+                            <span id="wheatScoreText" style="color:var(--accent);">88%</span>
+                        </div>
+                        <div class="suitability-bar-bg">
+                            <div class="suitability-bar-fill" id="wheatBar" style="width: 88%;"></div>
+                        </div>
+                        <span class="badge green" id="wheatPotential" style="margin-top:4px;">High Potential</span>
+                        <button class="btn-sm" onclick="showCropTips('Wheat')">View Tips & Care</button>
+                    </div>
+                </div>
+
+                <!-- Crop 2 -->
+                <div class="crop-card-item">
+                    <div class="crop-img-box">
+                        <span class="crop-badge-tag">Mustard</span>
+                        <img src="https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=300&q=80" alt="Mustard">
+                    </div>
+                    <div class="crop-info-body">
+                        <h4>Mustard</h4>
+                        <div style="font-size: 11px; font-weight:600; color:var(--text-muted); display:flex; justify-content:space-between;">
+                            <span>Suitability Match:</span>
+                            <span id="mustardScoreText" style="color:var(--accent);">76%</span>
+                        </div>
+                        <div class="suitability-bar-bg">
+                            <div class="suitability-bar-fill" id="mustardBar" style="width: 76%;"></div>
+                        </div>
+                        <span class="badge orange" id="mustardPotential" style="margin-top:4px;">Moderate Potential</span>
+                        <button class="btn-sm" onclick="showCropTips('Mustard')">View Tips & Care</button>
+                    </div>
+                </div>
+
+                <!-- Crop 3 -->
+                <div class="crop-card-item">
+                    <div class="crop-img-box">
+                        <span class="crop-badge-tag">Onion</span>
+                        <img src="https://images.unsplash.com/photo-1618160702438-9b02ab6515c9?auto=format&fit=crop&w=300&q=80" alt="Onion">
+                    </div>
+                    <div class="crop-info-body">
+                        <h4>Onion</h4>
+                        <div style="font-size: 11px; font-weight:600; color:var(--text-muted); display:flex; justify-content:space-between;">
+                            <span>Suitability Match:</span>
+                            <span id="onionScoreText" style="color:var(--accent);">65%</span>
+                        </div>
+                        <div class="suitability-bar-bg">
+                            <div class="suitability-bar-fill" id="onionBar" style="width: 65%;"></div>
+                        </div>
+                        <span class="badge orange" id="onionPotential" style="margin-top:4px;">Moderate Potential</span>
+                        <button class="btn-sm" onclick="showCropTips('Onion')">View Tips & Care</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Lower Card: Interactive Charts & Action Buttons -->
+        <div class="full-card">
+            <h3>📈 Soil Health Trends & Insights</h3>
+            <div class="chart-wrapper">
+                <canvas id="soilTrendChart"></canvas>
+            </div>
+            <div class="action-buttons-row">
+                <button class="btn btn-primary" onclick="downloadReport()">💾 Download PDF Report</button>
+                <button class="btn btn-secondary" onclick="shareViaWhatsApp()">📤 Share via WhatsApp / SMS</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Theme Cycling Logic (5 Themes)
+        const themes = ['theme-light-yellow', 'theme-light-pink', 'theme-light-orange', 'theme-light-blue', 'theme-light-black'];
+        let currentThemeIndex = 0;
+
+        function switchThemeCycle() {
+            currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+            document.getElementById('appBody').className = themes[currentThemeIndex];
+            localStorage.setItem('kisaan-portal-theme-index', currentThemeIndex);
+        }
+
+        const savedThemeIndex = localStorage.getItem('kisaan-portal-theme-index');
+        if (savedThemeIndex !== null) {
+            currentThemeIndex = parseInt(savedThemeIndex);
+            document.getElementById('appBody').className = themes[currentThemeIndex];
+        }
+
+        // Chart.js Soil Nutrient Trends
+        const ctx = document.getElementById('soilTrendChart').getContext('2d');
+        const soilTrendChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Week 1', 'Week 2', 'Week 3', 'Current'],
+                datasets: [{
+                    label: 'Moisture Trend (%)',
+                    data: [30, 38, 40, 42],
+                    borderColor: '#386641',
+                    backgroundColor: 'rgba(56, 102, 65, 0.1)',
+                    fill: true,
+                    tension: 0.3
+                }, {
+                    label: 'Nitrogen Level',
+                    data: [25, 28, 32, 35],
+                    borderColor: '#f97316',
+                    backgroundColor: 'transparent',
+                    borderDash: [5, 5],
+                    tension: 0.3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { position: 'bottom' } },
+                scales: {
+                    y: { beginAtZero: true, grid: { display: false } },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+
+        // Dynamic Score Calculator based on input changes
+        function updatePredictions() {
+            const moisture = parseInt(document.getElementById('moistureInput').value) || 40;
+            const ph = parseFloat(document.getElementById('phInput').value) || 7.0;
+            const n = parseInt(document.getElementById('nInput').value) || 30;
+
+            let wheatScore = Math.min(98, Math.max(40, Math.round(70 + (moisture * 0.2) - Math.abs(ph - 6.5) * 5 + (n * 0.1))));
+            let mustardScore = Math.min(95, Math.max(35, Math.round(65 + (moisture * 0.15) + (n * 0.15))));
+            let onionScore = Math.min(90, Math.max(30, Math.round(60 + (moisture * 0.25) - Math.abs(ph - 6.8) * 8)));
+
+            document.getElementById('wheatScoreText').innerText = wheatScore + '%';
+            document.getElementById('wheatBar').style.width = wheatScore + '%';
+            document.getElementById('wheatPotential').innerText = wheatScore > 80 ? 'High Potential' : 'Moderate Potential';
+
+            document.getElementById('mustardScoreText').innerText = mustardScore + '%';
+            document.getElementById('mustardBar').style.width = mustardScore + '%';
+
+            document.getElementById('onionScoreText').innerText = onionScore + '%';
+            document.getElementById('onionBar').style.width = onionScore + '%';
+
+            if (n < 40) {
+                document.getElementById('aiTipText').innerText = "Add organic compost for nitrogen balance. Delay heavy irrigation due to expected rain.";
+            } else {
+                document.getElementById('aiTipText').innerText = "Soil nutrient levels are optimal. Suitable for immediate sowing.";
+            }
+        }
+
+        function handleReportUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                alert(`Successfully uploaded "${file.name}". AI scanner is analyzing lab parameters...`);
+                setTimeout(() => {
+                    document.getElementById('moistureInput').value = 55;
+                    document.getElementById('nInput').value = 65;
+                    updatePredictions();
+                    alert("AI scan complete! Soil parameters updated automatically from lab report.");
+                }, 1000);
+            }
+        }
+
+        function showCropTips(cropName) {
+            alert(`AI Agronomist Tips for ${cropName}:\n• Ensure proper drainage before irrigation.\n• Recommended fertilizer: NPK 12:32:16 split dosage.`);
+        }
+
+        function downloadReport() {
+            alert("Preparing KisaanSaathi Soil & Crop Health PDF Report...");
+            setTimeout(() => { alert("Report downloaded successfully to your device!"); }, 1000);
+        }
+
+        function shareViaWhatsApp() {
+            const text = encodeURIComponent("KisaanSaathi Soil Health Report: Wheat suitability 88%, Nitrogen level optimized. Check portal for full details.");
+            window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
+        }
+
+        const translations = {
+            'en': { heading: '🧪 Soil & Crop Predictions', banner: 'AI-powered analytics and real-time crop suitability engine' },
+            'hi': { heading: '🧪 मिट्टी और फसल पूर्वानुमान', banner: 'एआई-संचालित विश्लेषण और वास्तविक समय फसल उपयुक्तता इंजन' },
+            'mr': { heading: '🧪 माती आणि पीक अंदाज', banner: 'AI-संचलित विश्लेषण आणि रिअल-टाइम पीक सुसंगतता इंजिन' },
+            'pa': { heading: '🧪 ਮਿੱਟੀ ਅਤੇ ਫਸਲ ਅਨੁਮਾਨ', banner: 'ਏਆਈ-ਸੰਚਾਲਿਤ ਵਿਸ਼ਲੇਸ਼ਣ ਅਤੇ ਅਸਲ-ਸਮੇਂ ਦੀ ਫਸਲ ਅਨੁਕੂਲਤਾ ਇੰਜਣ' },
+            'gu': { heading: '🧪 જમીન અને પાક અનુમાન', banner: 'AI-સંચાલિત વિશ્લેષણ અને વાસ્તવિક સમય પાક યોગ્યતા એન્જિન' },
+            'bn': { heading: '🧪 মাটি ও ফসল পূর্বাভাস', banner: 'AI-চালিত বিশ্লেষণ এবং রিয়েল-টাইম শস্য উপযুক্ততা ইঞ্জিন' }
+        };
+
+        function toggleLanguage() {
+            const lang = document.getElementById('langToggle').value;
+            if (translations[lang]) {
+                document.getElementById('pageHeading').innerText = translations[lang].heading;
+                document.getElementById('subBannerText').innerText = translations[lang].banner;
+            }
+        }
+    </script>
+</body>
+</html>

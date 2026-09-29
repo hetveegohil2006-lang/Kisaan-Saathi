@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather & Alerts - KisaanSaathi Smart Agriculture Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chart.js for Forecast Trends -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Leaflet.js for Interactive Weather Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        /* 5 Themes Color Palettes */
+        body.theme-light-yellow { background: linear-gradient(to bottom, #fef08a 0%, #fef9c3 50%, #e2e8f0 100%); --panel-bg: rgba(255, 255, 255, 0.88); --text-primary: #1b3818; --text-muted: #4b6b48; --accent: #386641; --input-bg: #ffffff; --border-color: #fde047; }
+        body.theme-light-pink { background: linear-gradient(to bottom, #fbcfe8 0%, #fce7f3 50%, #e2e8f0 100%); --panel-bg: rgba(255, 255, 255, 0.88); --text-primary: #500724; --text-muted: #831843; --accent: #be185d; --input-bg: #ffffff; --border-color: #f472b6; }
+        body.theme-light-orange { background: linear-gradient(to bottom, #fed7aa 0%, #ffedd5 50%, #e2e8f0 100%); --panel-bg: rgba(255, 255, 255, 0.88); --text-primary: #431407; --text-muted: #7c2d12; --accent: #c2410c; --input-bg: #ffffff; --border-color: #fb923c; }
+        body.theme-light-blue { background: linear-gradient(to bottom, #bae6fd 0%, #e0f2fe 50%, #cbd5e1 100%); --panel-bg: rgba(255, 255, 255, 0.88); --text-primary: #082f49; --text-muted: #0369a1; --accent: #0369a1; --input-bg: #ffffff; --border-color: #38bdf8; }
+        body.theme-light-black { background: linear-gradient(to bottom, #1e293b 0%, #0f172a 50%, #020617 100%); --panel-bg: rgba(15, 23, 42, 0.88); --text-primary: #f8fafc; --text-muted: #94a3b8; --accent: #38bdf8; --input-bg: #0f172a; --border-color: #334155; }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+        body { color: var(--text-primary); min-height: 100vh; display: flex; transition: background 0.3s, color 0.3s; }
+
+        /* Sidebar Structure */
+        .sidebar { width: 260px; background: var(--panel-bg); backdrop-filter: blur(10px); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; padding: 20px; height: 100vh; position: fixed; top: 0; left: 0; z-index: 40; }
+        
+        /* Logo Badge */
+        .brand-badge { display: flex; align-items: center; gap: 12px; margin-bottom: 25px; background: #ffffff; padding: 10px 14px; border-radius: 20px; border: 1px solid #fde047; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
+        .brand-logo-icon { font-size: 24px; line-height: 1; }
+        .brand-text strong { font-size: 15px; font-weight: 700; color: #1b3818; display: block; line-height: 1.2; letter-spacing: -0.2px; }
+        .brand-text small { font-size: 8.5px; color: #386641; font-weight: 700; letter-spacing: 0.4px; display: block; margin-top: 1px; }
+
+        .nav-links { display: flex; flex-direction: column; gap: 5px; flex: 1; overflow-y: auto; }
+        .nav-item { display: flex; align-items: center; gap: 12px; padding: 11px 14px; border-radius: 12px; font-size: 13px; font-weight: 500; color: var(--text-primary); text-decoration: none; transition: 0.2s; }
+        .nav-item:hover { background: rgba(0, 0, 0, 0.05); color: var(--accent); }
+        .nav-item.active { background: var(--accent); color: #fff; font-weight: 600; }
+
+        /* Main Content */
+        .main-content { margin-left: 260px; flex: 1; padding: 30px; display: flex; flex-direction: column; height: 100vh; overflow-y: auto; }
+
+        /* Top Header & Controls */
+        .top-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .header-title-box h1 { font-size: 24px; font-weight: 700; color: var(--text-primary); }
+        .header-title-box p { font-size: 13px; color: var(--text-muted); font-weight: 500; margin-top: 2px; }
+        
+        .header-controls { display: flex; gap: 12px; align-items: center; }
+        .control-select { background: var(--input-bg); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 20px; cursor: pointer; font-weight: 500; font-size: 13px; color: var(--text-primary); outline: none; }
+        
+        .sun-control-box { display: flex; align-items: center; justify-content: center; cursor: pointer; background: var(--panel-bg); width: 42px; height: 42px; border-radius: 50%; backdrop-filter: blur(10px); box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 1px solid var(--border-color); transition: transform 0.2s; }
+        .sun-control-box:hover { transform: scale(1.1); }
+        .sun-icon { width: 20px; height: 20px; border-radius: 50%; background: #facc15; box-shadow: 0 0 12px rgba(250, 204, 21, 0.9); transition: all 0.5s; }
+        body.theme-light-black .sun-icon { background: transparent; box-shadow: -4px 2px 0 0 #f8fafc; width: 16px; height: 16px; }
+
+        /* Grid Layout */
+        .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+        .card { background: var(--panel-bg); backdrop-filter: blur(12px); border-radius: 24px; border: 1px solid var(--border-color); padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.04); display: flex; flex-direction: column; gap: 16px; }
+        .card h3 { font-size: 17px; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 8px; }
+
+        /* Current Weather Card Styles */
+        .weather-location-row { display: flex; justify-content: space-between; align-items: center; }
+        .location-input { background: var(--input-bg); border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 10px; font-size: 13px; font-weight: 600; color: var(--text-primary); width: 200px; }
+        .temp-display-box { display: flex; align-items: center; gap: 20px; margin: 10px 0; }
+        .temp-val { font-size: 42px; font-weight: 700; color: var(--text-primary); }
+        .weather-metrics-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 5px; }
+        .metric-badge { background: var(--input-bg); border: 1px solid var(--border-color); padding: 10px 14px; border-radius: 12px; font-size: 12px; font-weight: 600; display: flex; justify-content: space-between; align-items: center; }
+
+        /* Smart Alerts Card */
+        .alert-card-item { border-radius: 14px; padding: 14px; display: flex; gap: 12px; align-items: flex-start; border: 1px solid transparent; margin-bottom: 10px; background: var(--input-bg); }
+        .alert-card-item.high { border-left: 5px solid #dc2626; }
+        .alert-card-item.moderate { border-left: 5px solid #d97706; }
+        .alert-card-item.safe { border-left: 5px solid #16a34a; }
+        .alert-content { flex: 1; }
+        .alert-content h4 { font-size: 13px; font-weight: 700; display: flex; justify-content: space-between; }
+        .alert-content p { font-size: 12px; color: var(--text-muted); margin-top: 3px; line-height: 1.4; }
+        .btn-acknowledge { background: var(--accent); color: #fff; border: none; padding: 4px 10px; border-radius: 6px; font-size: 10px; font-weight: 700; cursor: pointer; margin-top: 6px; }
+
+        /* Full Width Cards & Charts/Maps */
+        .full-card { background: var(--panel-bg); backdrop-filter: blur(12px); border-radius: 24px; border: 1px solid var(--border-color); padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.04); margin-bottom: 30px; }
+        .chart-wrapper { position: relative; height: 220px; width: 100%; margin-top: 15px; }
+        .map-container { height: 250px; width: 100%; border-radius: 16px; margin-top: 10px; border: 1px solid var(--border-color); z-index: 10; }
+
+        .action-buttons-row { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-top: 20px; }
+        .btn { padding: 12px 24px; border-radius: 14px; font-weight: 700; font-size: 13px; cursor: pointer; border: 1px solid transparent; display: flex; align-items: center; gap: 8px; transition: transform 0.2s; }
+        .btn:hover { transform: translateY(-2px); }
+        .btn-primary { background: var(--accent); color: #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .btn-secondary { background: var(--input-bg); color: var(--text-primary); border-color: var(--border-color); }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .dashboard-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 768px) {
+            .sidebar { display: none; }
+            .main-content { margin-left: 0; padding: 15px; }
+        }
+    </style>
+</head>
+<body id="appBody" class="theme-light-yellow">
+
+    <!-- Sidebar Structure (All 8 Options Intact) -->
+    <aside class="sidebar">
+        <div class="brand-badge">
+            <div class="brand-logo-icon">🌿</div>
+            <div class="brand-text">
+                <strong>KisaanSaathi</strong>
+                <small>SMART AGRICULTURE PORTAL</small>
+            </div>
+        </div>
+        <div class="nav-links">
+            <a href="dashboard.html" class="nav-item">🏠 Overview & Guide</a>
+            <a href="chatbotai.html" class="nav-item">🤖 AI Chatbot (Gemini)</a>
+            <a href="soil.html" class="nav-item">🧪 Soil & Crop Predictions</a>
+            <a href="weather.html" class="nav-item active">🌤️ Weather & Alerts</a>
+            <a href="tutorials.html" class="nav-item">🎥 Plant Tutorials & AI Video</a>
+            <a href="market.html" class="nav-item">💰 Market & Expense</a>
+            <a href="schemes.html" class="nav-item">🏛️ Government Schemes</a>
+            <a href="profile.html" class="nav-item">👤 Profile Settings</a>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+        <header class="top-header">
+            <div class="header-title-box">
+                <h1 id="pageHeading">🌤️ Weather & Alerts</h1>
+                <p id="subBannerText">Stay updated with the latest weather information and advisories</p>
+            </div>
+            <div class="header-controls">
+                <select class="control-select" id="langToggle" onchange="toggleLanguage()">
+                    <option value="en" selected>English</option>
+                    <option value="hi">हिंदी (Hindi)</option>
+                    <option value="mr">मराठी (Marathi)</option>
+                    <option value="pa">ਪੰਜਾਬੀ (Punjabi)</option>
+                    <option value="gu">ગુજરાતી (Gujarati)</option>
+                    <option value="bn">বাংলা (Bengali)</option>
+                    <option value="te">తెలుగు (Telugu)</option>
+                    <option value="ta">தமிழ் (Tamil)</option>
+                    <option value="kn">ಕನ್ನಡ (Kannada)</option>
+                    <option value="ml">മലയാളം (Malayalam)</option>
+                    <option value="or">ଓଡ଼ିଆ (Odia)</option>
+                    <option value="as">অসমীয়া (Assamese)</option>
+                    <option value="ur">اردو (Urdu)</option>
+                </select>
+
+                <div class="sun-control-box" onclick="switchThemeCycle()" title="Toggle Theme Palette">
+                    <div class="sun-icon"></div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Top Grid: Current Weather & Smart Alerts -->
+        <div class="dashboard-grid">
+            
+            <!-- Card 1: Current Weather -->
+            <div class="card">
+                <div class="weather-location-row">
+                    <h3>🌡️ Current Weather</h3>
+                    <input type="text" id="locationInput" class="location-input" value="Thane, Maharashtra" onchange="fetchWeatherData()">
+                </div>
+                <div class="temp-display-box">
+                    <span style="font-size: 48px;">☀️</span>
+                    <div>
+                        <div class="temp-val" id="tempDisplay">34°C</div>
+                        <div style="font-size: 12px; font-weight: 600; color: var(--text-muted);" id="conditionDisplay">Sunny & Clear Sky</div>
+                    </div>
+                </div>
+                <div class="weather-metrics-grid">
+                    <div class="metric-badge"><span>💧 Humidity</span> <strong id="humidityVal">74%</strong></div>
+                    <div class="metric-badge"><span>💨 Wind Speed</span> <strong id="windVal">15 km/h</strong></div>
+                    <div class="metric-badge"><span>🌧️ Rain Prob.</span> <strong id="rainProbVal">10%</strong></div>
+                    <div class="metric-badge"><span>🌡️ Heat Index</span> <strong id="heatIndexVal">38°C</strong></div>
+                </div>
+            </div>
+
+            <!-- Card 2: Smart Alerts (Editable/Acknowledged) -->
+            <div class="card">
+                <h3>🚨 Smart Weather Alerts</h3>
+                
+                <div class="alert-card-item high" id="alert1">
+                    <span style="font-size: 22px;">🌧️️</span>
+                    <div class="alert-content">
+                        <h4>Rainfall Warning <span style="font-size:10px; background:#fee2e2; color:#991b1b; padding:2px 6px; border-radius:4px;">High Risk 🔴</span></h4>
+                        <p>Delay irrigation due to expected heavy rainfall in your local district over the next 24 hours.</p>
+                        <button class="btn-acknowledge" onclick="acknowledgeAlert('alert1')">Mark Acknowledged</button>
+                    </div>
+                </div>
+
+                <div class="alert-card-item moderate" id="alert2">
+                    <span style="font-size: 22px;">🔥</span>
+                    <div class="alert-content">
+                        <h4>Heatwave Alert <span style="font-size:10px; background:#ffedd5; color:#c2410c; padding:2px 6px; border-radius:4px;">Moderate 🟡</span></h4>
+                        <p>Store harvested grains safely — rising afternoon temperatures could cause moisture stress.</p>
+                        <button class="btn-acknowledge" onclick="acknowledgeAlert('alert2')">Mark Acknowledged</button>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Middle Card: 48-Hour & 7-Day Trend Chart -->
+        <div class="full-card">
+            <h3>📊 48-Hour & 7-Day Trend Analytics</h3>
+            <div style="display: flex; gap: 10px; margin-top: 10px;">
+                <button class="btn-secondary" style="padding:6px 14px; font-size:11px;" onclick="switchChartRange('48h')">48-Hour Forecast</button>
+                <button class="btn-secondary" style="padding:6px 14px; font-size:11px;" onclick="switchChartRange('7d')">7-Day Trend</button>
+            </div>
+            <div class="chart-wrapper">
+                <canvas id="weatherTrendChart"></canvas>
+            </div>
+            <div class="action-buttons-row">
+                <button class="btn btn-primary" onclick="downloadWeatherReport()">💾 Download Forecast Report</button>
+                <button class="btn btn-secondary" onclick="shareForecastWhatsApp()">📤 Share via WhatsApp / SMS</button>
+            </div>
+        </div>
+
+        <!-- Lower Card: Interactive Regional Map -->
+        <div class="full-card">
+            <h3>🗺️ Regional Weather Overlay Map</h3>
+            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">Live regional overlays for rain, wind vectors, and temperature zones. Red pin marks your GPS location.</p>
+            <div id="weatherMap" class="map-container"></div>
+        </div>
+
+    </div>
+
+    <script>
+        // Theme Cycling Logic (5 Themes)
+        const themes = ['theme-light-yellow', 'theme-light-pink', 'theme-light-orange', 'theme-light-blue', 'theme-light-black'];
+        let currentThemeIndex = 0;
+
+        function switchThemeCycle() {
+            currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+            document.getElementById('appBody').className = themes[currentThemeIndex];
+            localStorage.setItem('kisaan-portal-theme-index', currentThemeIndex);
+        }
+
+        const savedThemeIndex = localStorage.getItem('kisaan-portal-theme-index');
+        if (savedThemeIndex !== null) {
+            currentThemeIndex = parseInt(savedThemeIndex);
+            document.getElementById('appBody').className = themes[currentThemeIndex];
+        }
+
+        // Initialize Leaflet Map centered around Thane, Maharashtra
+        const map = L.map('weatherMap').setView([19.2183, 72.9781], 10);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Marker for user's farm location
+        const marker = L.marker([19.2183, 72.9781]).addTo(map)
+            .bindPopup("<b>Thane Farm Location</b><br/>Status: Clear skies, optimal wind conditions.")
+            .openPopup();
+
+        // Chart.js Setup for Weather Trends
+        const ctx = document.getElementById('weatherTrendChart').getContext('2d');
+        let weatherTrendChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['6:00', '9:00', '12:00', '15:00', '18:00', '21:00', '00:00'],
+                datasets: [{
+                    label: 'Temperature (°C)',
+                    data: [26, 29, 34, 35, 32, 28, 26],
+                    borderColor: '#f59e0b',
+                    backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                    fill: true,
+                    tension: 0.3,
+                    yAxisID: 'y'
+                }, {
+                    label: 'Rainfall Probability (%)',
+                    data: [10, 5, 10, 20, 45, 60, 40],
+                    borderColor: '#0369a1',
+                    backgroundColor: 'transparent',
+                    borderDash: [4, 4],
+                    tension: 0.3,
+                    yAxisID: 'y1'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { position: 'bottom' } },
+                scales: {
+                    y: { type: 'linear', display: true, position: 'left', grid: { display: false } },
+                    y1: { type: 'linear', display: true, position: 'right', grid: { display: false }, min: 0, max: 100 }
+                }
+            }
+        });
+
+        function switchChartRange(range) {
+            if (range === '7d') {
+                weatherTrendChart.data.labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+                weatherTrendChart.data.datasets[0].data = [32, 34, 33, 30, 29, 31, 33];
+                weatherTrendChart.data.datasets[1].data = [15, 10, 40, 85, 90, 20, 10];
+            } else {
+                weatherTrendChart.data.labels = ['6:00', '9:00', '12:00', '15:00', '18:00', '21:00', '00:00'];
+                weatherTrendChart.data.datasets[0].data = [26, 29, 34, 35, 32, 28, 26];
+                weatherTrendChart.data.datasets[1].data = [10, 5, 10, 20, 45, 60, 40];
+            }
+            weatherTrendChart.update();
+        }
+
+        function fetchWeatherData() {
+            const loc = document.getElementById('locationInput').value;
+            alert(`Fetching live OpenWeatherMap data for "${loc}"...`);
+            // Simulated live data refresh
+            document.getElementById('tempDisplay').innerText = '32°C';
+            document.getElementById('humidityVal').innerText = '68%';
+            document.getElementById('windVal').innerText = '12 km/h';
+        }
+
+        function acknowledgeAlert(alertId) {
+            const el = document.getElementById(alertId);
+            el.style.opacity = '0.5';
+            el.querySelector('.btn-acknowledge').innerText = '✓ Resolved';
+            el.querySelector('.btn-acknowledge').style.background = '#16a34a';
+        }
+
+        function downloadWeatherReport() {
+            alert("Preparing KisaanSaathi Weather Forecast & Advisory PDF Report...");
+            setTimeout(() => { alert("Weather report downloaded successfully!"); }, 1000);
+        }
+
+        function shareForecastWhatsApp() {
+            const loc = document.getElementById('locationInput').value;
+            const text = encodeURIComponent(`KisaanSaathi Weather Forecast for ${loc}: Temp 34°C, Humidity 74%. Rainfall alert active for tonight.`);
+            window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
+        }
+
+        // Localization Dictionary
+        const translations = {
+            'en': { heading: '🌤️ Weather & Alerts', banner: 'Stay updated with the latest weather information and advisories' },
+            'hi': { heading: '🌤️ मौसम और चेतावनियाँ', banner: 'नवीनतम मौसम की जानकारी और सलाह के साथ अपडेट रहें' },
+            'mr': { heading: '🌤️ हवामान आणि सतर्कता', banner: 'नवीनतम हवामान माहिती आणि सल्ल्याlarıyla अपडेट राहा' },
+            'pa': { heading: '🌤️ ਮੌਸਮ ਅਤੇ ਚੇਤਾਵਨੀਆਂ', banner: 'ਤਾਜ਼ਾ ਮੌਸਮ ਜਾਣਕਾਰੀ ਅਤੇ ਸਲਾਹ ਨਾਲ ਅੱਪਡੇਟ ਰਹੋ' },
+            'gu': { heading: '🌤️ હવામાન અને ચેતવણીઓ', banner: 'नवीनतम हवाમાન માહિતી અને સલાહ સાથે અપડેટ રહો' },
+            'bn': { heading: '🌤️ আবহাওয়া ও সতর্কতা', banner: 'সর্বশেষ আবহাওয়া তথ্য এবং পরামর্শের সাথে আপডেট থাকুন' }
+        };
+
+        function toggleLanguage() {
+            const lang = document.getElementById('langToggle').value;
+            if (translations[lang]) {
+                document.getElementById('pageHeading').innerText = translations[lang].heading;
+                document.getElementById('subBannerText').innerText = translations[lang].banner;
+            }
+        }
+    </script>
+</body>
+</html>

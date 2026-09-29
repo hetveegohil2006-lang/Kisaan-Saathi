@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chatbot - KisaanSaathi Smart Agriculture Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* 5 Themes Color Palettes & Gradients */
+        body.theme-light-yellow {
+            background: linear-gradient(to bottom, #fef08a 0%, #fef9c3 50%, #e2e8f0 100%);
+            --text-primary: #1e293b; --text-muted: #64748b; --panel-bg: rgba(255, 255, 255, 0.85); --input-bg: #ffffff; --border-color: #fde047; --accent: #ca8a04; --ai-bubble-bg: #fef08a;
+        }
+        body.theme-light-pink {
+            background: linear-gradient(to bottom, #fbcfe8 0%, #fce7f3 50%, #e2e8f0 100%);
+            --text-primary: #1e293b; --text-muted: #64748b; --panel-bg: rgba(255, 255, 255, 0.85); --input-bg: #ffffff; --border-color: #f472b6; --accent: #db2777; --ai-bubble-bg: #fce7f3;
+        }
+        body.theme-light-orange {
+            background: linear-gradient(to bottom, #fed7aa 0%, #ffedd5 50%, #e2e8f0 100%);
+            --text-primary: #1e293b; --text-muted: #64748b; --panel-bg: rgba(255, 255, 255, 0.85); --input-bg: #ffffff; --border-color: #fb923c; --accent: #ea580c; --ai-bubble-bg: #ffedd5;
+        }
+        body.theme-light-blue {
+            background: linear-gradient(to bottom, #bae6fd 0%, #e0f2fe 50%, #cbd5e1 100%);
+            --text-primary: #1e293b; --text-muted: #64748b; --panel-bg: rgba(255, 255, 255, 0.85); --input-bg: #ffffff; --border-color: #38bdf8; --accent: #0284c7; --ai-bubble-bg: #e0f2fe;
+        }
+        body.theme-light-black {
+            background: linear-gradient(to bottom, #1e293b 0%, #0f172a 50%, #020617 100%);
+            --text-primary: #ffffff; --text-muted: #94a3b8; --panel-bg: rgba(30, 41, 59, 0.85); --input-bg: #0f172a; --border-color: #334155; --accent: #38bdf8; --ai-bubble-bg: #1e293b;
+        }
+
+        .page-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Top Navigation Bar */
+        .top-nav {
+            position: absolute;
+            top: 25px;
+            left: 35px;
+            right: 35px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 40;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+        body { color: var(--text-primary); min-height: 100vh; display: flex; transition: background 0.3s, color 0.3s; }
+
+        /* Sidebar Structure */
+        .sidebar { width: 260px; background: var(--panel-bg); backdrop-filter: blur(10px); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; padding: 20px; height: 100vh; position: fixed; top: 0; left: 0; z-index: 40; }
+        
+        .brand-badge { display: flex; align-items: center; gap: 12px; margin-bottom: 30px; }
+        .brand-text { display: flex; flex-direction: column; }
+        .brand-text strong { font-size: 16px; font-weight: 700; color: var(--text-primary); line-height: 1.2; }
+        .brand-text small { font-size: 10px; color: var(--text-muted); font-weight: 500; display: block; }
+
+        .nav-links { display: flex; flex-direction: column; gap: 6px; flex: 1; overflow-y: auto; }
+        .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; font-size: 13px; font-weight: 500; color: var(--text-primary); text-decoration: none; transition: 0.2s; }
+        .nav-item:hover { background: rgba(0, 0, 0, 0.05); color: var(--accent); }
+        .nav-item.active { background: var(--accent); color: #fff; font-weight: 600; }
+
+        /* Main Content */
+        .main-content { margin-left: 260px; flex: 1; padding: 30px; display: flex; flex-direction: column; height: 100vh; }
+
+        /* Top Header & Controls */
+        .top-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .top-header h1 { font-size: 22px; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 12px; }
+        
+        .header-controls { display: flex; gap: 12px; align-items: center; }
+        .control-select { background: var(--input-bg); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 20px; cursor: pointer; font-weight: 500; font-size: 13px; color: var(--text-primary); outline: none; }
+        
+        /* Sun/Moon Control with Tap Badge */
+        .theme-switcher-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 50;
+        }
+
+        .sun-control-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            background: var(--panel-bg);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border: 1px solid var(--border-color);
+            transition: transform 0.2s ease;
+        }
+
+        .sun-control-box:hover {
+            transform: scale(1.1);
+        }
+
+        .sun-icon {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: #facc15;
+            box-shadow: 0 0 20px rgba(250, 204, 21, 0.9);
+            transition: all 0.5s ease;
+            animation: floatIcon 4s ease-in-out infinite alternate;
+        }
+
+        @keyframes floatIcon {
+            from { transform: translateY(0); }
+            to { transform: translateY(-3px); }
+        }
+
+        /* Theme-based Icon Shifts */
+        body.theme-light-yellow .sun-icon { background: #facc15; box-shadow: 0 0 20px rgba(250, 204, 21, 0.9); }
+        body.theme-light-pink .sun-icon { background: #f472b6; box-shadow: 0 0 20px rgba(244, 114, 182, 0.9); }
+        body.theme-light-orange .sun-icon { background: #fb923c; box-shadow: 0 0 20px rgba(251, 146, 60, 0.9); }
+        body.theme-light-blue .sun-icon { background: #38bdf8; box-shadow: 0 0 20px rgba(56, 189, 248, 0.9); }
+        body.theme-light-black .sun-icon { 
+            background: transparent; 
+            box-shadow: -6px 2px 0 0 #f8fafc; 
+            width: 22px;
+            height: 22px;
+        }
+
+        /* Chat Wrapper Container */
+        .chat-wrapper {
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 120px);
+            background: var(--panel-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+        }
+
+        .status-banner {
+            background: var(--input-bg);
+            border-bottom: 1px solid var(--border-color);
+            padding: 12px 20px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .chat-bubble {
+            max-width: 75%;
+            padding: 14px 18px;
+            border-radius: 14px;
+            line-height: 1.5;
+            font-size: 0.95rem;
+        }
+
+        .chat-bubble.ai {
+            background: var(--ai-bubble-bg);
+            color: var(--text-primary);
+            align-self: flex-start;
+            border-bottom-left-radius: 2px;
+            border: 1px solid var(--border-color);
+        }
+
+        .chat-bubble.user {
+            background: var(--accent);
+            color: #ffffff;
+            align-self: flex-end;
+            border-bottom-right-radius: 2px;
+        }
+
+        .chat-input-area {
+            padding: 15px 20px;
+            background: var(--panel-bg);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .chat-input-area input {
+            flex: 1;
+            margin: 0;
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            padding: 12px 16px;
+            border-radius: 12px;
+            outline: none;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+        }
+
+        .chat-input-area input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .tool-icon-btn {
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: all 0.2s;
+            color: var(--text-primary);
+        }
+
+        .tool-icon-btn:hover {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+        }
+
+        .send-btn {
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar { display: none; }
+            .main-content { margin-left: 0; padding: 15px; }
+        }
+    </style>
+</head>
+<body id="appBody" class="theme-light-yellow">
+
+    <div class="page-container" style="width: 100%; display: flex; height: 100vh;">
+        <!-- Sidebar with exact KisaanSaathi Brand Badge -->
+        <aside class="sidebar">
+            <div class="brand-badge">
+                <span style="font-size: 1.3rem;">🌱</span>
+                <div class="brand-text">
+                    <strong>KisaanSaathi</strong>
+                    <small>AGRICULTURE PORTAL</small>
+                </div>
+            </div>
+            <div class="nav-links">
+                <a href="dashboard.html" class="nav-item">🏠 Overview & Guide</a>
+                <a href="chatbotai.html" class="nav-item active">🤖 AI Chatbot (Gemini)</a>
+                <a href="soil.html" class="nav-item">🌱 Soil & Crop Predictions</a>
+                <a href="weather.html" class="nav-item">🌦️ Weather & Alerts</a>
+                <a href="tutorials.html" class="nav-item">🎥 Plant Tutorials & AI Video</a>
+                <a href="market.html" class="nav-item">💰 Market & Expense</a>
+                <a href="schemes.html" class="nav-item">🏛️ Government Schemes</a>
+                <a href="profile.html" class="nav-item">👤 Profile Settings</a>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <header class="top-header">
+                <h1>
+                    Kisaansaathi AI🌱 <span id="headerTitleText" style="font-size: 0.8em; font-weight: 500;"></span>
+                </h1>
+                <div class="header-controls">
+                    <select class="control-select" id="langToggle" onchange="toggleLanguage()">
+                        <option value="en">English</option>
+                        <option value="hi" selected>हिंदी (Hindi)</option>
+                        <option value="mr">मराठी (Marathi)</option>
+                        <option value="pa">ਪੰਜਾਬੀ (Punjabi)</option>
+                        <option value="gu">ગુજરાતી (Gujarati)</option>
+                        <option value="bn">বাংলা (Bengali)</option>
+                        <option value="te">తెలుగు (Telugu)</option>
+                        <option value="ta">தமிழ் (Tamil)</option>
+                        <option value="kn">ಕನ್ನಡ (Kannada)</option>
+                        <option value="ml">മലയാളം (Malayalam)</option>
+                        <option value="or">ଓଡ଼ିଆ (Odia)</option>
+                        <option value="as">অসমীয়া (Assamese)</option>
+                        <option value="ur">اردو (Urdu)</option>
+                    </select>
+
+                    <!-- Sun/Moon Control with Tap Badge -->
+                    <div class="theme-switcher-group">
+                        <div class="sun-control-box" onclick="switchThemeCycle()" title="Tap to switch theme">
+                            <div class="sun-icon"></div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Chat Wrapper Container -->
+            <div class="chat-wrapper">
+                <div class="status-banner">
+                    <span>⚠️ Gemini is offline. Start the backend with 'python server.py' to get real AI answers.</span>
+                </div>
+                
+                <div class="chat-messages" id="chatMessages">
+                    <div class="chat-bubble ai" id="initialGreeting">Namaste! I'm your KisaanSaathi AI assistant. Ask me about crop health, soil, irrigation, pests, or market planning.</div>
+                </div>
+
+                <div class="chat-input-area">
+                    <button class="tool-icon-btn" onclick="triggerCamera()" title="Take Photo">📷</button>
+                    <button class="tool-icon-btn" onclick="triggerUpload()" title="Attach File">📎</button>
+                    <input type="file" id="fileInput" style="display:none" accept="image/*" onchange="handleImageUpload(event)">
+                    <button class="tool-icon-btn" onclick="triggerVoice()" title="Voice Input">🎤</button>
+                    <input type="text" id="userInput" placeholder="Type your question here...">
+                    <button class="send-btn" onclick="sendMessage()">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Load Companion Name from localStorage safely
+        const companionName = localStorage.getItem('selectedCompanionName') || 'KisaanSaathi AI';
+        const headerTitleElement = document.getElementById('headerTitleText');
+        if (headerTitleElement) {
+            headerTitleElement.innerText = `(${companionName})`;
+        }
+
+        // 5 Themes Cycling Handler
+        const themes = ['theme-light-yellow', 'theme-light-pink', 'theme-light-orange', 'theme-light-blue', 'theme-light-black'];
+        let currentThemeIndex = 0;
+
+        function switchThemeCycle() {
+            currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+            const body = document.getElementById('appBody');
+            body.className = themes[currentThemeIndex];
+            localStorage.setItem('kisaan-portal-theme-index', currentThemeIndex);
+        }
+
+        // Restore saved theme on load
+        const savedThemeIndex = localStorage.getItem('kisaan-portal-theme-index');
+        if (savedThemeIndex !== null) {
+            currentThemeIndex = parseInt(savedThemeIndex);
+            document.getElementById('appBody').className = themes[currentThemeIndex];
+        }
+
+        // Multilingual Greetings Support
+        const greetings = {
+            'en': `Namaste! I'm your ${companionName} AI assistant. Ask me about crop health, soil, irrigation, pests, or market planning.`,
+            'hi': `Namaste! Main aapka ${companionName} assistant hoon. Aap mujhse fasal ki beemari, mitti ki jaanch ya mausam ke baare mein pooch sakte hain.`,
+            'mr': `Namaskar! Me tumcha ${companionName} assistant aahe. Tumhi mala pikancha aarogya, mati tapasni ya havamanabaddal vicharu sakta.`,
+            'gu': `Namaste! Hu tamaro ${companionName} assistant chhu. Tame mar pase pakni bimari, jamin ni tapasni ya havaman vishe puchhi sako chho.`,
+            'pa': `Namaste! Main tuhada ${companionName} assistant haan. Tusi fasal di bimari, mitti di janch ya mausam bare puchh sakde ho.`,
+            'bn': `Nomoshkar! Ami apnar ${companionName} assistant. Apni folechher shasthya ba abohawa somporke jiggasha korte paren.`,
+            'te': `Namaskaram! Nenu mee ${companionName} assistant. Panta arogyam, matti pariksha gurinchi nannu adagandi.`,
+            'ta': `Vanakkam! Naan ungalin ${companionName} assistant. Payir paathukappu matrum mann parishothanai patri kelungal.`,
+            'kn': `Namaskara! Naanu nimma ${companionName} assistant. Bele aarogya mattu haavamaana bagge keliri.`,
+            'ml': `Namaskaram! Njan ningalude ${companionName} assistant. Krishi arogyam, mannarisodhana kurichu chodikkuka.`,
+            'or': `Namaskar! Mun apanka ${companionName} assistant. Phasal swasthya ba abhaba bisayare puchi paribe.`,
+            'as': `Nomoskar! Moi apunar ${companionName} assistant. Sasyor swasthya ba botor bisayare sodhibo paribo.`,
+            'ur': `Namaste! Main aapka ${companionName} assistant hoon. Aap mujhse fasal ki beemari ya mausam ke baare mein pooch sakte hain.`
+        };
+
+        function toggleLanguage() {
+            const lang = document.getElementById('langToggle').value;
+            const greetingEl = document.getElementById('initialGreeting');
+            if (greetings[lang]) {
+                greetingEl.innerText = greetings[lang];
+            }
+        }
+        toggleLanguage();
+
+        function triggerUpload() { document.getElementById('fileInput').click(); }
+        function triggerCamera() { alert("Camera mode activated for crop analysis..."); }
+        function triggerVoice() { alert("Listening to voice input..."); }
+
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const container = document.getElementById('chatMessages');
+                const userMsg = document.createElement('div');
+                userMsg.className = 'chat-bubble user';
+                userMsg.innerText = `[Image Uploaded: ${file.name}]`;
+                container.appendChild(userMsg);
+                container.scrollTop = container.scrollHeight;
+
+                setTimeout(() => {
+                    const botMsg = document.createElement('div');
+                    botMsg.className = 'chat-bubble ai';
+                    botMsg.innerText = `${companionName}: Image analyzed successfully. Minor nutrient deficiency detected.`;
+                    container.appendChild(botMsg);
+                    container.scrollTop = container.scrollHeight;
+                }, 1000);
+            }
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('userInput');
+            const container = document.getElementById('chatMessages');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const userMsg = document.createElement('div');
+            userMsg.className = 'chat-bubble user';
+            userMsg.innerText = text;
+            container.appendChild(userMsg);
+            input.value = '';
+            container.scrollTop = container.scrollHeight;
+
+            setTimeout(() => {
+                const botMsg = document.createElement('div');
+                botMsg.className = 'chat-bubble ai';
+                botMsg.innerText = `${companionName}: Aapke sawal "${text}" ke anusaar, fasal ki behtar growth ke liye uchit khad aur sinchai karein.`;
+                container.appendChild(botMsg);
+                container.scrollTop = container.scrollHeight;
+            }, 800);
+        }
+
+        document.getElementById('userInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') sendMessage();
+        });
+    </script>
+</body>
+</html>

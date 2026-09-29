@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Settings - KisaanSaathi Smart Agriculture Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Theme Palettes */
+        body.theme-light-yellow {
+            background: linear-gradient(to bottom, #fef08a 0%, #fef9c3 50%, #e2e8f0 100%);
+            --panel-bg: rgba(255, 255, 255, 0.88); --text-primary: #1b3818; --text-muted: #4b6b48; --accent: #386641; --input-bg: #ffffff; --border-color: #fde047;
+        }
+        body.theme-light-pink {
+            background: linear-gradient(to bottom, #fbcfe8 0%, #fce7f3 50%, #e2e8f0 100%);
+            --panel-bg: rgba(255, 255, 255, 0.88); --text-primary: #500724; --text-muted: #831843; --accent: #be185d; --input-bg: #ffffff; --border-color: #f472b6;
+        }
+        body.theme-light-orange {
+            background: linear-gradient(to bottom, #fed7aa 0%, #ffedd5 50%, #e2e8f0 100%);
+            --panel-bg: rgba(255, 255, 255, 0.88); --text-primary: #431407; --text-muted: #7c2d12; --accent: #c2410c; --input-bg: #ffffff; --border-color: #fb923c;
+        }
+        body.theme-light-blue {
+            background: linear-gradient(to bottom, #bae6fd 0%, #e0f2fe 50%, #cbd5e1 100%);
+            --panel-bg: rgba(255, 255, 255, 0.88); --text-primary: #082f49; --text-muted: #0369a1; --accent: #0369a1; --input-bg: #ffffff; --border-color: #38bdf8;
+        }
+        body.theme-light-black {
+            background: linear-gradient(to bottom, #1e293b 0%, #0f172a 50%, #020617 100%);
+            --panel-bg: rgba(15, 23, 42, 0.88); --text-primary: #f8fafc; --text-muted: #94a3b8; --accent: #38bdf8; --input-bg: #0f172a; --border-color: #334155;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+        body { color: var(--text-primary); min-height: 100vh; display: flex; transition: background 0.3s, color 0.3s; }
+
+        /* Sidebar Structure */
+        .sidebar { width: 260px; background: var(--panel-bg); backdrop-filter: blur(10px); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; padding: 20px; height: 100vh; position: fixed; top: 0; left: 0; z-index: 40; }
+        
+        .brand-badge { display: flex; align-items: center; gap: 12px; margin-bottom: 30px; }
+        .brand-text { display: flex; flex-direction: column; }
+        .brand-text strong { font-size: 16px; font-weight: 700; color: var(--text-primary); line-height: 1.2; }
+        .brand-text small { font-size: 10px; color: var(--text-muted); font-weight: 500; display: block; }
+
+        .nav-links { display: flex; flex-direction: column; gap: 6px; flex: 1; overflow-y: auto; }
+        .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; font-size: 13px; font-weight: 500; color: var(--text-primary); text-decoration: none; transition: 0.2s; }
+        .nav-item:hover { background: rgba(0, 0, 0, 0.05); color: var(--accent); }
+        .nav-item.active { background: var(--accent); color: #fff; font-weight: 600; }
+
+        /* Main Content */
+        .main-content { margin-left: 260px; flex: 1; padding: 30px; display: flex; flex-direction: column; height: 100vh; overflow-y: auto; }
+
+        /* Top Header & Controls */
+        .top-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .top-header h1 { font-size: 22px; font-weight: 700; color: var(--text-primary); }
+        
+        .header-controls { display: flex; gap: 12px; align-items: center; }
+        .control-select { background: var(--input-bg); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 20px; cursor: pointer; font-weight: 500; font-size: 13px; color: var(--text-primary); outline: none; }
+        
+        /* Sun/Moon Control */
+        .sun-control-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            background: var(--panel-bg);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border: 1px solid var(--border-color);
+            transition: transform 0.2s ease;
+        }
+        .sun-control-box:hover { transform: scale(1.1); }
+        .sun-icon {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #facc15;
+            box-shadow: 0 0 15px rgba(250, 204, 21, 0.9);
+            transition: all 0.5s ease;
+        }
+        body.theme-light-black .sun-icon { background: transparent; box-shadow: -5px 2px 0 0 #f8fafc; width: 18px; height: 18px; }
+
+        /* Profile Settings Container */
+        .profile-settings {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex: 1;
+            padding: 20px;
+        }
+
+        /* Profile Card Matching Reference */
+        .profile-card {
+            background: var(--panel-bg);
+            backdrop-filter: blur(12px);
+            border-radius: 24px;
+            border: 1px solid var(--border-color);
+            width: 100%;
+            max-width: 650px;
+            padding: 35px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.06);
+            position: relative;
+        }
+
+        .profile-header-layout {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .avatar-container {
+            position: relative;
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid var(--accent);
+            flex-shrink: 0;
+            background: #e2e8f0;
+        }
+
+        .avatar-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-title-info h2 {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1.2;
+        }
+
+        .profile-title-info p {
+            font-size: 15px;
+            color: var(--text-muted);
+            font-weight: 500;
+            margin-top: 4px;
+        }
+
+        /* Profile Details List */
+        .profile-details-list {
+            list-style: none;
+            margin: 25px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .profile-details-list li {
+            display: flex;
+            align-items: center;
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .profile-details-list li span.icon {
+            margin-right: 12px;
+            font-size: 18px;
+            width: 25px;
+            text-align: center;
+        }
+
+        /* Action Buttons */
+        .profile-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 14px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+
+        .btn-secondary {
+            background: var(--input-bg);
+            color: var(--text-primary);
+            border-color: var(--border-color);
+        }
+        .btn-secondary:hover { background: rgba(0,0,0,0.05); }
+
+        /* Extended Details Section (Hidden by default) */
+        .extended-info {
+            display: none;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px dashed var(--border-color);
+            font-size: 14px;
+            color: var(--text-muted);
+            animation: fadeIn 0.3s ease;
+        }
+        .extended-info.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Modal / Edit Form Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+        .modal-overlay.active { display: flex; }
+
+        .modal-card {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 500px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-card h3 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        .form-group input {
+            width: 100%;
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            padding: 10px 14px;
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-size: 14px;
+            outline: none;
+        }
+
+        .error-msg {
+            color: #dc2626;
+            font-size: 11px;
+            margin-top: 4px;
+            display: none;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar { display: none; }
+            .main-content { margin-left: 0; padding: 15px; }
+            .profile-header-layout { flex-direction: column; text-align: center; }
+            .profile-actions { flex-direction: column; }
+            .btn { width: 100%; text-align: center; }
+        }
+    </style>
+</head>
+<body id="appBody" class="theme-light-yellow">
+
+    <!-- Sidebar Structure -->
+    <aside class="sidebar">
+        <div class="brand-badge">
+            <span style="font-size: 1.3rem;">🌱</span>
+            <div class="brand-text">
+                <strong>KisaanSaathi</strong>
+                <small>AGRICULTURE PORTAL</small>
+            </div>
+        </div>
+        <div class="nav-links">
+            <a href="dashboard.html" class="nav-item">🏠 Overview & Guide</a>
+            <a href="chatbotai.html" class="nav-item">🤖 AI Chatbot (Gemini)</a>
+            <a href="soil.html" class="nav-item">🧪 Soil & Crop Predictions</a>
+            <a href="weather.html" class="nav-item">🌦️ Weather & Alerts</a>
+            <a href="tutorials.html" class="nav-item">🎥 Plant Tutorials & AI Video</a>
+            <a href="market.html" class="nav-item">💰 Market & Expense</a>
+            <a href="schemes.html" class="nav-item">🏛️ Government Schemes</a>
+            <a href="profile.html" class="nav-item active">👤 Profile Settings</a>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+        <header class="top-header">
+            <h1 id="pageHeading">Profile Settings</h1>
+            <div class="header-controls">
+                <select class="control-select" id="langToggle" onchange="toggleLanguage()">
+                    <option value="en">English</option>
+                    <option value="hi" selected>हिंदी (Hindi)</option>
+                    <option value="mr">मराठी (Marathi)</option>
+                    <option value="pa">ਪੰਜਾਬੀ (Punjabi)</option>
+                    <option value="gu">ગુજરાતી (Gujarati)</option>
+                    <option value="bn">বাংলা (Bengali)</option>
+                    <option value="te">తెలుగు (Telugu)</option>
+                    <option value="ta">தமிழ் (Tamil)</option>
+                    <option value="kn">ಕನ್ನಡ (Kannada)</option>
+                    <option value="ml">മലയാളം (Malayalam)</option>
+                    <option value="or">ଓଡ଼ିଆ (Odia)</option>
+                    <option value="as">অসমীয়া (Assamese)</option>
+                    <option value="ur">اردو (Urdu)</option>
+                </select>
+
+                <div class="sun-control-box" onclick="switchThemeCycle()" title="Tap to switch theme">
+                    <div class="sun-icon"></div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Profile Section -->
+        <section class="profile-settings">
+            <div class="profile-card">
+                <div class="profile-header-layout">
+                    <div class="avatar-container" id="avatarBox" title="Click to change photo" onclick="document.getElementById('photoInput').click()" style="cursor: pointer;">
+                        <img id="profileAvatar" src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=300&q=80" alt="Farmer Photo">
+                        <input type="file" id="photoInput" style="display: none;" accept="image/*" onchange="handlePhotoUpload(event)">
+                    </div>
+                    <div class="profile-title-info">
+                        <h2 id="displayName">Ramesh Kumar</h2>
+                        <p id="displayRole">Farmer from Uttar Pradesh</p>
+                    </div>
+                </div>
+
+                <ul class="profile-details-list">
+                    <li><span class="icon">📞</span><strong>Phone:</strong>&nbsp;<span id="displayPhone">+91 98765 43210</span></li>
+                    <li><span class="icon">📍</span><strong>Village:</strong>&nbsp;<span id="displayVillage">Gorakhpur</span></li>
+                    <li><span class="icon">🌾</span><strong>Farm Area:</strong>&nbsp;<span id="displayArea">5 acres</span></li>
+                    <li><span class="icon">🌿</span><strong>Crops:</strong>&nbsp;<span id="displayCrops">Wheat, Rice, Vegetables</span></li>
+                    <li><span class="icon">💚</span><strong>Soil Health:</strong>&nbsp;<span id="displaySoil">Good</span></li>
+                </ul>
+
+                <!-- Extended Info Accordion -->
+                <div class="extended-info" id="extendedInfoBox">
+                    <p><strong>Registration ID:</strong> KS-UP-88492</p>
+                    <p><strong>Primary Irrigation Source:</strong> Tube well & Canal</p>
+                    <p><strong>Associated Krishi Kendra:</strong> Gorakhpur Agro-Hub</p>
+                </div>
+
+                <div class="profile-actions">
+                    <button class="btn btn-secondary" onclick="toggleExtendedDetails()" id="viewDetailsBtn">View Details</button>
+                    <button class="btn btn-primary" onclick="openEditModal()">Edit Profile</button>
+                    <button class="btn btn-secondary" onclick="removePhoto()" style="font-size: 12px; padding: 12px 14px;" title="Reset Avatar">🗑️</button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Edit Profile Modal / Form -->
+    <div class="modal-overlay" id="editModal">
+        <div class="modal-card">
+            <h3 id="modalTitle">Edit Farmer Profile</h3>
+            <form id="profileForm" onsubmit="saveProfile(event)">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="inputName" required>
+                </div>
+                <div class="form-group">
+                    <label>State / Role description</label>
+                    <input type="text" id="inputRole" required>
+                </div>
+                <div class="form-group">
+                    <label>Phone Number (+91 format)</label>
+                    <input type="text" id="inputPhone" required placeholder="+91 98765 43210" oninput="validatePhoneRealtime()">
+                    <div class="error-msg" id="phoneError">Please enter a valid phone number (e.g. +91 98765 43210)</div>
+                </div>
+                <div class="form-group">
+                    <label>Village / Location</label>
+                    <input type="text" id="inputVillage" required>
+                </div>
+                <div class="form-group">
+                    <label>Farm Area</label>
+                    <input type="text" id="inputArea" required>
+                </div>
+                <div class="form-group">
+                    <label>Crops Grown</label>
+                    <input type="text" id="inputCrops" required>
+                </div>
+                <div class="form-group">
+                    <label>Soil Health Status</label>
+                    <input type="text" id="inputSoil" required>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeEditModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Theme Cycling Logic (5 Themes)
+        const themes = ['theme-light-yellow', 'theme-light-pink', 'theme-light-orange', 'theme-light-blue', 'theme-light-black'];
+        let currentThemeIndex = 0;
+
+        function switchThemeCycle() {
+            currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+            const body = document.getElementById('appBody');
+            body.className = themes[currentThemeIndex];
+            localStorage.setItem('kisaan-portal-theme-index', currentThemeIndex);
+        }
+
+        const savedThemeIndex = localStorage.getItem('kisaan-portal-theme-index');
+        if (savedThemeIndex !== null) {
+            currentThemeIndex = parseInt(savedThemeIndex);
+            document.getElementById('appBody').className = themes[currentThemeIndex];
+        }
+
+        // Profile Data State Management via LocalStorage
+        let profileData = JSON.parse(localStorage.getItem('kisaanFarmerProfile')) || {
+            name: "Ramesh Kumar",
+            role: "Farmer from Uttar Pradesh",
+            phone: "+91 98765 43210",
+            village: "Gorakhpur",
+            area: "5 acres",
+            crops: "Wheat, Rice, Vegetables",
+            soil: "Good",
+            avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=300&q=80"
+        };
+
+        function renderProfile() {
+            document.getElementById('displayName').innerText = profileData.name;
+            document.getElementById('displayRole').innerText = profileData.role;
+            document.getElementById('displayPhone').innerText = profileData.phone;
+            document.getElementById('displayVillage').innerText = profileData.village;
+            document.getElementById('displayArea').innerText = profileData.area;
+            document.getElementById('displayCrops').innerText = profileData.crops;
+            document.getElementById('displaySoil').innerText = profileData.soil;
+            document.getElementById('profileAvatar').src = profileData.avatar;
+        }
+        renderProfile();
+
+        // Photo Upload & Removal
+        function handlePhotoUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    profileData.avatar = e.target.result;
+                    localStorage.setItem('kisaanFarmerProfile', JSON.stringify(profileData));
+                    renderProfile();
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function removePhoto() {
+            profileData.avatar = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80"; // Default avatar fallback
+            localStorage.setItem('kisaanFarmerProfile', JSON.stringify(profileData));
+            renderProfile();
+        }
+
+        // Modal Controls
+        function openEditModal() {
+            document.getElementById('inputName').value = profileData.name;
+            document.getElementById('inputRole').value = profileData.role;
+            document.getElementById('inputPhone').value = profileData.phone;
+            document.getElementById('inputVillage').value = profileData.village;
+            document.getElementById('inputArea').value = profileData.area;
+            document.getElementById('inputCrops').value = profileData.crops;
+            document.getElementById('inputSoil').value = profileData.soil;
+            document.getElementById('editModal').classList.add('active');
+        }
+
+        function closeEditModal() {
+            document.getElementById('editModal').classList.remove('active');
+            document.getElementById('phoneError').style.display = 'none';
+        }
+
+        // Phone Validation Form Check
+        function validatePhoneRealtime() {
+            const phoneVal = document.getElementById('inputPhone').value;
+            const phoneRegex = /^(\+91[\-\s]?)?[0-9]{10}$/;
+            const errBox = document.getElementById('phoneError');
+            if (phoneVal && !phoneRegex.test(phoneVal.trim())) {
+                errBox.style.display = 'block';
+                return false;
+            } else {
+                errBox.style.display = 'none';
+                return true;
+            }
+        }
+
+        function saveProfile(e) {
+            e.preventDefault();
+            if (!validatePhoneRealtime()) return;
+
+            profileData.name = document.getElementById('inputName').value;
+            profileData.role = document.getElementById('inputRole').value;
+            profileData.phone = document.getElementById('inputPhone').value;
+            profileData.village = document.getElementById('inputVillage').value;
+            profileData.area = document.getElementById('inputArea').value;
+            profileData.crops = document.getElementById('inputCrops').value;
+            profileData.soil = document.getElementById('inputSoil').value;
+
+            localStorage.setItem('kisaanFarmerProfile', JSON.stringify(profileData));
+            renderProfile();
+            closeEditModal();
+        }
+
+        // View Details Toggle
+        function toggleExtendedDetails() {
+            const box = document.getElementById('extendedInfoBox');
+            const btn = document.getElementById('viewDetailsBtn');
+            box.classList.toggle('active');
+            if (box.classList.contains('active')) {
+                btn.innerText = "Hide Details";
+            } else {
+                btn.innerText = "View Details";
+            }
+        }
+
+        // Multilingual Support for Profile Headers
+        const translations = {
+            'en': { heading: 'Profile Settings' },
+            'hi': { heading: 'प्रोफ़ाइल सेटिंग्स' },
+            'mr': { heading: 'प्रोफाइल सेटिंग्ज' },
+            'gu': { heading: 'પ્રોફાઇલ સેટિંગ્સ' },
+            'pa': { heading: 'ਪ੍ਰੋਫਾਈਲ ਸੈਟਿੰਗਾਂ' },
+            'bn': { heading: 'প্রোফাইল সেটিংস' },
+            'te': { heading: 'ప్రొఫైల్ సెట్టింగ్‌లు' },
+            'ta': { heading: 'சுயவிவர அமைப்புகள்' },
+            'kn': { heading: 'ಪ್ರೊಫೈಲ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳು' },
+            'ml': { heading: 'പ്രൊഫൈൽ ക്രമീകരണങ്ങൾ' },
+            'or': { heading: 'ପ୍ରୋଫାଇଲ୍ ସେଟିଂସ୍' },
+            'as': { heading: 'প্রফাইল ছেটিংছ' },
+            'ur': { heading: 'پروفাইল کی ترتیبات' }
+        };
+
+        function toggleLanguage() {
+            const lang = document.getElementById('langToggle').value;
+            if (translations[lang]) {
+                document.getElementById('pageHeading').innerText = translations[lang].heading;
+            }
+        }
+        toggleLanguage();
+    </script>
+</body>
+</html>
