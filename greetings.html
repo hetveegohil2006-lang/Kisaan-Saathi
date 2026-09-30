@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="mobile-polish.css">
+    <script src="portal-language.js" defer></script>
     <title>KisaanSaathi - AI Guide Greeting</title>
     <style>
         * {
@@ -316,11 +318,14 @@
     <style>
         @media (max-width: 600px) {
             body, html { min-height: 100%; height: auto; overflow-x: hidden; overflow-y: auto; }
+            .page-container { display: flow-root; min-height: 100vh; height: auto; padding-bottom: 160px; }
             .top-nav { top: 15px; left: 15px; right: 15px; }
             .tap-badge { display: none; }
-            .greeting-card { top: 90px; width: calc(100% - 30px); padding: 24px 20px; }
-            .speech-bubble { left: 50%; top: 88px; transform: translateX(-50%); width: 230px; }
-            .speech-bubble::before { left: 50%; top: -7px; transform: translateX(-50%) rotate(135deg); }
+            .greeting-card { position: relative; top: auto; left: auto; transform: none; width: calc(100% - 30px); margin: 95px auto 0; padding: 24px 20px; }
+            .guide-stage { display: flex; align-items: center; width: 100%; gap: 8px; }
+            .guide-stage .avatar-container { width: 64px; height: 64px; margin: 0; flex: 0 0 64px; }
+            .speech-bubble { position: relative; left: auto; top: auto; transform: none; width: auto; max-width: calc(100% - 72px); }
+            .speech-bubble::before { left: -7px; top: 24px; transform: rotate(45deg); }
             .landscape-svg-container { min-height: 120px; }
         }
     </style>

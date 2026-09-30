@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="mobile-polish.css">
+    <script src="portal-language.js" defer></script>
     <title>Overview & Guide - KisaanSaathi Smart Agriculture Portal</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -72,7 +74,12 @@
         }
         @media (max-width: 768px) {
             .main-content { padding: 15px; }
+            .top-header { align-items: flex-start; flex-direction: column; gap: 12px; }
+            .header-controls { width: 100%; justify-content: space-between; flex-wrap: wrap; }
+            .control-select { min-width: 0; max-width: calc(100vw - 90px); }
             .guide-grid { grid-template-columns: 1fr; }
+            .floating-avatar-container { right: 12px; bottom: 12px; left: 12px; justify-content: flex-end; }
+            .floating-speech { max-width: min(240px, calc(100vw - 100px)); }
         }
     </style>
 </head>
@@ -372,6 +379,7 @@
         function toggleLanguage() {
             const lang = document.getElementById('langToggle').value;
             const t = translations[lang] || translations['en'];
+            window.setPortalLanguage?.(lang);
 
             document.getElementById('pageHeading').innerText = t.heading;
             document.getElementById('subBannerText').innerText = t.banner;
@@ -381,6 +389,12 @@
             document.getElementById('skipTourBtn').innerText = t.skipBtn;
             document.getElementById('sectionTitle').innerText = t.secTitle;
         }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedLang = localStorage.getItem('kisaanLang') || localStorage.getItem('aiLanguage') || 'en';
+            document.getElementById('langToggle').value = savedLang;
+            toggleLanguage();
+        }, { once: true });
     </script>
 </body>
 </html>

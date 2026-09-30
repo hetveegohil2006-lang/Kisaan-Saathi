@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="mobile-polish.css">
+    <script src="portal-language.js" defer></script>
     <title>AI Chatbot - KisaanSaathi Smart Agriculture Portal</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -169,6 +171,13 @@
 
         @media (max-width: 768px) {
             .main-content { padding: 15px; }
+            .top-header h1 { font-size: clamp(18px, 5vw, 22px); }
+            .chat-input-area { display: grid; grid-template-columns: repeat(3, 40px) minmax(0, 1fr); gap: 8px; padding: 12px; }
+            .chat-input-area input { grid-column: 1 / -1; min-width: 0; width: 100%; }
+            .chat-input-area .send-btn { grid-column: 1 / -1; width: 100%; }
+            .send-btn { padding: 10px 16px; }
+            .chat-messages { padding: 14px; }
+            .chat-bubble { max-width: 90%; }
         }
     </style>
 </head>

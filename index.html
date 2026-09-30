@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="mobile-polish.css">
+    <script src="portal-language.js" defer></script>
     <title>KisaanSaathi - Smart Agriculture Portal</title>
     <style>
         * {
@@ -120,10 +122,18 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             border: 1px solid rgba(255, 255, 255, 0.6);
             transition: transform 0.2s ease;
+            appearance: none;
         }
 
-        .sun-control-box:hover {
+        .sun-control-box:hover,
+        .sun-control-box:focus-visible {
             transform: scale(1.1);
+        }
+
+        .sun-control-box:focus-visible,
+        .btn:focus-visible {
+            outline: 3px solid #1b3818;
+            outline-offset: 3px;
         }
 
         .sun-icon {
@@ -278,11 +288,28 @@
     <style>
         @media (max-width: 600px) {
             body, html { min-height: 100%; height: auto; overflow-x: hidden; overflow-y: auto; }
+            .page-container { display: flow-root; min-height: 100vh; height: auto; }
             .top-nav { top: 15px; left: 15px; right: 15px; }
             .tap-badge { display: none; }
-            .hero-card { top: 105px; padding: 28px 22px; }
+            .hero-card { top: auto; left: auto; position: relative; transform: none; width: calc(100% - 30px); margin: 105px auto 220px; padding: 28px 22px; }
             .hero-card h1 { font-size: 2rem; }
             .landscape-svg-container { min-height: 180px; }
+        }
+
+        @media (max-height: 620px) and (min-width: 601px) {
+            body, html { height: auto; min-height: 100%; overflow-y: auto; }
+            .page-container { min-height: 620px; }
+            .hero-card { top: 115px; padding: 28px 36px; }
+            .landscape-svg-container { height: 230px; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                scroll-behavior: auto !important;
+                transition-duration: 0.01ms !important;
+            }
         }
     </style>
 </head>
@@ -309,9 +336,10 @@
 
             <!-- Sun/Moon Theme Switcher with Tap Badge -->
             <div class="theme-switcher-group">
-                <div class="sun-control-box" onclick="switchThemeCycle()" title="Tap to switch theme">
-                    <div class="sun-icon"></div>
-                </div>
+                <div class="tap-badge">✨ Tap to Change Theme</div>
+                <button type="button" class="sun-control-box" onclick="switchThemeCycle()" title="Tap to switch theme" aria-label="Change color theme">
+                    <span class="sun-icon" aria-hidden="true"></span>
+                </button>
             </div>
         </header>
 
@@ -379,12 +407,14 @@
             'theme-light-black'
         ];
         
-        let currentThemeIndex = 0;
+        let currentThemeIndex = Math.max(themes.indexOf(localStorage.getItem('kisaanSaathiTheme')), 0);
+        document.getElementById('appBody').className = themes[currentThemeIndex];
 
         function switchThemeCycle() {
             currentThemeIndex = (currentThemeIndex + 1) % themes.length;
             const bodyElement = document.getElementById('appBody');
             bodyElement.className = themes[currentThemeIndex];
+            localStorage.setItem('kisaanSaathiTheme', themes[currentThemeIndex]);
         }
     </script>
 </body>

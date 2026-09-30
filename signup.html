@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="mobile-polish.css">
+    <script src="portal-language.js" defer></script>
     <title>KisaanSaathi - Create Account</title>
     <style>
         * {
@@ -114,10 +116,20 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             border: 1px solid rgba(255, 255, 255, 0.6);
             transition: transform 0.2s ease;
+            appearance: none;
         }
 
-        .sun-control-box:hover {
+        .sun-control-box:hover,
+        .sun-control-box:focus-visible {
             transform: scale(1.1);
+        }
+
+        .sun-control-box:focus-visible,
+        .btn-submit:focus-visible,
+        .btn-code:focus-visible,
+        .form-footer a:focus-visible {
+            outline: 3px solid #1b3818;
+            outline-offset: 3px;
         }
 
         .sun-icon {
@@ -230,6 +242,59 @@
             box-shadow: 0 0 0 3px rgba(56, 102, 65, 0.15);
             background: #ffffff;
         }
+
+        .field-hint {
+            margin: 7px 0 0;
+            color: #557c55;
+            font-size: 0.78rem;
+            line-height: 1.4;
+        }
+
+        .contact-methods {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            border: 0;
+            padding: 0;
+        }
+
+        .contact-methods legend {
+            margin-bottom: 8px;
+            color: #2d4a27;
+            font-size: 0.82rem;
+            font-weight: 700;
+        }
+
+        .contact-methods label {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .auth-language {
+            max-width: 150px;
+            padding: 8px 10px;
+            border: 1px solid rgba(74, 124, 54, 0.3);
+            border-radius: 12px;
+            background: rgba(255,255,255,.9);
+            color: #2d4a27;
+        }
+
+        .btn-code {
+            margin-top: 8px;
+            padding: 8px 12px;
+            border: 1px solid rgba(74, 124, 54, 0.3);
+            border-radius: 10px;
+            background: rgba(74, 124, 54, 0.1);
+            color: #2d4a27;
+            font-size: 0.82rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .btn-code:hover { background: rgba(74, 124, 54, 0.18); }
+        body.theme-light-black .field-hint { color: #cbd5e1; }
+        body.theme-light-black .btn-code { background: rgba(56, 189, 248, 0.15); color: #bae6fd; border-color: rgba(255,255,255,0.15); }
 
         .btn-submit {
             width: 100%;
@@ -367,14 +432,32 @@
     <style>
         @media (max-width: 600px) {
             body, html { min-height: 100%; height: auto; overflow-x: hidden; overflow-y: auto; }
+            .page-container { display: flow-root; min-height: 100vh; height: auto; }
             .top-nav { top: 15px; left: 15px; right: 15px; }
             .tap-badge { display: none; }
-            .form-card { top: 95px; width: calc(100% - 30px); padding: 25px 22px; max-height: none; }
-            .guide-widget { right: 15px; bottom: 15px; }
-            .guide-message { width: 190px; }
+            .form-card { position: relative; top: auto; left: auto; transform: none; margin: 95px auto 20px; width: calc(100% - 30px); padding: 25px 22px; max-height: none; }
+            .guide-widget { position: relative; right: auto; bottom: auto; width: auto; max-width: calc(100% - 24px); margin: 0 12px 110px auto; }
+            .guide-message { display: block; width: min(190px, calc(100vw - 82px)); }
+            .guide-avatar { width: 50px; height: 50px; }
             .landscape-svg-container { min-height: 120px; }
         }
+
+        @media (max-height: 700px) and (min-width: 601px) {
+            body, html { height: auto; min-height: 100%; overflow-y: auto; }
+            .page-container { min-height: 700px; }
+            .form-card { top: 105px; max-height: calc(100vh - 145px); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                scroll-behavior: auto !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
     </style>
+    <link rel="stylesheet" href="auth-polish.css">
 </head>
 <body class="theme-light-yellow" id="appBody">
 
@@ -400,9 +483,12 @@
             <!-- Sun/Moon Theme Switcher -->
             <div class="theme-switcher-group">
                 <div class="tap-badge">✨ Tap to Change Theme</div>
-                <div class="sun-control-box" onclick="switchThemeCycle()" title="Tap to switch theme">
-                    <div class="sun-icon"></div>
-                </div>
+                <select class="auth-language" id="authLanguage" aria-label="Choose language">
+                    <option value="en">English</option><option value="hi">हिंदी</option><option value="mr">मराठी</option><option value="pa">ਪੰਜਾਬੀ</option><option value="gu">ગુજરાતી</option><option value="bn">বাংলা</option><option value="te">తెలుగు</option><option value="ta">தமிழ்</option><option value="kn">ಕನ್ನಡ</option><option value="ml">മലയാളം</option><option value="or">ଓଡ଼ିଆ</option><option value="as">অসমীয়া</option><option value="ur">اردو</option>
+                </select>
+                <button type="button" class="sun-control-box" onclick="switchThemeCycle()" title="Tap to switch theme" aria-label="Change color theme">
+                    <span class="sun-icon" aria-hidden="true"></span>
+                </button>
             </div>
         </header>
 
@@ -411,15 +497,26 @@
             <h2>Join KisaanSaathi</h2>
             <p>Create your profile for AI advisory & smart mandi updates.</p>
             
-            <form onsubmit="registerAccount(event)">
-                <div class="form-group">
-                    <label for="fullname">Full Name</label>
-                    <input type="text" id="fullname" placeholder="Enter your full name" required>
-                </div>
+            <form id="signupForm">
+                <fieldset class="form-group contact-methods">
+                    <legend>Verify with</legend>
+                    <label><input type="radio" name="contactMethod" value="email" checked> Email</label>
+                    <label><input type="radio" name="contactMethod" value="phone"> SMS to mobile</label>
+                </fieldset>
 
                 <div class="form-group">
+                    <label for="fullname">Full Name</label>
+                    <input type="text" id="fullname" placeholder="Enter your full name" autocomplete="name" required>
+                </div>
+
+                <div class="form-group" id="emailGroup">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" placeholder="Enter your email address" autocomplete="email">
+                </div>
+
+                <div class="form-group" id="phoneGroup" hidden>
                     <label for="phone">Mobile Number</label>
-                    <input type="tel" id="phone" placeholder="Enter 10-digit mobile number" required>
+                    <input type="tel" id="phone" placeholder="Enter 10-digit mobile number" autocomplete="tel" inputmode="numeric" required>
                 </div>
 
                 <div class="form-group">
@@ -436,12 +533,25 @@
                     </select>
                 </div>
 
-                <div class="form-group">
-                    <label for="password">Create Password</label>
-                    <input type="password" id="password" placeholder="At least 6 characters" required>
+                <div class="form-group" id="otpGroup">
+                    <label for="verificationCode">6-Digit Verification Code</label>
+                    <input type="text" id="verificationCode" placeholder="Enter the 6-digit code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" title="Enter the 6-digit verification code">
+                    <button type="button" class="btn-code" id="sendOtpButton">Send verification code</button>
                 </div>
 
-                <button type="submit" class="btn-submit">Register Account</button>
+                <p class="field-hint" id="codeHelp">We’ll email a one-time code to verify your address.</p>
+                <div id="recaptcha-container"></div>
+                <p class="field-hint" id="authStatus" role="status" aria-live="polite"></p>
+
+                <div class="form-group" id="emailPasswordGroup">
+                    <label for="password">Create Password</label>
+                    <input type="password" id="password" placeholder="At least 6 characters" autocomplete="new-password" required>
+                </div>
+                <div class="form-group" id="phonePasswordNote" hidden>
+                    <p class="field-hint">Your mobile number will be used as your sign-in method.</p>
+                </div>
+
+                <button type="submit" class="btn-submit" id="registerButton">Verify & Register</button>
             </form>
 
             <div class="form-footer">
@@ -492,13 +602,6 @@
     </div>
 
     <script>
-        const guideMessages = {
-            name: 'Great! Use your full name so your KisaanSaathi profile feels personal.',
-            phone: 'Enter a valid 10-digit mobile number. We use it to find your account when you log in.',
-            state: 'Choose your state so future farming advice can be more relevant to your region.',
-            password: 'Create a password with at least 6 characters, then select Register Account.'
-        };
-
         function speakGuide(message) {
             const text = message || document.getElementById('guideMessage').innerText;
             if (!('speechSynthesis' in window)) {
@@ -514,35 +617,6 @@
             window.speechSynthesis.speak(utterance);
         }
 
-        ['fullname', 'phone', 'state', 'password'].forEach((fieldId) => {
-            document.getElementById(fieldId).addEventListener('focus', () => {
-                const message = guideMessages[fieldId];
-                document.getElementById('guideMessage').innerText = message;
-            });
-        });
-
-        function registerAccount(event) {
-            event.preventDefault();
-
-            const name = document.getElementById('fullname').value.trim();
-            const phone = document.getElementById('phone').value.trim();
-            const state = document.getElementById('state').value;
-            const password = document.getElementById('password').value;
-
-            if (!/^\d{10}$/.test(phone)) {
-                alert('Please enter a valid 10-digit mobile number.');
-                return;
-            }
-            if (password.length < 6) {
-                alert('Password must be at least 6 characters.');
-                return;
-            }
-
-            localStorage.setItem('kisaanSaathiUser', JSON.stringify({ name, phone, state, password }));
-            alert('Account created successfully. Let us set up your AI companion.');
-            window.location.href = 'character.html';
-        }
-
         const themes = [
             'theme-light-yellow',
             'theme-light-pink',
@@ -551,13 +625,16 @@
             'theme-light-black'
         ];
         
-        let currentThemeIndex = 0;
+        let currentThemeIndex = Math.max(themes.indexOf(localStorage.getItem('kisaanSaathiTheme')), 0);
+        document.getElementById('appBody').className = themes[currentThemeIndex];
 
         function switchThemeCycle() {
             currentThemeIndex = (currentThemeIndex + 1) % themes.length;
             const bodyElement = document.getElementById('appBody');
             bodyElement.className = themes[currentThemeIndex];
+            localStorage.setItem('kisaanSaathiTheme', themes[currentThemeIndex]);
         }
     </script>
+    <script type="module" src="auth.js"></script>
 </body>
 </html>

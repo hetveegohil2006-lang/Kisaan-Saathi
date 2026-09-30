@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="mobile-polish.css">
+    <script src="portal-language.js" defer></script>
     <title>404 Offline - KisaanSaathi Smart Agriculture Portal</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -122,6 +124,12 @@
         .btn-secondary:hover { background: rgba(0,0,0,0.05); }
 
         @media (max-width: 600px) {
+            .top-header { align-items: flex-start; flex-direction: column; gap: 12px; padding: 15px; }
+            .header-controls { width: 100%; justify-content: space-between; flex-wrap: wrap; }
+            .control-select { min-width: 0; max-width: calc(100vw - 90px); }
+            .error-container { padding: 15px; }
+            .error-card { padding: 22px 16px; }
+            .error-card h1 { font-size: 22px; }
             .goal-post { width: 220px; height: 90px; }
             .goal-text-404 { font-size: 28px; }
             .game-field { height: 230px; }
@@ -304,6 +312,9 @@
         function toggleLanguage() {
             const lang = document.getElementById('langToggle').value;
             localStorage.setItem('kisaan-portal-lang', lang);
+            localStorage.setItem('kisaanLang', lang);
+            localStorage.setItem('aiLanguage', lang);
+            window.setPortalLanguage?.(lang);
             if (translations[lang]) {
                 document.getElementById('errorHeading').innerText = translations[lang].heading;
                 document.getElementById('errorSubtext').innerText = translations[lang].subtext;
@@ -315,8 +326,9 @@
 
         // Load saved language preference on startup
         const savedLang = localStorage.getItem('kisaan-portal-lang');
-        if (savedLang && translations[savedLang]) {
-            document.getElementById('langToggle').value = savedLang;
+        const preferredLang = savedLang || localStorage.getItem('kisaanLang') || localStorage.getItem('aiLanguage');
+        if (preferredLang && translations[preferredLang]) {
+            document.getElementById('langToggle').value = preferredLang;
             toggleLanguage();
         } else {
             toggleLanguage();

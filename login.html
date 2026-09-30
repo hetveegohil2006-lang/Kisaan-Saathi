@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="mobile-polish.css">
+    <script src="portal-language.js" defer></script>
     <title>KisaanSaathi - Login Portal</title>
     <style>
         * {
@@ -114,10 +116,19 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             border: 1px solid rgba(255, 255, 255, 0.6);
             transition: transform 0.2s ease;
+            appearance: none;
         }
 
-        .sun-control-box:hover {
+        .sun-control-box:hover,
+        .sun-control-box:focus-visible {
             transform: scale(1.1);
+        }
+
+        .sun-control-box:focus-visible,
+        .btn-submit:focus-visible,
+        .form-footer a:focus-visible {
+            outline: 3px solid #1b3818;
+            outline-offset: 3px;
         }
 
         .sun-icon {
@@ -217,6 +228,41 @@
             box-shadow: 0 0 0 3px rgba(56, 102, 65, 0.15);
             background: #ffffff;
         }
+
+        .field-hint {
+            margin: 7px 0 0;
+            color: #557c55;
+            font-size: 0.78rem;
+            line-height: 1.4;
+        }
+
+        .contact-methods {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            border: 0;
+            padding: 0;
+        }
+
+        .contact-methods legend {
+            margin-bottom: 8px;
+            color: #2d4a27;
+            font-size: 0.82rem;
+            font-weight: 700;
+        }
+
+        .contact-methods label { display: inline-flex; align-items: center; gap: 6px; }
+
+        .auth-language {
+            max-width: 150px;
+            padding: 8px 10px;
+            border: 1px solid rgba(74, 124, 54, 0.3);
+            border-radius: 12px;
+            background: rgba(255,255,255,.9);
+            color: #2d4a27;
+        }
+
+        body.theme-light-black .field-hint { color: #cbd5e1; }
 
         .btn-submit {
             width: 100%;
@@ -353,14 +399,32 @@
     <style>
         @media (max-width: 600px) {
             body, html { min-height: 100%; height: auto; overflow-x: hidden; overflow-y: auto; }
+            .page-container { display: flow-root; min-height: 100vh; height: auto; }
             .top-nav { top: 15px; left: 15px; right: 15px; }
             .tap-badge { display: none; }
-            .form-card { top: 95px; width: calc(100% - 30px); padding: 28px 22px; }
-            .guide-widget { right: 15px; bottom: 15px; }
-            .guide-message { width: 190px; }
+            .form-card { position: relative; top: auto; left: auto; transform: none; margin: 95px auto 20px; width: calc(100% - 30px); padding: 28px 22px; }
+            .guide-widget { position: relative; right: auto; bottom: auto; width: auto; max-width: calc(100% - 24px); margin: 0 12px 150px auto; }
+            .guide-message { display: block; width: min(190px, calc(100vw - 82px)); }
+            .guide-avatar { width: 50px; height: 50px; }
             .landscape-svg-container { min-height: 160px; }
         }
+
+        @media (max-height: 700px) and (min-width: 601px) {
+            body, html { height: auto; min-height: 100%; overflow-y: auto; }
+            .page-container { min-height: 700px; }
+            .form-card { top: 105px; max-height: calc(100vh - 145px); overflow-y: auto; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                scroll-behavior: auto !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
     </style>
+    <link rel="stylesheet" href="auth-polish.css">
 </head>
 <body class="theme-light-yellow" id="appBody">
 
@@ -386,9 +450,12 @@
             <!-- Sun/Moon Theme Switcher -->
             <div class="theme-switcher-group">
                 <div class="tap-badge">✨ Tap to Change Theme</div>
-                <div class="sun-control-box" onclick="switchThemeCycle()" title="Tap to switch theme">
-                    <div class="sun-icon"></div>
-                </div>
+                <select class="auth-language" id="authLanguage" aria-label="Choose language">
+                    <option value="en">English</option><option value="hi">हिंदी</option><option value="mr">मराठी</option><option value="pa">ਪੰਜਾਬੀ</option><option value="gu">ગુજરાતી</option><option value="bn">বাংলা</option><option value="te">తెలుగు</option><option value="ta">தமிழ்</option><option value="kn">ಕನ್ನಡ</option><option value="ml">മലയാളം</option><option value="or">ଓଡ଼ିଆ</option><option value="as">অসমীয়া</option><option value="ur">اردو</option>
+                </select>
+                <button type="button" class="sun-control-box" onclick="switchThemeCycle()" title="Tap to switch theme" aria-label="Change color theme">
+                    <span class="sun-icon" aria-hidden="true"></span>
+                </button>
             </div>
         </header>
 
@@ -397,18 +464,37 @@
             <h2>Welcome Back!</h2>
             <p>Access your mandi rates, crop scans & expert advice.</p>
             
-            <form onsubmit="loginUser(event)">
-                <div class="form-group">
-                    <label for="email">Phone Number or Email</label>
-                    <input type="text" id="email" placeholder="Enter your registered mobile number" required>
-                </div>
+            <form id="loginForm">
+                <fieldset class="form-group contact-methods">
+                    <legend>Log in with</legend>
+                    <label><input type="radio" name="contactMethod" value="email" checked> Email</label>
+                    <label><input type="radio" name="contactMethod" value="phone"> Mobile number</label>
+                </fieldset>
 
                 <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" placeholder="Enter your registered email" autocomplete="email">
+                </div>
+
+                <div class="form-group" id="phoneGroup" hidden>
+                    <label for="phone">Mobile Number</label>
+                    <input type="tel" id="phone" placeholder="Enter your registered 10-digit mobile number" autocomplete="tel" inputmode="numeric">
+                </div>
+
+                <div class="form-group" id="emailPasswordGroup">
                     <label for="password">Password</label>
-                    <input type="password" id="password" placeholder="Enter your password" required>
+                    <input type="password" id="password" placeholder="Enter your password" autocomplete="current-password">
                 </div>
 
-                <button type="submit" class="btn-submit">Login to Portal</button>
+                <div class="form-group" id="otpGroup" hidden>
+                    <label for="verificationCode">SMS Verification Code</label>
+                    <input type="text" id="verificationCode" placeholder="Enter the 6-digit SMS code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}">
+                    <button type="button" class="btn-code" id="sendLoginOtpButton">Send SMS code</button>
+                </div>
+
+                <div id="recaptcha-container"></div>
+                <p class="field-hint" id="authStatus" role="status" aria-live="polite"></p>
+                <button type="submit" class="btn-submit" id="loginButton">Login to Portal</button>
             </form>
 
             <div class="form-footer">
@@ -459,11 +545,6 @@
     </div>
 
     <script>
-        const guideMessages = {
-            email: 'Use the same 10-digit mobile number you used during sign up.',
-            password: 'Enter your password, then select Login to Portal. Need an account? Choose Sign Up below.'
-        };
-
         function speakGuide(message) {
             const text = message || document.getElementById('guideMessage').innerText;
             if (!('speechSynthesis' in window)) {
@@ -479,32 +560,6 @@
             window.speechSynthesis.speak(utterance);
         }
 
-        ['email', 'password'].forEach((fieldId) => {
-            document.getElementById(fieldId).addEventListener('focus', () => {
-                document.getElementById('guideMessage').innerText = guideMessages[fieldId];
-            });
-        });
-
-        function loginUser(event) {
-            event.preventDefault();
-
-            const identifier = document.getElementById('email').value.trim();
-            const password = document.getElementById('password').value;
-            const savedUser = JSON.parse(localStorage.getItem('kisaanSaathiUser') || 'null');
-
-            if (!savedUser || identifier !== savedUser.phone) {
-                alert('No matching account found. Please sign up first.');
-                return;
-            }
-            if (password !== savedUser.password) {
-                alert('Incorrect password. Please try again.');
-                return;
-            }
-
-            localStorage.setItem('kisaanSaathiLoggedIn', 'true');
-            window.location.href = 'dashboard.html';
-        }
-
         const themes = [
             'theme-light-yellow',
             'theme-light-pink',
@@ -513,13 +568,16 @@
             'theme-light-black'
         ];
         
-        let currentThemeIndex = 0;
+        let currentThemeIndex = Math.max(themes.indexOf(localStorage.getItem('kisaanSaathiTheme')), 0);
+        document.getElementById('appBody').className = themes[currentThemeIndex];
 
         function switchThemeCycle() {
             currentThemeIndex = (currentThemeIndex + 1) % themes.length;
             const bodyElement = document.getElementById('appBody');
             bodyElement.className = themes[currentThemeIndex];
+            localStorage.setItem('kisaanSaathiTheme', themes[currentThemeIndex]);
         }
     </script>
+    <script type="module" src="auth.js"></script>
 </body>
 </html>

@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="mobile-polish.css">
+    <script src="portal-language.js" defer></script>
     <title>KisaanSaathi - Choose Your AI Guide</title>
     <style>
         * {
@@ -396,6 +398,7 @@
             localStorage.setItem('aiCompanion', selectedCompanion);
             localStorage.setItem('aiCompanionName', companionName);
             localStorage.setItem('aiLanguage', language);
+            localStorage.setItem('kisaanLang', language);
 
             window.location.href = 'greetings.html';
         }
@@ -436,7 +439,11 @@
                 });
             });
 
-            document.getElementById('langSelect').addEventListener('change', updateLanguageText);
+            document.getElementById('langSelect').addEventListener('change', () => {
+                const language = document.getElementById('langSelect').value;
+                window.setPortalLanguage?.(language);
+                updateLanguageText();
+            });
             document.getElementById('setupForm').addEventListener('submit', savePreferencesAndRedirect);
         });
     </script>

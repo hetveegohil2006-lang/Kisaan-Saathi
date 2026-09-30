@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="mobile-polish.css">
+    <script src="portal-language.js" defer></script>
     <title>Market & Expenses - KisaanSaathi Smart Agriculture Portal</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- FontAwesome Icons -->
@@ -42,6 +44,7 @@
 
         /* Mandi Prices Table */
         .mandi-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .table-scroll { width: 100%; overflow-x: auto; }
         .mandi-table th { text-align: left; padding-bottom: 8px; font-size: 11px; text-transform: uppercase; color: var(--text-muted); border-bottom: 1px solid var(--border-color); }
         .mandi-table td { padding: 10px 0; border-bottom: 1px solid rgba(0,0,0,0.03); font-weight: 500; }
         body.theme-light-black .mandi-table td { border-bottom: 1px solid rgba(255,255,255,0.05); }
@@ -76,6 +79,10 @@
         @media (max-width: 768px) {
             .main-content { padding: 15px; }
             .dashboard-grid-3 { grid-template-columns: 1fr; }
+            .top-header { align-items: flex-start; }
+            .header-title-box h1 { font-size: clamp(18px, 5vw, 24px); }
+            .card { min-width: 0; padding: 18px; }
+            .mandi-table { min-width: 360px; }
         }
     </style>
 </head>
@@ -113,6 +120,7 @@
                 <h3>📈 Live Mandi Prices</h3>
                 <p class="card-desc">Real-time crop prices from nearby mandis.</p>
                 
+                <div class="table-scroll">
                 <table class="mandi-table">
                     <thead>
                         <tr>
@@ -139,6 +147,7 @@
                         </tr>
                     </tbody>
                 </table>
+                </div>
                 <button class="btn btn-secondary" onclick="alert('Crop pinned successfully to your quick access header!')">📌 Pin Favorite Crop</button>
             </div>
 

@@ -1,0 +1,136 @@
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    -webkit-tap-highlight-color: transparent;
+}
+
+button,
+a,
+[role="button"],
+.guide-card,
+.scheme-item-card,
+.library-card {
+    touch-action: manipulation;
+}
+
+button:focus-visible,
+a:focus-visible,
+[role="button"]:focus-visible {
+    outline: 3px solid #2563eb;
+    outline-offset: 3px;
+}
+
+button:not(:disabled):active,
+.btn:active,
+.filter-pill:active,
+.filter-btn:active {
+    transform: scale(0.98);
+}
+
+@keyframes ksPageEnter {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes ksItemEnter {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+body {
+    animation: ksPageEnter 420ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.hero-card,
+.form-card,
+.greeting-card,
+.error-card,
+.welcome-banner-card,
+.guide-card,
+.card,
+.full-card,
+.scheme-item-card,
+.library-card,
+.chat-wrapper {
+    animation: ksItemEnter 460ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.navigation ul li a span {
+    display: none;
+}
+
+.guide-grid > :nth-child(2),
+.dashboard-grid > :nth-child(2),
+.dashboard-grid-3 > :nth-child(2),
+.schemes-grid-layout > :nth-child(2),
+.library-grid > :nth-child(2) {
+    animation-delay: 60ms;
+}
+
+.guide-grid > :nth-child(3),
+.dashboard-grid-3 > :nth-child(3),
+.library-grid > :nth-child(3) {
+    animation-delay: 120ms;
+}
+
+.guide-grid > :nth-child(n+4),
+.library-grid > :nth-child(n+4) {
+    animation-delay: 180ms;
+}
+
+img,
+video,
+canvas,
+iframe {
+    max-width: 100%;
+}
+
+@media (max-width: 600px) {
+    input:not([type="checkbox"]):not([type="radio"]),
+    select,
+    textarea {
+        font-size: max(16px, 1em);
+    }
+}
+
+@media (max-width: 768px) {
+    .navigation ul li a {
+        flex-direction: column;
+        gap: 1px;
+    }
+
+    .navigation ul li a span {
+        display: block;
+        font-size: 9px;
+        font-weight: 500;
+        line-height: 1;
+        white-space: nowrap;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+    }
+}

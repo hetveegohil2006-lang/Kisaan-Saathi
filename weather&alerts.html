@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="mobile-polish.css">
+    <script src="portal-language.js" defer></script>
     <title>Weather & Alerts - KisaanSaathi Smart Agriculture Portal</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Chart.js for Forecast Trends -->
@@ -65,6 +67,18 @@
         /* Responsive */
         @media (max-width: 1024px) {
             .dashboard-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 600px) {
+            body { padding: 15px; }
+            .standalone-container { gap: 16px; }
+            .top-header, .card, .full-card { padding: 18px; border-radius: 18px; }
+            .header-title-box h1 { font-size: clamp(18px, 5vw, 24px); }
+            .weather-location-row { flex-wrap: wrap; gap: 8px; }
+            .weather-location-row h3 { flex: 1 1 100%; }
+            .location-input { width: 100%; max-width: 100%; }
+            .temp-display-box { gap: 12px; }
+            .temp-val { font-size: 36px; }
+            .action-buttons-row > * { width: 100%; justify-content: center; }
         }
     </style>
 </head>

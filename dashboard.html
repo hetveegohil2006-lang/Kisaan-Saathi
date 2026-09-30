@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="mobile-polish.css">
+    <script src="portal-language.js" defer></script>
     <title>Dashboard - KisaanSaathi Smart Agriculture Portal</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Ionicons for Navigation Icons -->
@@ -18,7 +20,7 @@
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
-        body { display: flex; height: 100vh; overflow: hidden; background: var(--body-bg); animation: fadeInBody 0.8s ease-in-out; }
+        body { display: flex; height: 100vh; height: 100dvh; overflow: hidden; background: var(--body-bg); animation: fadeInBody 0.8s ease-in-out; }
 
         @keyframes fadeInBody {
             from { opacity: 0; transform: scale(0.99); }
@@ -149,19 +151,30 @@
             body { flex-direction: column-reverse; }
             .navigation {
                 width: 100%;
-                height: 75px;
+                height: calc(116px + env(safe-area-inset-bottom));
                 flex-direction: row;
                 padding-top: 0;
-                justify-content: center;
+                overflow-y: hidden;
             }
             .navigation ul {
-                flex-direction: row;
-                gap: 5px;
-                justify-content: center;
+                display: grid;
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+                grid-template-rows: repeat(2, 50px);
+                gap: 4px;
+                width: 100%;
+                min-width: 100%;
+                padding: 4px 8px env(safe-area-inset-bottom);
             }
-            .navigation ul li { width: 45px; height: 45px; }
+            .navigation ul li { width: 100%; height: 50px; min-width: 0; }
             .navigation ul li a { font-size: 20px; }
-            main { height: calc(100vh - 75px); }
+            main { height: calc(100vh - 116px - env(safe-area-inset-bottom)); height: calc(100dvh - 116px - env(safe-area-inset-bottom)); min-height: 0; }
+        }
+
+        @media (max-width: 768px) and (max-height: 500px) {
+            .navigation { height: calc(100px + env(safe-area-inset-bottom)); }
+            .navigation ul { grid-template-rows: repeat(2, 42px); padding-top: 4px; }
+            .navigation ul li { height: 42px; }
+            main { height: calc(100vh - 100px - env(safe-area-inset-bottom)); height: calc(100dvh - 100px - env(safe-area-inset-bottom)); }
         }
     </style>
 </head>
@@ -171,28 +184,28 @@
     <div class="navigation">
         <ul>
             <li class="list active" onclick="loadPage('overview.html', event)">
-                <a href="#"><ion-icon name="home-outline"></ion-icon></a>
+                <a href="#" aria-label="Overview"><ion-icon name="home-outline"></ion-icon><span>Overview</span></a>
             </li>
             <li class="list" onclick="loadPage('chatbotai.html', event)">
-                <a href="#"><ion-icon name="chatbubble-outline"></ion-icon></a>
+                <a href="#" aria-label="AI Chatbot"><ion-icon name="chatbubble-outline"></ion-icon><span>Chat</span></a>
             </li>
             <li class="list" onclick="loadPage('soil&crop.html', event)">
-                <a href="#"><ion-icon name="leaf-outline"></ion-icon></a>
+                <a href="#" aria-label="Soil and Crop"><ion-icon name="leaf-outline"></ion-icon><span>Soil</span></a>
             </li>
             <li class="list" onclick="loadPage('weather&alerts.html', event)">
-                <a href="#"><ion-icon name="cloud-outline"></ion-icon></a>
+                <a href="#" aria-label="Weather and Alerts"><ion-icon name="cloud-outline"></ion-icon><span>Weather</span></a>
             </li>
             <li class="list" onclick="loadPage('tutorial.html', event)">
-                <a href="#"><ion-icon name="videocam-outline"></ion-icon></a>
+                <a href="#" aria-label="Tutorials"><ion-icon name="videocam-outline"></ion-icon><span>Videos</span></a>
             </li>
             <li class="list" onclick="loadPage('market&expense.html', event)">
-                <a href="#"><ion-icon name="cash-outline"></ion-icon></a>
+                <a href="#" aria-label="Market and Expenses"><ion-icon name="cash-outline"></ion-icon><span>Market</span></a>
             </li>
             <li class="list" onclick="loadPage('govtschemes.html', event)">
-                <a href="#"><ion-icon name="business-outline"></ion-icon></a>
+                <a href="#" aria-label="Government Schemes"><ion-icon name="business-outline"></ion-icon><span>Schemes</span></a>
             </li>
             <li class="list" onclick="loadPage('profile.html', event)">
-                <a href="#"><ion-icon name="person-outline"></ion-icon></a>
+                <a href="#" aria-label="Profile Settings"><ion-icon name="person-outline"></ion-icon><span>Profile</span></a>
             </li>
         </ul>
     </div>
@@ -231,14 +244,36 @@
         function syncLanguageToIframe() {
             try {
                 const iframeWindow = document.getElementById('pageFrame').contentWindow;
-                const savedLang = localStorage.getItem('kisaanLang') || 'en';
-                if (iframeWindow && typeof iframeWindow.changeLanguage === 'function') {
-                    iframeWindow.changeLanguage(savedLang);
+                const savedLang = localStorage.getItem('kisaanLang') || localStorage.getItem('aiLanguage') || 'en';
+                if (iframeWindow) {
+                    iframeWindow.setPortalLanguage?.(savedLang);
+                    const langToggle = iframeWindow.document.getElementById('langToggle');
+                    if (langToggle && typeof iframeWindow.toggleLanguage === 'function') {
+                        langToggle.value = savedLang;
+                        iframeWindow.toggleLanguage();
+                    } else if (typeof iframeWindow.changeLanguage === 'function') {
+                        iframeWindow.changeLanguage(savedLang);
+                    }
                 }
             } catch (e) {
                 console.log("Language synchronization info: iframe cross-origin restriction or handler missing.");
             }
         }
+
+        function updateNavigationLanguage(lang) {
+            document.querySelectorAll('.navigation a span').forEach((label) => {
+                const source = label.dataset.english || label.textContent;
+                label.dataset.english = source;
+                label.textContent = window.portalTranslateText(source, lang);
+            });
+        }
+
+        window.addEventListener('storage', (event) => {
+            if (event.key === 'kisaanLang' || event.key === 'aiLanguage') {
+                updateNavigationLanguage(event.newValue || 'en');
+                syncLanguageToIframe();
+            }
+        });
 
         // Global Theme Customizer
         function setThemePalette(primaryColor, activeColor, glowColor) {
@@ -256,6 +291,8 @@
                 const {primaryColor, activeColor, glowColor} = JSON.parse(savedTheme);
                 setThemePalette(primaryColor, activeColor, glowColor);
             }
+            const savedLang = localStorage.getItem('kisaanLang') || localStorage.getItem('aiLanguage') || 'en';
+            updateNavigationLanguage(savedLang);
         });
     </script>
 </body>
