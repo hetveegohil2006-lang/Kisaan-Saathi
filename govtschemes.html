@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Government Schemes - KisaanSaathi Smart Agriculture Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* 5 Themes Color Palettes */
+        body.theme-light-yellow { background: linear-gradient(to bottom, #fef08a 0%, #fef9c3 50%, #e2e8f0 100%); --panel-bg: rgba(255, 255, 255, 0.88); --text-primary: #1b3818; --text-muted: #4b6b48; --accent: #386641; --input-bg: #ffffff; --border-color: #fde047; }
+        body.theme-light-pink { background: linear-gradient(to bottom, #fbcfe8 0%, #fce7f3 50%, #e2e8f0 100%); --panel-bg: rgba(255, 255, 255, 0.88); --text-primary: #500724; --text-muted: #831843; --accent: #be185d; --input-bg: #ffffff; --border-color: #f472b6; }
+        body.theme-light-orange { background: linear-gradient(to bottom, #fed7aa 0%, #ffedd5 50%, #e2e8f0 100%); --panel-bg: rgba(255, 255, 255, 0.88); --text-primary: #431407; --text-muted: #7c2d12; --accent: #c2410c; --input-bg: #ffffff; --border-color: #fb923c; }
+        body.theme-light-blue { background: linear-gradient(to bottom, #bae6fd 0%, #e0f2fe 50%, #cbd5e1 100%); --panel-bg: rgba(255, 255, 255, 0.88); --text-primary: #082f49; --text-muted: #0369a1; --accent: #0369a1; --input-bg: #ffffff; --border-color: #38bdf8; }
+        body.theme-light-black { background: linear-gradient(to bottom, #1e293b 0%, #0f172a 50%, #020617 100%); --panel-bg: rgba(15, 23, 42, 0.88); --text-primary: #f8fafc; --text-muted: #94a3b8; --accent: #38bdf8; --input-bg: #0f172a; --border-color: #334155; }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+        body { color: var(--text-primary); min-height: 100vh; display: flex; transition: background 0.3s, color 0.3s; }
+
+        /* Sidebar Structure */
+        .sidebar { width: 260px; background: var(--panel-bg); backdrop-filter: blur(10px); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; padding: 20px; height: 100vh; position: fixed; top: 0; left: 0; z-index: 40; }
+        
+        /* Exact Brand Logo Badge */
+        .brand-badge { display: flex; align-items: center; gap: 12px; margin-bottom: 25px; background: #ffffff; padding: 10px 14px; border-radius: 20px; border: 1px solid #fde047; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
+        .brand-logo-icon { font-size: 24px; line-height: 1; }
+        .brand-text strong { font-size: 15px; font-weight: 700; color: #1b3818; display: block; line-height: 1.2; letter-spacing: -0.2px; }
+        .brand-text small { font-size: 8.5px; color: #386641; font-weight: 700; letter-spacing: 0.4px; display: block; margin-top: 1px; }
+
+        .nav-links { display: flex; flex-direction: column; gap: 5px; flex: 1; overflow-y: auto; }
+        .nav-item { display: flex; align-items: center; gap: 12px; padding: 11px 14px; border-radius: 12px; font-size: 13px; font-weight: 500; color: var(--text-primary); text-decoration: none; transition: 0.2s; }
+        .nav-item:hover { background: rgba(0, 0, 0, 0.05); color: var(--accent); }
+        .nav-item.active { background: var(--accent); color: #fff; font-weight: 600; }
+
+        /* Main Content */
+        .main-content { margin-left: 260px; flex: 1; padding: 30px; display: flex; flex-direction: column; height: 100vh; overflow-y: auto; }
+
+        /* Top Header & Controls */
+        .top-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .header-title-box h1 { font-size: 24px; font-weight: 700; color: var(--text-primary); }
+        .header-title-box p { font-size: 13px; color: var(--text-muted); font-weight: 500; margin-top: 2px; }
+        
+        .header-controls { display: flex; gap: 12px; align-items: center; }
+        .control-select { background: var(--input-bg); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 20px; cursor: pointer; font-weight: 500; font-size: 13px; color: var(--text-primary); outline: none; }
+        
+        /* Sun / Moon Theme Toggle */
+        .sun-control-box { display: flex; align-items: center; justify-content: center; cursor: pointer; background: var(--panel-bg); width: 42px; height: 42px; border-radius: 50%; backdrop-filter: blur(10px); box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 1px solid var(--border-color); transition: transform 0.2s; }
+        .sun-control-box:hover { transform: scale(1.1); }
+        .sun-icon { width: 20px; height: 20px; border-radius: 50%; background: #facc15; box-shadow: 0 0 12px rgba(250, 204, 21, 0.9); transition: all 0.5s; }
+        body.theme-light-black .sun-icon { background: transparent; box-shadow: -4px 2px 0 0 #f8fafc; width: 16px; height: 16px; }
+
+        /* Search & Filter Bar */
+        .search-filter-bar { background: var(--panel-bg); backdrop-filter: blur(12px); border-radius: 20px; border: 1px solid var(--border-color); padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; gap: 15px; margin-bottom: 24px; box-shadow: 0 8px 25px rgba(0,0,0,0.03); flex-wrap: wrap; }
+        .search-input-wrapper { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 250px; }
+        .search-input-wrapper span { font-size: 18px; }
+        .search-input { border: none; background: transparent; outline: none; font-size: 14px; font-weight: 500; color: var(--text-primary); width: 100%; }
+        
+        .filter-pill-group { display: flex; gap: 8px; flex-wrap: wrap; }
+        .filter-pill { padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; border: 1px solid var(--border-color); background: var(--input-bg); color: var(--text-primary); transition: 0.2s; }
+        .filter-pill.active, .filter-pill:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+        /* Main Grid Layout */
+        .schemes-grid-layout { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; margin-bottom: 24px; }
+        .column-left, .column-right { display: flex; flex-direction: column; gap: 24px; }
+
+        /* Card styles */
+        .card { background: var(--panel-bg); backdrop-filter: blur(12px); border-radius: 24px; border: 1px solid var(--border-color); padding: 22px; box-shadow: 0 10px 30px rgba(0,0,0,0.04); display: flex; flex-direction: column; gap: 16px; }
+        .card h3 { font-size: 16px; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 8px; justify-content: space-between; }
+
+        /* Schemes Catalog Cards Row */
+        .catalog-cards-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+        .scheme-item-card { background: var(--input-bg); border-radius: 18px; border: 1px solid var(--border-color); overflow: hidden; display: flex; flex-direction: column; transition: transform 0.2s; cursor: pointer; }
+        .scheme-item-card:hover { transform: translateY(-3px); }
+        .scheme-img-box { position: relative; height: 110px; width: 100%; }
+        .scheme-img-box img { width: 100%; height: 100%; object-fit: cover; }
+        .scheme-body { padding: 12px; display: flex; flex-direction: column; gap: 6px; flex: 1; justify-content: space-between; }
+        .scheme-body h4 { font-size: 13px; font-weight: 700; color: var(--text-primary); }
+        .scheme-body p { font-size: 11px; color: var(--text-muted); font-weight: 500; }
+        
+        /* Buttons */
+        .btn { padding: 10px 20px; border-radius: 12px; font-weight: 700; font-size: 12px; cursor: pointer; border: 1px solid transparent; display: flex; align-items: center; justify-content: center; gap: 8px; transition: transform 0.2s; text-decoration: none; }
+        .btn:hover { transform: translateY(-2px); }
+        .btn-apply { background: #166534; color: #fff; box-shadow: 0 4px 12px rgba(22, 101, 52, 0.2); width: 100%; margin-top: 6px; }
+        .btn-track { background: #f59e0b; color: #fff; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2); }
+        .btn-primary { background: var(--accent); color: #fff; }
+        .btn-secondary { background: var(--input-bg); color: var(--text-primary); border-color: var(--border-color); }
+
+        /* Application Form Section */
+        .form-grid-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .input-group { display: flex; flex-direction: column; gap: 5px; }
+        .input-group label { font-size: 11px; font-weight: 600; color: var(--text-muted); }
+        .input-field { background: var(--input-bg); border: 1px solid var(--border-color); padding: 9px 12px; border-radius: 10px; font-size: 12px; font-weight: 600; color: var(--text-primary); outline: none; width: 100%; }
+        
+        .eligibility-badge { background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.3); color: #166534; padding: 8px 12px; border-radius: 10px; font-size: 11px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+
+        /* Application Status Tracking Cards */
+        .status-card-item { background: var(--input-bg); border-radius: 14px; padding: 12px 14px; border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+        .status-left { display: flex; align-items: center; gap: 12px; }
+        .status-icon-badge { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+        .status-icon-badge.green { background: #dcfce7; color: #166534; }
+        .status-icon-badge.yellow { background: #fef9c3; color: #ca8a04; }
+        .status-icon-badge.blue { background: #e0f2fe; color: #0284c7; }
+        
+        .status-details h4 { font-size: 13px; font-weight: 700; color: var(--text-primary); }
+        .status-details p { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+        .status-badge-pill { padding: 4px 10px; border-radius: 20px; font-size: 10px; font-weight: 700; text-transform: uppercase; }
+        .status-badge-pill.green { background: #dcfce7; color: #166534; }
+        .status-badge-pill.yellow { background: #fef9c3; color: #ca8a04; }
+        .status-badge-pill.blue { background: #e0f2fe; color: #0284c7; }
+
+        /* Scheme Tips Accordion / Box */
+        .tip-item { font-size: 12px; font-weight: 500; color: var(--text-primary); padding: 8px 0; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; }
+        .tip-item:last-child { border-bottom: none; }
+
+        /* Responsive Breakpoints */
+        @media (max-width: 1024px) {
+            .schemes-grid-layout { grid-template-columns: 1fr; }
+            .catalog-cards-row { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 768px) {
+            .sidebar { display: none; }
+            .main-content { margin-left: 0; padding: 15px; }
+            .form-grid-row { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body id="appBody" class="theme-light-yellow">
+
+    <!-- Sidebar Structure with Exact Brand Logo Badge -->
+    <aside class="sidebar">
+        <div class="brand-badge">
+            <div class="brand-logo-icon"> 🌱</div>
+            <div class="brand-text">
+                <strong>KisaanSaathi</strong>
+                <small>SMART AGRICULTURE PORTAL</small>
+            </div>
+        </div>
+        <div class="nav-links">
+            <a href="dashboard.html" class="nav-item">🏠 Overview & Guide</a>
+            <a href="chatbotai.html" class="nav-item">🤖 AI Chatbot (Gemini)</a>
+            <a href="soil.html" class="nav-item">🧪 Soil & Crop Predictions</a>
+            <a href="weather.html" class="nav-item">🌦 Weather & Alerts</a>
+            <a href="tutorials.html" class="nav-item">🎥 Plant Tutorials & AI Video</a>
+            <a href="market.html" class="nav-item">💰 Market & Expense</a>
+            <a href="schemes.html" class="nav-item active">🏛️ Government Schemes</a>
+            <a href="profile.html" class="nav-item">👤 Profile Settings</a>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+        <header class="top-header">
+            <div class="header-title-box">
+                <h1 id="pageHeading">🏛 Government Schemes</h1>
+                <p id="subBannerText">Discover and Apply for the Latest Agricultural Schemes & Subsidies</p>
+            </div>
+            <div class="header-controls">
+                <select class="control-select" id="langToggle" onchange="toggleLanguage()">
+                    <option value="en" selected>English</option>
+                    <option value="hi">हिंदी (Hindi)</option>
+                    <option value="mr">मराठी (Marathi)</option>
+                    <option value="pa">ਪੰਜਾਬੀ (Punjabi)</option>
+                    <option value="gu">ગુજરાતી (Gujarati)</option>
+                    <option value="bn">বাংলা (Bengali)</option>
+                    <option value="te">తెలుగు (Telugu)</option>
+                    <option value="ta">தமிழ் (Tamil)</option>
+                    <option value="kn">ಕನ್ನಡ (Kannada)</option>
+                    <option value="ml">മലയാളം (Malayalam)</option>
+                    <option value="or">ଓଡ଼ିଆ (Odia)</option>
+                    <option value="as">অসমীয়া (Assamese)</option>
+                    <option value="ur">اردو (Urdu)</option>
+                </select>
+
+                <div class="sun-control-box" onclick="switchThemeCycle()" title="Toggle Theme Palette">
+                    <div class="sun-icon"></div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Scheme Discovery Search & Filters Bar -->
+        <div class="search-filter-bar">
+            <div class="search-input-wrapper">
+                <span>🔍</span>
+                <input type="text" id="schemeSearch" class="search-input" placeholder="Search crop name or category (e.g., Organic Farming, Solar)..." oninput="filterSchemes()">
+            </div>
+            <div class="filter-pill-group">
+                <span class="filter-pill active" onclick="setFilter('all', this)">All</span>
+                <span class="filter-pill" onclick="setFilter('subsidy', this)">Crop Subsidy</span>
+                <span class="filter-pill" onclick="setFilter('loan', this)">Loan</span>
+                <span class="filter-pill" onclick="setFilter('equipment', this)">Equipment Aid</span>
+            </div>
+        </div>
+
+        <!-- Main Content Split Grid -->
+        <div class="schemes-grid-layout">
+            
+            <!-- Left Column: Catalog & Application Form -->
+            <div class="column-left">
+                
+                <!-- Scheme Cards Catalog -->
+                <div class="card">
+                    <h3>🏛 Available Featured Schemes</h3>
+                    <div class="catalog-cards-row" id="schemesCatalog">
+                        
+                        <!-- Scheme 1 -->
+                        <div class="scheme-item-card" data-category="subsidy" onclick="selectScheme('PM Kisan Yojana', '₹6,000 Direct Income Support')">
+                            <div class="scheme-img-box">
+                                <img src="https://images.unsplash.com/photo-1574943320219-553eb213f72d?auto=format&fit=crop&w=300&q=80" alt="PM Kisan">
+                            </div>
+                            <div class="scheme-body">
+                                <div>
+                                    <h4>PM Kisan Yojana</h4>
+                                    <p>₹6,000 Direct Income Support</p>
+                                </div>
+                                <button class="btn btn-apply">Apply Now</button>
+                            </div>
+                        </div>
+
+                        <!-- Scheme 2 -->
+                        <div class="scheme-item-card" data-category="subsidy" onclick="selectScheme('Organic Farming Subsidy', 'Up to 50% Assistance')">
+                            <div class="scheme-img-box">
+                                <img src="https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=300&q=80" alt="Organic Farming">
+                            </div>
+                            <div class="scheme-body">
+                                <div>
+                                    <h4>Organic Farming Subsidy</h4>
+                                    <p>Up to 50% Assistance</p>
+                                </div>
+                                <button class="btn btn-apply">Apply Now</button>
+                            </div>
+                        </div>
+
+                        <!-- Scheme 3 -->
+                        <div class="scheme-item-card" data-category="equipment" onclick="selectScheme('Solar Pump Scheme', '30% Solar Pump Subsidy')">
+                            <div class="scheme-img-box">
+                                <img src="https://images.unsplash.com/photo-1509391365390-d46925e2fb1d?auto=format&fit=crop&w=300&q=80" alt="Solar Pump">
+                            </div>
+                            <div class="scheme-body">
+                                <div>
+                                    <h4>Solar Pump Scheme</h4>
+                                    <p>30% Solar Pump Subsidy</p>
+                                </div>
+                                <button class="btn btn-apply">Apply Now</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Step-by-Step Application Form -->
+                <div class="card" id="applicationFormCard">
+                    <h3 id="formTitleHeading">Apply for PM Kisan Yojana</h3>
+                    <div class="form-grid-row">
+                        <div class="input-group">
+                            <label>Full Name (Auto-filled)</label>
+                            <input type="text" id="applicantName" class="input-field" value="Ramesh Kumar">
+                        </div>
+                        <div class="input-group">
+                            <label>Aadhaar Number</label>
+                            <input type="text" id="aadhaarInput" class="input-field" value="XXXX-XXXX-4892">
+                        </div>
+                    </div>
+                    <div class="form-grid-row">
+                        <div class="input-group">
+                            <label>Farm Size (in acres)</label>
+                            <input type="number" id="farmSizeInput" class="input-field" value="2.5" oninput="checkAiEligibility()">
+                        </div>
+                        <div class="input-group">
+                            <label>Required Documents</label>
+                            <input type="file" id="docUpload" class="input-field" style="padding: 6px;">
+                        </div>
+                    </div>
+                    <div class="eligibility-badge" id="aiEligibilityBox">
+                        <span>✅</span> <strong>AI Eligibility:</strong> Small & Marginal Farmers (Eligible for full benefit)
+                    </div>
+                    <button class="btn btn-primary" style="width: 100%; justify-content: center; padding: 12px;" onclick="submitApplication()">Submit Application & Send to Portal</button>
+                </div>
+
+            </div>
+
+            <!-- Right Column: Application Status Tracking & Receipt -->
+            <div class="column-right">
+                
+                <!-- Application Tracking Box -->
+                <div class="card">
+                    <h3>📋 My Applications Tracker</h3>
+                    
+                    <div class="status-card-item">
+                        <div class="status-left">
+                            <div class="status-icon-badge green">🟢</div>
+                            <div class="status-details">
+                                <h4>PM Kisan Yojana</h4>
+                                <p>Ref: KS12345 • Applied: 12 Apr 2026</p>
+                            </div>
+                        </div>
+                        <span class="status-badge-pill green">Applied</span>
+                    </div>
+
+                    <div class="status-card-item">
+                        <div class="status-left">
+                            <div class="status-icon-badge yellow">🟡</div>
+                            <div class="status-details">
+                                <h4>Organic Farming</h4>
+                                <p>Ref: KS98210 • Expected: 5-7 Days</p>
+                            </div>
+                        </div>
+                        <span class="status-badge-pill yellow">Under Review</span>
+                    </div>
+
+                    <div class="status-card-item">
+                        <div class="status-left">
+                            <div class="status-icon-badge blue">🔵</div>
+                            <div class="status-details">
+                                <h4>Solar Pump Scheme</h4>
+                                <p>₹40,000 Sanctioned</p>
+                            </div>
+                        </div>
+                        <span class="status-badge-pill blue">Approved</span>
+                    </div>
+                </div>
+
+                <!-- Download Receipt Card -->
+                <div class="card">
+                    <h3>📥 Download Receipt</h3>
+                    <p style="font-size: 12px; color: var(--text-muted); font-weight: 500;">Get your official government submission receipt with encrypted barcode proof.</p>
+                    <button class="btn btn-secondary" onclick="downloadReceiptPdf()">📄 Download Application PDF</button>
+                </div>
+
+                <!-- Scheme Tips & AI Suggestions -->
+                <div class="card">
+                    <h3>🧠 AI Scheme Suggestions</h3>
+                    <div class="tip-item">
+                        <span>✨ Eligible for KCC Loan!</span>
+                        <span style="color: var(--accent); font-weight: 700;">View</span>
+                    </div>
+                    <div class="tip-item">
+                        <span>🌞 Explore Solar Pump Subsidy</span>
+                        <span style="color: var(--accent); font-weight: 700;">View</span>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        // Theme Cycling Logic (5 Themes)
+        const themes = ['theme-light-yellow', 'theme-light-pink', 'theme-light-orange', 'theme-light-blue', 'theme-light-black'];
+        let currentThemeIndex = 0;
+
+        function switchThemeCycle() {
+            currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+            document.getElementById('appBody').className = themes[currentThemeIndex];
+            localStorage.setItem('kisaan-portal-theme-index', currentThemeIndex);
+        }
+
+        const savedThemeIndex = localStorage.getItem('kisaan-portal-theme-index');
+        if (savedThemeIndex !== null) {
+            currentThemeIndex = parseInt(savedThemeIndex);
+            document.getElementById('appBody').className = themes[currentThemeIndex];
+        }
+
+        // Scheme Selection and Form Header Updater
+        function selectScheme(schemeName, subsidyText) {
+            document.getElementById('formTitleHeading').innerText = `Apply for ${schemeName}`;
+            alert(`Selected: ${schemeName} (${subsidyText}). Form updated below!`);
+            window.scrollTo({ top: document.getElementById('applicationFormCard').offsetTop - 50, behavior: 'smooth' });
+        }
+
+        // Filter Catalog Cards
+        function setFilter(category, element) {
+            document.querySelectorAll('.filter-pill').forEach(el => el.classList.remove('active'));
+            element.classList.add('active');
+
+            const cards = document.querySelectorAll('.scheme-item-card');
+            cards.forEach(card => {
+                if (category === 'all' || card.getAttribute('data-category') === category) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        function filterSchemes() {
+            const query = document.getElementById('schemeSearch').value.toLowerCase();
+            const cards = document.querySelectorAll('.scheme-item-card');
+            cards.forEach(card => {
+                const title = card.querySelector('h4').innerText.toLowerCase();
+                const desc = card.querySelector('p').innerText.toLowerCase();
+                if (title.includes(query) || desc.includes(query)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // AI Eligibility Checker live update
+        function checkAiEligibility() {
+            const acres = parseFloat(document.getElementById('farmSizeInput').value) || 0;
+            const badge = document.getElementById('aiEligibilityBox');
+            if (acres <= 5.0) {
+                badge.innerHTML = `<span>✅</span> <strong>AI Eligibility:</strong> Small & Marginal Farmers (Eligible for full benefit + priority processing)`;
+                badge.style.borderColor = 'rgba(34, 197, 94, 0.3)';
+                badge.style.background = 'rgba(34, 197, 94, 0.1)';
+            } else {
+                badge.innerHTML = `<span>⚠️</span> <strong>AI Eligibility:</strong> Standard Farmer Category (Eligible with standard subsidy terms)`;
+                badge.style.borderColor = 'rgba(245, 158, 11, 0.3)';
+                badge.style.background = 'rgba(245, 158, 11, 0.1)';
+            }
+        }
+
+        function submitApplication() {
+            alert("Application submitted successfully to Government Portal via secure API!\nReference ID generated: KS88492\nSMS/WhatsApp status update sent in your local language.");
+        }
+
+        function downloadReceiptPdf() {
+            alert("Generating KisaanSaathi official scheme application PDF receipt...");
+            setTimeout(() => {
+                alert("Receipt downloaded successfully!");
+            }, 1000);
+        }
+
+        const translations = {
+            'en': { heading: '🏛 Government Schemes', banner: 'Discover and Apply for the Latest Agricultural Schemes & Subsidies' },
+            'hi': { heading: '🏛 सरकारी योजनाएं', banner: 'नवीनतम कृषि योजनाओं और सब्सिडी की खोज करें और आवेदन करें' },
+            'mr': { heading: '🏛 शासकीय योजना', banner: 'नवीनतम शेती योजना आणि अनुदानासाठी शोधा आणि अर्ज करा' },
+            'pa': { heading: '🏛 ਸਰਕਾਰੀ ਸਕੀਮਾਂ', banner: 'नवीनਤਮ ਖੇਤੀਬਾੜੀ ਸਕੀਮਾਂ ਅਤੇ ਸਬਸਿਡੀਆਂ ਦੀ ਭਾਲ ਕਰੋ ਅਤੇ ਅਪਲਾਈ ਕਰੋ' },
+            'gu': { heading: '🏛 સરકારી યોજનાઓ', banner: 'नवीनતમ કૃષિ યોજનાઓ અને સબસિડી માટે શોધો અને અરજી કરો' },
+            'bn': { heading: '🏛 সরকারি প্রকল্প', banner: 'সর্বশেষ কৃষি প্রকল্প এবং ভর্তুকির জন্য খোঁজ করুন এবং আবেদন করুন' }
+        };
+
+        function toggleLanguage() {
+            const lang = document.getElementById('langToggle').value;
+            if (translations[lang]) {
+                document.getElementById('pageHeading').innerText = translations[lang].heading;
+                document.getElementById('subBannerText').innerText = translations[lang].banner;
+            }
+        }
+    </script>
+</body>
+</html>
