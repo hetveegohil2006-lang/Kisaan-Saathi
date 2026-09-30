@@ -1,7 +1,11 @@
 export const firebaseConfig = {
-    apiKey: "REPLACE_WITH_FIREBASE_WEB_API_KEY",
-    authDomain: "REPLACE_WITH_FIREBASE_PROJECT_ID.firebaseapp.com",
-    projectId: "REPLACE_WITH_FIREBASE_PROJECT_ID",
-    appId: "REPLACE_WITH_FIREBASE_WEB_APP_ID",
-    appCheckSiteKey: "REPLACE_WITH_RECAPTCHA_V3_SITE_KEY"
+  apiKey: "AIzaSyBBvL0xr7k8nDmVAwli3lR02gUNKS0VWo8",
+  authDomain: "kissan-saathi-d995d.firebaseapp.com",
+  projectId: "kissan-saathi-d995d",
+  storageBucket: "kissan-saathi-d995d.firebasestorage.app",
+  messagingSenderId: "19840043451",
+  appId: "1:19840043451:web:70e0e7007761e116c65c9e",
+  measurementId: "G-D8Q4QQ8FG4",
+  appCheckSiteKey: ""
 };
+

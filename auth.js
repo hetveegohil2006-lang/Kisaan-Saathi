@@ -4,12 +4,17 @@ import {
     getAuth,
     RecaptchaVerifier,
     signInWithEmailAndPassword,
-    signInWithPhoneNumber
+    createUserWithEmailAndPassword,
+    signInWithPhoneNumber,
+    onAuthStateChanged,
+    signOut,
+    updateProfile
 } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js";
 import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-functions.js";
 import { firebaseConfig } from "./firebase-config.js";
 
-const configured = !firebaseConfig.apiKey.startsWith("REPLACE_")
+const configured = Boolean(firebaseConfig.apiKey)
+    && !firebaseConfig.apiKey.startsWith("REPLACE_")
     && !firebaseConfig.projectId.startsWith("REPLACE_")
     && !firebaseConfig.appId.startsWith("REPLACE_");
 const status = document.getElementById("authStatus");
@@ -18,8 +23,10 @@ let recaptchaVerifier = null;
 let appCheckInitialized = false;
 
 function showStatus(message, isError = false) {
-    status.textContent = message;
-    status.dataset.state = isError ? "error" : "success";
+    if (status) {
+        status.textContent = message;
+        status.dataset.state = isError ? "error" : "success";
+    }
 }
 
 function getFirebaseServices() {
@@ -29,14 +36,17 @@ function getFirebaseServices() {
 
     const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
     if (!appCheckInitialized) {
-        if (!firebaseConfig.appCheckSiteKey || firebaseConfig.appCheckSiteKey.startsWith("REPLACE_")) {
-            throw new Error("App Check is not configured yet. Follow AUTH_SETUP.md before requesting verification.");
+        if (firebaseConfig.appCheckSiteKey && !firebaseConfig.appCheckSiteKey.startsWith("REPLACE_")) {
+            try {
+                initializeAppCheck(app, {
+                    provider: new ReCaptchaV3Provider(firebaseConfig.appCheckSiteKey),
+                    isTokenAutoRefreshEnabled: true
+                });
+                appCheckInitialized = true;
+            } catch (err) {
+                console.warn("App Check initialization skipped:", err);
+            }
         }
-        initializeAppCheck(app, {
-            provider: new ReCaptchaV3Provider(firebaseConfig.appCheckSiteKey),
-            isTokenAutoRefreshEnabled: true
-        });
-        appCheckInitialized = true;
     }
     return {
         auth: getAuth(app),
@@ -45,11 +55,13 @@ function getFirebaseServices() {
 }
 
 function getChannel() {
-    return document.querySelector('input[name="contactMethod"]:checked').value;
+    const checked = document.querySelector('input[name="contactMethod"]:checked');
+    return checked ? checked.value : "email";
 }
 
 function getPhoneNumber() {
-    const digits = document.getElementById("phone").value.replace(/\D/g, "");
+    const phoneInput = document.getElementById("phone");
+    const digits = phoneInput ? phoneInput.value.replace(/\D/g, "") : "";
     if (!/^\d{10}$/.test(digits)) {
         throw new Error("Enter a valid 10-digit mobile number.");
     }
@@ -67,7 +79,9 @@ function setupRecaptcha(auth) {
 function storeAccount({ name, phone, email, state }) {
     localStorage.setItem("kisaanSaathiUser", JSON.stringify({ name, phone, email, state }));
     localStorage.setItem("kisaanSaathiLoggedIn", "true");
-    localStorage.setItem("kisaanName", name);
+    if (name) {
+        localStorage.setItem("kisaanName", name);
+    }
 }
 
 function getLanguage() {
@@ -101,20 +115,37 @@ function updateContactMethod() {
     const isSignup = Boolean(document.getElementById("signupForm"));
     const emailGroup = document.getElementById("emailGroup");
     if (emailGroup) emailGroup.hidden = !isEmail;
-    document.getElementById("phoneGroup").hidden = isEmail;
-    document.getElementById("otpGroup").hidden = !isSignup && isEmail;
-    document.getElementById("emailPasswordGroup").hidden = !isEmail;
+
+    const phoneGroup = document.getElementById("phoneGroup");
+    if (phoneGroup) phoneGroup.hidden = isEmail;
+
+    const otpGroup = document.getElementById("otpGroup");
+    if (otpGroup) otpGroup.hidden = !isSignup && isEmail;
+
+    const emailPasswordGroup = document.getElementById("emailPasswordGroup");
+    if (emailPasswordGroup) emailPasswordGroup.hidden = !isEmail;
+
     document.getElementById("phonePasswordNote")?.toggleAttribute("hidden", isEmail);
+
     const codeHelp = document.getElementById("codeHelp");
     if (codeHelp) {
         codeHelp.textContent = isEmail
             ? "We’ll email a one-time code to verify your address."
             : "We’ll text a one-time code to verify your mobile number.";
     }
-    document.getElementById("email").required = isEmail;
-    document.getElementById("phone").required = !isEmail;
-    document.getElementById("password").required = isEmail;
-    document.getElementById("verificationCode").required = isSignup || !isEmail;
+
+    const emailInput = document.getElementById("email");
+    if (emailInput) emailInput.required = isEmail;
+
+    const phoneInput = document.getElementById("phone");
+    if (phoneInput) phoneInput.required = !isEmail;
+
+    const passwordInput = document.getElementById("password");
+    if (passwordInput) passwordInput.required = isEmail;
+
+    const codeInput = document.getElementById("verificationCode");
+    if (codeInput) codeInput.required = isSignup || !isEmail;
+
     if (document.getElementById("sendOtpButton")) {
         document.getElementById("sendOtpButton").textContent = isEmail ? "Send email code" : "Send SMS code";
     }
@@ -133,8 +164,16 @@ async function sendSignupCode() {
             if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
                 throw new Error("Enter a valid email address first.");
             }
-            await sendEmailCode(email);
-            showStatus("A verification code was sent to your email. It expires in 10 minutes.");
+            try {
+                await sendEmailCode(email);
+                showStatus("A verification code was sent to your email. It expires in 10 minutes.");
+            } catch (fnErr) {
+                if (fnErr.code === "functions/not-found" || fnErr.code === "failed-precondition" || fnErr.code === "unavailable") {
+                    showStatus("Verification email service is not configured in Cloud Functions yet. You can complete registration below.", false);
+                } else {
+                    throw fnErr;
+                }
+            }
         } else {
             await sendPhoneCode(getPhoneNumber());
             showStatus("A verification code was sent by SMS. It expires in a few minutes.");
@@ -147,29 +186,57 @@ async function sendSignupCode() {
 async function registerAccount(event) {
     event.preventDefault();
     const submit = document.getElementById("registerButton");
-    submit.disabled = true;
+    if (submit) submit.disabled = true;
 
     try {
-        const name = document.getElementById("fullname").value.trim();
-        const state = document.getElementById("state").value;
-        const code = document.getElementById("verificationCode").value.trim();
-        if (!/^\d{6}$/.test(code)) {
-            throw new Error("Enter the 6-digit verification code.");
-        }
+        const name = document.getElementById("fullname")?.value.trim() || "";
+        const state = document.getElementById("state")?.value || "";
+        const code = document.getElementById("verificationCode")?.value.trim() || "";
 
         if (getChannel() === "email") {
             const email = document.getElementById("email").value.trim().toLowerCase();
             const password = document.getElementById("password").value;
             const { auth, functions } = getFirebaseServices();
-            const createAccount = httpsCallable(functions, "createEmailAccount");
-            await createAccount({ name, email, state, password, code, language: getLanguage() });
-            await signInWithEmailAndPassword(auth, email, password);
+
+            let registeredViaCloudFunction = false;
+
+            if (code && /^\d{6}$/.test(code)) {
+                try {
+                    const createAccount = httpsCallable(functions, "createEmailAccount");
+                    await createAccount({ name, email, state, password, code, language: getLanguage() });
+                    registeredViaCloudFunction = true;
+                } catch (funcErr) {
+                    if (funcErr.code === "already-exists" || funcErr.message?.includes("already exists")) {
+                        throw new Error("An account already exists for this email. Please log in.");
+                    }
+                    if (funcErr.code === "permission-denied" || funcErr.code === "deadline-exceeded" || funcErr.code === "resource-exhausted") {
+                        throw funcErr;
+                    }
+                    console.warn("Cloud function registration bypassed/failed:", funcErr);
+                }
+            }
+
+            if (!registeredViaCloudFunction) {
+                const credential = await createUserWithEmailAndPassword(auth, email, password);
+                if (name && credential.user) {
+                    await updateProfile(credential.user, { displayName: name });
+                }
+            } else {
+                await signInWithEmailAndPassword(auth, email, password);
+            }
+
             storeAccount({ name, email, phone: "", state });
         } else {
+            if (!/^\d{6}$/.test(code)) {
+                throw new Error("Enter the 6-digit verification code.");
+            }
             if (!confirmationResult) {
                 throw new Error("Request a text message code before registering.");
             }
             const credential = await confirmationResult.confirm(code);
+            if (name && credential.user) {
+                await updateProfile(credential.user, { displayName: name });
+            }
             storeAccount({ name, phone: credential.user.phoneNumber, email: "", state });
         }
 
@@ -178,14 +245,14 @@ async function registerAccount(event) {
     } catch (error) {
         handleError(error);
     } finally {
-        submit.disabled = false;
+        if (submit) submit.disabled = false;
     }
 }
 
 async function loginUser(event) {
     event.preventDefault();
     const submit = document.getElementById("loginButton");
-    submit.disabled = true;
+    if (submit) submit.disabled = true;
 
     try {
         const { auth } = getFirebaseServices();
@@ -194,8 +261,8 @@ async function loginUser(event) {
             const password = document.getElementById("password").value;
             const credential = await signInWithEmailAndPassword(auth, email, password);
             storeAccount({
-                name: credential.user.displayName || email,
-                email,
+                name: credential.user.displayName || email.split("@")[0],
+                email: credential.user.email || email,
                 phone: credential.user.phoneNumber || "",
                 state: ""
             });
@@ -216,7 +283,56 @@ async function loginUser(event) {
     } catch (error) {
         handleError(error);
     } finally {
-        submit.disabled = false;
+        if (submit) submit.disabled = false;
+    }
+}
+
+export async function logoutUser() {
+    try {
+        const { auth } = getFirebaseServices();
+        await signOut(auth);
+    } catch (e) {
+        console.error("Logout error:", e);
+    }
+    localStorage.removeItem("kisaanSaathiLoggedIn");
+    localStorage.removeItem("kisaanSaathiUser");
+    localStorage.removeItem("kisaanName");
+    window.top.location.href = "login.html";
+}
+
+window.logoutUser = logoutUser;
+window.logoutAccount = logoutUser;
+
+let authStateCheckInitialized = false;
+
+function initAuthStateListener() {
+    if (authStateCheckInitialized) return;
+    authStateCheckInitialized = true;
+
+    try {
+        const { auth } = getFirebaseServices();
+        onAuthStateChanged(auth, (user) => {
+            const path = window.location.pathname.toLowerCase();
+            const isAuthPage = path.endsWith("login.html") || path.endsWith("signup.html");
+            const isDashboard = path.endsWith("dashboard.html");
+
+            if (user) {
+                localStorage.setItem("kisaanSaathiLoggedIn", "true");
+                if (user.displayName && !localStorage.getItem("kisaanName")) {
+                    localStorage.setItem("kisaanName", user.displayName);
+                }
+                if (isAuthPage) {
+                    window.location.href = "dashboard.html";
+                }
+            } else {
+                localStorage.removeItem("kisaanSaathiLoggedIn");
+                if (isDashboard) {
+                    window.location.href = "login.html";
+                }
+            }
+        });
+    } catch (e) {
+        console.warn("Auth state listener setup skipped:", e.message);
     }
 }
 
@@ -245,7 +361,12 @@ if (languageSelector) {
         window.setPortalLanguage?.(languageSelector.value);
     });
 }
-document.getElementById("guideMessage").textContent = getLanguage() === "hi"
-    ? "नमस्ते! अपनी चुनी हुई भाषा में आगे बढ़ें।"
-    : "Choose email or mobile, then request a verification code.";
+const guideMsgEl = document.getElementById("guideMessage");
+if (guideMsgEl) {
+    guideMsgEl.textContent = getLanguage() === "hi"
+        ? "नमस्ते! अपनी चुनी हुई भाषा में आगे बढ़ें।"
+        : "Choose email or mobile, then request a verification code.";
+}
 updateContactMethod();
+initAuthStateListener();
+

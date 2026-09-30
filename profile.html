@@ -484,8 +484,15 @@
         // Log Out & Delete Account Handlers
         function logoutAccount() {
             if (confirm("Are you sure you want to log out of KisaanSaathi?")) {
-                alert("Logged out successfully.");
-                window.location.href = "dashboard.html";
+                if (typeof window.logoutUser === 'function') {
+                    window.logoutUser();
+                } else if (window.top && typeof window.top.logoutUser === 'function') {
+                    window.top.logoutUser();
+                } else {
+                    localStorage.removeItem('kisaanSaathiLoggedIn');
+                    localStorage.removeItem('kisaanSaathiUser');
+                    window.top.location.href = "login.html";
+                }
             }
         }
 
