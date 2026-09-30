@@ -28,115 +28,43 @@
             --text-primary: #ffffff; --text-muted: #94a3b8; --panel-bg: rgba(30, 41, 59, 0.85); --input-bg: #0f172a; --border-color: #334155; --accent: #38bdf8; --ai-bubble-bg: #1e293b;
         }
 
-        .page-container {
-            position: relative;
-            width: 100%;
-            height: 100%;
-        }
-
-        /* Top Navigation Bar */
-        .top-nav {
-            position: absolute;
-            top: 25px;
-            left: 35px;
-            right: 35px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 40;
-        }
-
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
         body { color: var(--text-primary); min-height: 100vh; display: flex; transition: background 0.3s, color 0.3s; }
 
-        /* Sidebar Structure */
-        .sidebar { width: 260px; background: var(--panel-bg); backdrop-filter: blur(10px); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; padding: 20px; height: 100vh; position: fixed; top: 0; left: 0; z-index: 40; }
-        
-        .brand-badge { display: flex; align-items: center; gap: 12px; margin-bottom: 30px; }
-        .brand-text { display: flex; flex-direction: column; }
-        .brand-text strong { font-size: 16px; font-weight: 700; color: var(--text-primary); line-height: 1.2; }
-        .brand-text small { font-size: 10px; color: var(--text-muted); font-weight: 500; display: block; }
+        .page-container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
 
-        .nav-links { display: flex; flex-direction: column; gap: 6px; flex: 1; overflow-y: auto; }
-        .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; font-size: 13px; font-weight: 500; color: var(--text-primary); text-decoration: none; transition: 0.2s; }
-        .nav-item:hover { background: rgba(0, 0, 0, 0.05); color: var(--accent); }
-        .nav-item.active { background: var(--accent); color: #fff; font-weight: 600; }
+        /* Main Content (Full Screen Expanded) */
+        .main-content {
+            width: 100%;
+            flex: 1;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
 
-        /* Main Content */
-        .main-content { margin-left: 260px; flex: 1; padding: 30px; display: flex; flex-direction: column; height: 100vh; }
-
-        /* Top Header & Controls */
+        /* Top Header */
         .top-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .top-header h1 { font-size: 22px; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 12px; }
-        
-        .header-controls { display: flex; gap: 12px; align-items: center; }
-        .control-select { background: var(--input-bg); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 20px; cursor: pointer; font-weight: 500; font-size: 13px; color: var(--text-primary); outline: none; }
-        
-        /* Sun/Moon Control with Tap Badge */
-        .theme-switcher-group {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            z-index: 50;
-        }
-
-        .sun-control-box {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            background: var(--panel-bg);
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            border: 1px solid var(--border-color);
-            transition: transform 0.2s ease;
-        }
-
-        .sun-control-box:hover {
-            transform: scale(1.1);
-        }
-
-        .sun-icon {
-            width: 26px;
-            height: 26px;
-            border-radius: 50%;
-            background: #facc15;
-            box-shadow: 0 0 20px rgba(250, 204, 21, 0.9);
-            transition: all 0.5s ease;
-            animation: floatIcon 4s ease-in-out infinite alternate;
-        }
-
-        @keyframes floatIcon {
-            from { transform: translateY(0); }
-            to { transform: translateY(-3px); }
-        }
-
-        /* Theme-based Icon Shifts */
-        body.theme-light-yellow .sun-icon { background: #facc15; box-shadow: 0 0 20px rgba(250, 204, 21, 0.9); }
-        body.theme-light-pink .sun-icon { background: #f472b6; box-shadow: 0 0 20px rgba(244, 114, 182, 0.9); }
-        body.theme-light-orange .sun-icon { background: #fb923c; box-shadow: 0 0 20px rgba(251, 146, 60, 0.9); }
-        body.theme-light-blue .sun-icon { background: #38bdf8; box-shadow: 0 0 20px rgba(56, 189, 248, 0.9); }
-        body.theme-light-black .sun-icon { 
-            background: transparent; 
-            box-shadow: -6px 2px 0 0 #f8fafc; 
-            width: 22px;
-            height: 22px;
-        }
 
         /* Chat Wrapper Container */
         .chat-wrapper {
             display: flex;
             flex-direction: column;
-            height: calc(100vh - 120px);
+            flex: 1;
             background: var(--panel-bg);
             backdrop-filter: blur(10px);
             border-radius: 20px;
             border: 1px solid var(--border-color);
             overflow: hidden;
             box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+            margin-bottom: 10px;
         }
 
         .status-banner {
@@ -240,65 +168,19 @@
         }
 
         @media (max-width: 768px) {
-            .sidebar { display: none; }
-            .main-content { margin-left: 0; padding: 15px; }
+            .main-content { padding: 15px; }
         }
     </style>
 </head>
 <body id="appBody" class="theme-light-yellow">
 
-    <div class="page-container" style="width: 100%; display: flex; height: 100vh;">
-        <!-- Sidebar with exact KisaanSaathi Brand Badge -->
-        <aside class="sidebar">
-            <div class="brand-badge">
-                <span style="font-size: 1.3rem;">🌱</span>
-                <div class="brand-text">
-                    <strong>KisaanSaathi</strong>
-                    <small>AGRICULTURE PORTAL</small>
-                </div>
-            </div>
-            <div class="nav-links">
-                <a href="dashboard.html" class="nav-item">🏠 Overview & Guide</a>
-                <a href="chatbotai.html" class="nav-item active">🤖 AI Chatbot (Gemini)</a>
-                <a href="soil.html" class="nav-item">🌱 Soil & Crop Predictions</a>
-                <a href="weather.html" class="nav-item">🌦️ Weather & Alerts</a>
-                <a href="tutorials.html" class="nav-item">🎥 Plant Tutorials & AI Video</a>
-                <a href="market.html" class="nav-item">💰 Market & Expense</a>
-                <a href="schemes.html" class="nav-item">🏛️ Government Schemes</a>
-                <a href="profile.html" class="nav-item">👤 Profile Settings</a>
-            </div>
-        </aside>
-
+    <div class="page-container">
         <!-- Main Content Area -->
         <div class="main-content">
             <header class="top-header">
                 <h1>
                     Kisaansaathi AI🌱 <span id="headerTitleText" style="font-size: 0.8em; font-weight: 500;"></span>
                 </h1>
-                <div class="header-controls">
-                    <select class="control-select" id="langToggle" onchange="toggleLanguage()">
-                        <option value="en">English</option>
-                        <option value="hi" selected>हिंदी (Hindi)</option>
-                        <option value="mr">मराठी (Marathi)</option>
-                        <option value="pa">ਪੰਜਾਬੀ (Punjabi)</option>
-                        <option value="gu">ગુજરાતી (Gujarati)</option>
-                        <option value="bn">বাংলা (Bengali)</option>
-                        <option value="te">తెలుగు (Telugu)</option>
-                        <option value="ta">தமிழ் (Tamil)</option>
-                        <option value="kn">ಕನ್ನಡ (Kannada)</option>
-                        <option value="ml">മലയാളം (Malayalam)</option>
-                        <option value="or">ଓଡ଼ିଆ (Odia)</option>
-                        <option value="as">অসমীয়া (Assamese)</option>
-                        <option value="ur">اردو (Urdu)</option>
-                    </select>
-
-                    <!-- Sun/Moon Control with Tap Badge -->
-                    <div class="theme-switcher-group">
-                        <div class="sun-control-box" onclick="switchThemeCycle()" title="Tap to switch theme">
-                            <div class="sun-icon"></div>
-                        </div>
-                    </div>
-                </div>
             </header>
 
             <!-- Chat Wrapper Container -->
@@ -324,6 +206,48 @@
     </div>
 
     <script>
+        
+        // View Details Toggle
+        function toggleExtendedDetails() {
+            const box = document.getElementById('extendedInfoBox');
+            const btn = document.getElementById('viewDetailsBtn');
+            box.classList.toggle('active');
+            if (box.classList.contains('active')) {
+                btn.innerText = "Hide Details";
+            } else {
+                btn.innerText = "View Details";
+            }
+        }
+
+        // --- YAHAN SE LANGUAGE & NUMBER CONVERSION CODE ADD KAREIN ---
+
+        // 1. English numbers ko Hindi/Marathi numerals (०, १, २...) me convert karne ka function
+        function convertDigitsToLang(text, lang) {
+            if (lang !== 'hi' && lang !== 'mr') return text;
+            const englishDigits = ['0','1','2','3','4','5','6','7','8','9'];
+            const devanagariDigits = ['०','१','२','३','४','५','६','७','८','९'];
+            return text.toString().replace(/[0-9]/g, function(w) {
+                return devanagariDigits[englishDigits.indexOf(w)];
+            });
+        }
+
+        // 2. Dashboard se sync hokar language change karne wala main function
+        function changeLanguage(lang) {
+            localStorage.setItem('kisaanLang', lang);
+            document.querySelectorAll('[data-translate]').forEach(el => {
+                let originalText = el.getAttribute('data-original-text') || el.innerText;
+                if (!el.getAttribute('data-original-text')) {
+                    el.setAttribute('data-original-text', originalText);
+                }
+                el.innerText = convertDigitsToLang(originalText, lang);
+            });
+        }
+
+        // 3. Page load hote hi saved language automatically apply ho jayegi
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedLang = localStorage.getItem('kisaanLang') || 'en';
+            changeLanguage(savedLang);
+        });
         // Load Companion Name from localStorage safely
         const companionName = localStorage.getItem('selectedCompanionName') || 'KisaanSaathi AI';
         const headerTitleElement = document.getElementById('headerTitleText');
@@ -331,49 +255,14 @@
             headerTitleElement.innerText = `(${companionName})`;
         }
 
-        // 5 Themes Cycling Handler
+        // Restore saved theme on load (bina button ke bhi theme sync bani rahegi)
         const themes = ['theme-light-yellow', 'theme-light-pink', 'theme-light-orange', 'theme-light-blue', 'theme-light-black'];
         let currentThemeIndex = 0;
-
-        function switchThemeCycle() {
-            currentThemeIndex = (currentThemeIndex + 1) % themes.length;
-            const body = document.getElementById('appBody');
-            body.className = themes[currentThemeIndex];
-            localStorage.setItem('kisaan-portal-theme-index', currentThemeIndex);
-        }
-
-        // Restore saved theme on load
         const savedThemeIndex = localStorage.getItem('kisaan-portal-theme-index');
         if (savedThemeIndex !== null) {
             currentThemeIndex = parseInt(savedThemeIndex);
             document.getElementById('appBody').className = themes[currentThemeIndex];
         }
-
-        // Multilingual Greetings Support
-        const greetings = {
-            'en': `Namaste! I'm your ${companionName} AI assistant. Ask me about crop health, soil, irrigation, pests, or market planning.`,
-            'hi': `Namaste! Main aapka ${companionName} assistant hoon. Aap mujhse fasal ki beemari, mitti ki jaanch ya mausam ke baare mein pooch sakte hain.`,
-            'mr': `Namaskar! Me tumcha ${companionName} assistant aahe. Tumhi mala pikancha aarogya, mati tapasni ya havamanabaddal vicharu sakta.`,
-            'gu': `Namaste! Hu tamaro ${companionName} assistant chhu. Tame mar pase pakni bimari, jamin ni tapasni ya havaman vishe puchhi sako chho.`,
-            'pa': `Namaste! Main tuhada ${companionName} assistant haan. Tusi fasal di bimari, mitti di janch ya mausam bare puchh sakde ho.`,
-            'bn': `Nomoshkar! Ami apnar ${companionName} assistant. Apni folechher shasthya ba abohawa somporke jiggasha korte paren.`,
-            'te': `Namaskaram! Nenu mee ${companionName} assistant. Panta arogyam, matti pariksha gurinchi nannu adagandi.`,
-            'ta': `Vanakkam! Naan ungalin ${companionName} assistant. Payir paathukappu matrum mann parishothanai patri kelungal.`,
-            'kn': `Namaskara! Naanu nimma ${companionName} assistant. Bele aarogya mattu haavamaana bagge keliri.`,
-            'ml': `Namaskaram! Njan ningalude ${companionName} assistant. Krishi arogyam, mannarisodhana kurichu chodikkuka.`,
-            'or': `Namaskar! Mun apanka ${companionName} assistant. Phasal swasthya ba abhaba bisayare puchi paribe.`,
-            'as': `Nomoskar! Moi apunar ${companionName} assistant. Sasyor swasthya ba botor bisayare sodhibo paribo.`,
-            'ur': `Namaste! Main aapka ${companionName} assistant hoon. Aap mujhse fasal ki beemari ya mausam ke baare mein pooch sakte hain.`
-        };
-
-        function toggleLanguage() {
-            const lang = document.getElementById('langToggle').value;
-            const greetingEl = document.getElementById('initialGreeting');
-            if (greetings[lang]) {
-                greetingEl.innerText = greetings[lang];
-            }
-        }
-        toggleLanguage();
 
         function triggerUpload() { document.getElementById('fileInput').click(); }
         function triggerCamera() { alert("Camera mode activated for crop analysis..."); }
@@ -415,7 +304,7 @@
             setTimeout(() => {
                 const botMsg = document.createElement('div');
                 botMsg.className = 'chat-bubble ai';
-                botMsg.innerText = `${companionName}: Aapke sawal "${text}" ke anusaar, fasal ki behtar growth ke liye uchit khad aur sinchai karein.`;
+                botMsg.innerText = `${companionName}: Aapke sawal "${text}" ke anusaار, fasal ki behtar growth ke liye uchit khad aur sinchai karein.`;
                 container.appendChild(botMsg);
                 container.scrollTop = container.scrollHeight;
             }, 800);

@@ -14,38 +14,15 @@
         body.theme-light-black { background: linear-gradient(to bottom, #1e293b 0%, #0f172a 50%, #020617 100%); --panel-bg: rgba(15, 23, 42, 0.88); --text-primary: #f8fafc; --text-muted: #94a3b8; --accent: #38bdf8; --input-bg: #0f172a; --border-color: #334155; }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
-        body { color: var(--text-primary); min-height: 100vh; display: flex; transition: background 0.3s, color 0.3s; }
-
-        /* Sidebar Structure */
-        .sidebar { width: 260px; background: var(--panel-bg); backdrop-filter: blur(10px); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; padding: 20px; height: 100vh; position: fixed; top: 0; left: 0; z-index: 40; }
-        
-        /* Exact Brand Logo Badge */
-        .brand-badge { display: flex; align-items: center; gap: 12px; margin-bottom: 25px; background: #ffffff; padding: 10px 14px; border-radius: 20px; border: 1px solid #fde047; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
-        .brand-logo-icon { font-size: 24px; line-height: 1; }
-        .brand-text strong { font-size: 15px; font-weight: 700; color: #1b3818; display: block; line-height: 1.2; letter-spacing: -0.2px; }
-        .brand-text small { font-size: 8.5px; color: #386641; font-weight: 700; letter-spacing: 0.4px; display: block; margin-top: 1px; }
-
-        .nav-links { display: flex; flex-direction: column; gap: 5px; flex: 1; overflow-y: auto; }
-        .nav-item { display: flex; align-items: center; gap: 12px; padding: 11px 14px; border-radius: 12px; font-size: 13px; font-weight: 500; color: var(--text-primary); text-decoration: none; transition: 0.2s; }
-        .nav-item:hover { background: rgba(0, 0, 0, 0.05); color: var(--accent); }
-        .nav-item.active { background: var(--accent); color: #fff; font-weight: 600; }
+        body { color: var(--text-primary); min-height: 100vh; display: flex; flex-direction: column; transition: background 0.3s, color 0.3s; }
 
         /* Main Content */
-        .main-content { margin-left: 260px; flex: 1; padding: 30px; display: flex; flex-direction: column; height: 100vh; overflow-y: auto; }
+        .main-content { flex: 1; padding: 30px; display: flex; flex-direction: column; width: 100%; max-width: 1400px; margin: 0 auto; }
 
-        /* Top Header & Controls */
-        .top-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        /* Top Header */
+        .top-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 15px; }
         .header-title-box h1 { font-size: 24px; font-weight: 700; color: var(--text-primary); }
         .header-title-box p { font-size: 13px; color: var(--text-muted); font-weight: 500; margin-top: 2px; }
-        
-        .header-controls { display: flex; gap: 12px; align-items: center; }
-        .control-select { background: var(--input-bg); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 20px; cursor: pointer; font-weight: 500; font-size: 13px; color: var(--text-primary); outline: none; }
-        
-        /* Sun / Moon Theme Toggle */
-        .sun-control-box { display: flex; align-items: center; justify-content: center; cursor: pointer; background: var(--panel-bg); width: 42px; height: 42px; border-radius: 50%; backdrop-filter: blur(10px); box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 1px solid var(--border-color); transition: transform 0.2s; }
-        .sun-control-box:hover { transform: scale(1.1); }
-        .sun-icon { width: 20px; height: 20px; border-radius: 50%; background: #facc15; box-shadow: 0 0 12px rgba(250, 204, 21, 0.9); transition: all 0.5s; }
-        body.theme-light-black .sun-icon { background: transparent; box-shadow: -4px 2px 0 0 #f8fafc; width: 16px; height: 16px; }
 
         /* Search & Filter Bar */
         .search-filter-bar { background: var(--panel-bg); backdrop-filter: blur(12px); border-radius: 20px; border: 1px solid var(--border-color); padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; gap: 15px; margin-bottom: 24px; box-shadow: 0 8px 25px rgba(0,0,0,0.03); flex-wrap: wrap; }
@@ -106,44 +83,21 @@
         .status-badge-pill.yellow { background: #fef9c3; color: #ca8a04; }
         .status-badge-pill.blue { background: #e0f2fe; color: #0284c7; }
 
-        /* Scheme Tips Accordion / Box */
+        /* Scheme Tips */
         .tip-item { font-size: 12px; font-weight: 500; color: var(--text-primary); padding: 8px 0; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; }
         .tip-item:last-child { border-bottom: none; }
 
-        /* Responsive Breakpoints */
         @media (max-width: 1024px) {
             .schemes-grid-layout { grid-template-columns: 1fr; }
             .catalog-cards-row { grid-template-columns: 1fr; }
         }
         @media (max-width: 768px) {
-            .sidebar { display: none; }
-            .main-content { margin-left: 0; padding: 15px; }
+            .main-content { padding: 15px; }
             .form-grid-row { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body id="appBody" class="theme-light-yellow">
-
-    <!-- Sidebar Structure with Exact Brand Logo Badge -->
-    <aside class="sidebar">
-        <div class="brand-badge">
-            <div class="brand-logo-icon"> 🌱</div>
-            <div class="brand-text">
-                <strong>KisaanSaathi</strong>
-                <small>SMART AGRICULTURE PORTAL</small>
-            </div>
-        </div>
-        <div class="nav-links">
-            <a href="dashboard.html" class="nav-item">🏠 Overview & Guide</a>
-            <a href="chatbotai.html" class="nav-item">🤖 AI Chatbot (Gemini)</a>
-            <a href="soil.html" class="nav-item">🧪 Soil & Crop Predictions</a>
-            <a href="weather.html" class="nav-item">🌦 Weather & Alerts</a>
-            <a href="tutorials.html" class="nav-item">🎥 Plant Tutorials & AI Video</a>
-            <a href="market.html" class="nav-item">💰 Market & Expense</a>
-            <a href="schemes.html" class="nav-item active">🏛️ Government Schemes</a>
-            <a href="profile.html" class="nav-item">👤 Profile Settings</a>
-        </div>
-    </aside>
 
     <!-- Main Content Area -->
     <div class="main-content">
@@ -151,27 +105,6 @@
             <div class="header-title-box">
                 <h1 id="pageHeading">🏛 Government Schemes</h1>
                 <p id="subBannerText">Discover and Apply for the Latest Agricultural Schemes & Subsidies</p>
-            </div>
-            <div class="header-controls">
-                <select class="control-select" id="langToggle" onchange="toggleLanguage()">
-                    <option value="en" selected>English</option>
-                    <option value="hi">हिंदी (Hindi)</option>
-                    <option value="mr">मराठी (Marathi)</option>
-                    <option value="pa">ਪੰਜਾਬੀ (Punjabi)</option>
-                    <option value="gu">ગુજરાતી (Gujarati)</option>
-                    <option value="bn">বাংলা (Bengali)</option>
-                    <option value="te">తెలుగు (Telugu)</option>
-                    <option value="ta">தமிழ் (Tamil)</option>
-                    <option value="kn">ಕನ್ನಡ (Kannada)</option>
-                    <option value="ml">മലയാളം (Malayalam)</option>
-                    <option value="or">ଓଡ଼ିଆ (Odia)</option>
-                    <option value="as">অসমীয়া (Assamese)</option>
-                    <option value="ur">اردو (Urdu)</option>
-                </select>
-
-                <div class="sun-control-box" onclick="switchThemeCycle()" title="Toggle Theme Palette">
-                    <div class="sun-icon"></div>
-                </div>
             </div>
         </header>
 
@@ -255,7 +188,7 @@
                         </div>
                         <div class="input-group">
                             <label>Aadhaar Number</label>
-                            <input type="text" id="aadhaarInput" class="input-field" value="XXXX-XXXX-4892">
+                            <input type="text" id="aadhaarInput" class="input-field" value="[Aadhaar Redacted]">
                         </div>
                     </div>
                     <div class="form-grid-row">
@@ -344,15 +277,9 @@
     </div>
 
     <script>
-        // Theme Cycling Logic (5 Themes)
+        // Theme Synchronizer from localStorage
         const themes = ['theme-light-yellow', 'theme-light-pink', 'theme-light-orange', 'theme-light-blue', 'theme-light-black'];
         let currentThemeIndex = 0;
-
-        function switchThemeCycle() {
-            currentThemeIndex = (currentThemeIndex + 1) % themes.length;
-            document.getElementById('appBody').className = themes[currentThemeIndex];
-            localStorage.setItem('kisaan-portal-theme-index', currentThemeIndex);
-        }
 
         const savedThemeIndex = localStorage.getItem('kisaan-portal-theme-index');
         if (savedThemeIndex !== null) {
@@ -395,7 +322,47 @@
                 }
             });
         }
+        // View Details Toggle
+        function toggleExtendedDetails() {
+            const box = document.getElementById('extendedInfoBox');
+            const btn = document.getElementById('viewDetailsBtn');
+            box.classList.toggle('active');
+            if (box.classList.contains('active')) {
+                btn.innerText = "Hide Details";
+            } else {
+                btn.innerText = "View Details";
+            }
+        }
 
+        // --- YAHAN SE LANGUAGE & NUMBER CONVERSION CODE ADD KAREIN ---
+
+        // 1. English numbers ko Hindi/Marathi numerals (०, १, २...) me convert karne ka function
+        function convertDigitsToLang(text, lang) {
+            if (lang !== 'hi' && lang !== 'mr') return text;
+            const englishDigits = ['0','1','2','3','4','5','6','7','8','9'];
+            const devanagariDigits = ['०','१','२','३','४','५','६','७','८','९'];
+            return text.toString().replace(/[0-9]/g, function(w) {
+                return devanagariDigits[englishDigits.indexOf(w)];
+            });
+        }
+
+        // 2. Dashboard se sync hokar language change karne wala main function
+        function changeLanguage(lang) {
+            localStorage.setItem('kisaanLang', lang);
+            document.querySelectorAll('[data-translate]').forEach(el => {
+                let originalText = el.getAttribute('data-original-text') || el.innerText;
+                if (!el.getAttribute('data-original-text')) {
+                    el.setAttribute('data-original-text', originalText);
+                }
+                el.innerText = convertDigitsToLang(originalText, lang);
+            });
+        }
+
+        // 3. Page load hote hi saved language automatically apply ho jayegi
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedLang = localStorage.getItem('kisaanLang') || 'en';
+            changeLanguage(savedLang);
+        });
         // AI Eligibility Checker live update
         function checkAiEligibility() {
             const acres = parseFloat(document.getElementById('farmSizeInput').value) || 0;
@@ -420,23 +387,6 @@
             setTimeout(() => {
                 alert("Receipt downloaded successfully!");
             }, 1000);
-        }
-
-        const translations = {
-            'en': { heading: '🏛 Government Schemes', banner: 'Discover and Apply for the Latest Agricultural Schemes & Subsidies' },
-            'hi': { heading: '🏛 सरकारी योजनाएं', banner: 'नवीनतम कृषि योजनाओं और सब्सिडी की खोज करें और आवेदन करें' },
-            'mr': { heading: '🏛 शासकीय योजना', banner: 'नवीनतम शेती योजना आणि अनुदानासाठी शोधा आणि अर्ज करा' },
-            'pa': { heading: '🏛 ਸਰਕਾਰੀ ਸਕੀਮਾਂ', banner: 'नवीनਤਮ ਖੇਤੀਬਾੜੀ ਸਕੀਮਾਂ ਅਤੇ ਸਬਸਿਡੀਆਂ ਦੀ ਭਾਲ ਕਰੋ ਅਤੇ ਅਪਲਾਈ ਕਰੋ' },
-            'gu': { heading: '🏛 સરકારી યોજનાઓ', banner: 'नवीनતમ કૃષિ યોજનાઓ અને સબસિડી માટે શોધો અને અરજી કરો' },
-            'bn': { heading: '🏛 সরকারি প্রকল্প', banner: 'সর্বশেষ কৃষি প্রকল্প এবং ভর্তুকির জন্য খোঁজ করুন এবং আবেদন করুন' }
-        };
-
-        function toggleLanguage() {
-            const lang = document.getElementById('langToggle').value;
-            if (translations[lang]) {
-                document.getElementById('pageHeading').innerText = translations[lang].heading;
-                document.getElementById('subBannerText').innerText = translations[lang].banner;
-            }
         }
     </script>
 </body>

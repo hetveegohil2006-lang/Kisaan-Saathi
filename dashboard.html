@@ -3,882 +3,260 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KisaanSaathi - Smart Agriculture Dashboard with AI Video & Gemini API</title>
+    <title>Dashboard - KisaanSaathi Smart Agriculture Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Ionicons for Navigation Icons -->
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        :root {
+            --primary-bg: #1b3818;
+            --active-bg: #386641;
+            --active-glow: rgba(56, 102, 65, 0.7);
+            --body-bg: #f0f4f8;
+            --transition-speed: 0.4s;
         }
 
-        body, html {
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+        body { display: flex; height: 100vh; overflow: hidden; background: var(--body-bg); animation: fadeInBody 0.8s ease-in-out; }
+
+        @keyframes fadeInBody {
+            from { opacity: 0; transform: scale(0.99); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Navigation Sidebar */
+        .navigation {
+            width: 90px;
+            height: 100%;
+            background: var(--primary-bg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 20px;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.15);
+            z-index: 100;
+            transition: background var(--transition-speed) ease;
+        }
+
+        .navigation ul {
+            list-style: none;
             width: 100%;
-            height: 100vh;
-            overflow: hidden;
-            transition: background 0.8s ease-in-out;
-        }
-
-        /* 5 Themes Color Palettes */
-        body.theme-light-yellow { background: linear-gradient(to bottom, #fef08a 0%, #fef9c3 50%, #e2e8f0 100%); --panel-bg: rgba(255, 255, 255, 0.88); --text-primary: #1b3818; --accent: #386641; }
-        body.theme-light-pink { background: linear-gradient(to bottom, #fbcfe8 0%, #fce7f3 50%, #e2e8f0 100%); --panel-bg: rgba(255, 255, 255, 0.88); --text-primary: #500724; --accent: #be185d; }
-        body.theme-light-orange { background: linear-gradient(to bottom, #fed7aa 0%, #ffedd5 50%, #e2e8f0 100%); --panel-bg: rgba(255, 255, 255, 0.88); --text-primary: #431407; --accent: #c2410c; }
-        body.theme-light-blue { background: linear-gradient(to bottom, #bae6fd 0%, #e0f2fe 50%, #cbd5e1 100%); --panel-bg: rgba(255, 255, 255, 0.88); --text-primary: #082f49; --accent: #0369a1; }
-        body.theme-light-black { background: linear-gradient(to bottom, #1e293b 0%, #0f172a 50%, #020617 100%); --panel-bg: rgba(15, 23, 42, 0.88); --text-primary: #f8fafc; --accent: #38bdf8; }
-
-        .app-layout {
-            display: flex;
-            width: 100vw;
-            height: 100vh;
-            overflow: hidden;
-        }
-
-        /* Sidebar Navigation */
-        .sidebar {
-            width: 280px;
-            background: var(--panel-bg);
-            backdrop-filter: blur(16px);
-            border-right: 1px solid rgba(255,255,255,0.3);
             display: flex;
             flex-direction: column;
-            padding: 20px;
-            z-index: 50;
-            box-shadow: 4px 0 20px rgba(0,0,0,0.05);
-        }
-
-        .brand-badge {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid rgba(0,0,0,0.08);
-            margin-bottom: 20px;
-        }
-
-        .brand-text strong {
-            display: block;
-            color: var(--text-primary);
-            font-size: 1.1rem;
-        }
-
-        .brand-text small {
-            display: block;
-            color: var(--accent);
-            font-size: 0.65rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-        }
-
-        .nav-menu {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            overflow-y: auto;
-            flex: 1;
-            padding-right: 4px;
-        }
-
-        .nav-item {
-            padding: 10px 14px;
-            border-radius: 12px;
-            color: var(--text-primary);
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            transition: all 0.2s ease;
-            background: rgba(255,255,255,0.04);
-        }
-
-        .nav-item:hover, .nav-item.active {
-            background: var(--accent);
-            color: #ffffff;
-            transform: translateX(4px);
-        }
-
-        /* Main Workspace Area */
-        .main-workspace {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            position: relative;
-        }
-
-        /* Top Header Bar */
-        .top-header {
-            height: 75px;
-            padding: 0 35px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--panel-bg);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(255,255,255,0.3);
-            z-index: 40;
-        }
-
-        .header-title h2 {
-            color: var(--text-primary);
-            font-size: 1.4rem;
-            font-weight: 700;
-        }
-
-        .header-controls {
-            display: flex;
-            align-items: center;
             gap: 15px;
-        }
-
-        .control-select {
-            padding: 8px 14px;
-            border-radius: 10px;
-            border: 1px solid rgba(0,0,0,0.15);
-            background: rgba(255,255,255,0.8);
-            color: #333;
-            font-weight: 600;
-            cursor: pointer;
-            outline: none;
-        }
-
-        .sun-control-box {
-            display: flex;
             align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            background: rgba(255, 255, 255, 0.85);
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            transition: transform 0.2s ease;
         }
 
-        .sun-icon {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: #facc15;
-            box-shadow: 0 0 15px rgba(250, 204, 21, 0.9);
-        }
-
-        /* Content Container Sections */
-        .content-container {
-            flex: 1;
-            padding: 30px;
-            overflow-y: auto;
+        .navigation ul li {
             position: relative;
-        }
-
-        .dashboard-tab {
-            display: none;
-            animation: fadeIn 0.4s ease-in-out;
-        }
-
-        .dashboard-tab.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Card System */
-        .card-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin-bottom: 25px;
-        }
-
-        .card {
-            background: var(--panel-bg);
-            backdrop-filter: blur(14px);
-            border: 1px solid rgba(255,255,255,0.4);
-            border-radius: 20px;
-            padding: 24px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.06);
-        }
-
-        .card h3 {
-            color: var(--text-primary);
-            font-size: 1.1rem;
-            margin-bottom: 12px;
+            width: 70px;
+            height: 70px;
+            border-radius: 16px;
             display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .card p, .card li {
-            color: var(--text-primary);
-            font-size: 0.95rem;
-            line-height: 1.5;
-            opacity: 0.85;
-        }
-
-        /* UI Elements & Buttons */
-        .btn {
-            background: var(--accent);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 10px;
-            border: none;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-        .btn:hover {
-            transform: scale(1.02);
-        }
-
-        input[type="text"], input[type="number"], select, textarea {
-            width: 100%;
-            padding: 10px 14px;
-            border-radius: 10px;
-            border: 1px solid rgba(0,0,0,0.15);
-            background: rgba(255,255,255,0.9);
-            margin: 8px 0 15px 0;
-            outline: none;
-            font-size: 0.95rem;
-        }
-
-        /* AI Chatbot Specific Styles */
-        .chat-wrapper {
-            display: flex;
-            flex-direction: column;
-            height: calc(100vh - 180px);
-            background: var(--panel-bg);
-            border-radius: 20px;
-            border: 1px solid rgba(255,255,255,0.4);
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.06);
-        }
-
-        .chat-messages {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .chat-bubble {
-            max-width: 75%;
-            padding: 12px 18px;
-            border-radius: 14px;
-            line-height: 1.5;
-            font-size: 0.95rem;
-        }
-
-        .chat-bubble.ai {
-            background: rgba(56, 102, 65, 0.12);
-            color: var(--text-primary);
-            align-self: flex-start;
-            border-bottom-left-radius: 2px;
-        }
-
-        .chat-bubble.user {
-            background: var(--accent);
-            color: #ffffff;
-            align-self: flex-end;
-            border-bottom-right-radius: 2px;
-        }
-
-        .chat-input-area {
-            padding: 15px 20px;
-            background: rgba(255,255,255,0.5);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            border-top: 1px solid rgba(0,0,0,0.08);
-        }
-
-        .chat-input-area input {
-            flex: 1;
-            margin: 0;
-            background: #ffffff;
-        }
-
-        .tool-icon-btn {
-            background: #ffffff;
-            border: 1px solid #ccc;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
             justify-content: center;
+            align-items: center;
             cursor: pointer;
-            font-size: 1.1rem;
-            transition: all 0.2s;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.3s ease;
         }
 
-        .tool-icon-btn:hover {
-            background: var(--accent);
-            color: #fff;
-            border-color: var(--accent);
-        }
-
-        /* Tables for Mandi & Markets */
-        .data-table {
+        .navigation ul li a {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             width: 100%;
-            border-collapse: collapse;
-            background: var(--panel-bg);
-            border-radius: 14px;
+            height: 100%;
+            color: #ffffff;
+            font-size: 26px;
+            text-decoration: none;
+            z-index: 2;
+        }
+
+        /* Active State with Soft Glow */
+        .navigation ul li.active {
+            background: var(--active-bg);
+            box-shadow: 0 0 25px var(--active-glow);
+            transform: scale(1.08);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .navigation ul li.active::before {
+            content: '';
+            position: absolute;
+            inset: 3px;
+            border-radius: 13px;
+            border: 2px solid rgba(255, 255, 255, 0.35);
+            animation: softPulse 2s infinite ease-in-out;
+        }
+
+        @keyframes softPulse {
+            0% { transform: scale(0.95); opacity: 0.8; }
+            50% { transform: scale(1.03); opacity: 0.3; }
+            100% { transform: scale(0.95); opacity: 0.8; }
+        }
+
+        .navigation ul li:hover:not(.active) {
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 16px;
+            transform: scale(1.05);
+        }
+
+        /* Click Ripple Effect */
+        .navigation ul li::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(0);
+            opacity: 0;
+            transition: transform 0.5s, opacity 0.5s;
+        }
+
+        .navigation ul li:active::after {
+            transform: scale(1.4);
+            opacity: 1;
+            transition: 0s;
+        }
+
+        /* Main Content Area */
+        main {
+            flex: 1;
+            height: 100vh;
+            background: #ffffff;
+            position: relative;
             overflow: hidden;
-            margin-top: 10px;
         }
 
-        .data-table th, .data-table td {
-            padding: 14px 18px;
-            text-align: left;
-            border-bottom: 1px solid rgba(0,0,0,0.08);
-            color: var(--text-primary);
+        #pageFrame {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: #f8fafc;
+            opacity: 1;
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
         }
 
-        .data-table th {
-            background: var(--accent);
-            color: white;
-            font-weight: 600;
+        .fade-out {
+            opacity: 0;
+            transform: translateY(10px);
         }
-    </style>
-    <style>
-        @media (max-width: 760px) {
-            body, html { height: auto; min-height: 100%; overflow: auto; }
-            .app-layout { min-height: 100vh; height: auto; flex-direction: column; }
-            .sidebar { width: 100%; min-height: auto; padding: 12px; }
-            .brand-badge { margin-bottom: 10px; }
-            .nav-menu { flex-direction: row; overflow-x: auto; padding-bottom: 4px; }
-            .nav-item { white-space: nowrap; }
-            .main-workspace { min-height: 0; }
-            .top-header { height: auto; min-height: 68px; padding: 12px 16px; gap: 10px; }
-            .header-title h2 { font-size: 1.1rem; }
-            .content-container { padding: 16px; overflow: visible; }
-            .card-grid { grid-template-columns: 1fr; }
-            .chat-input-area { flex-wrap: wrap; }
-            .chat-input-area input { min-width: 0; flex: 1 1 150px; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body { flex-direction: column-reverse; }
+            .navigation {
+                width: 100%;
+                height: 75px;
+                flex-direction: row;
+                padding-top: 0;
+                justify-content: center;
+            }
+            .navigation ul {
+                flex-direction: row;
+                gap: 5px;
+                justify-content: center;
+            }
+            .navigation ul li { width: 45px; height: 45px; }
+            .navigation ul li a { font-size: 20px; }
+            main { height: calc(100vh - 75px); }
         }
     </style>
 </head>
-<body class="theme-light-yellow" id="appBody">
+<body>
 
-    <div class="app-layout">
-        <!-- Sidebar Navigation -->
-        <aside class="sidebar">
-            <div class="brand-badge">
-                <span style="font-size: 1.8rem;">🌱</span>
-                <div class="brand-text">
-                    <strong>KisaanSaathi</strong>
-                    <small>SMART PORTAL</small>
-                </div>
-            </div>
-
-            <div class="nav-menu">
-                <div class="nav-item active" data-nav-key="overview" onclick="switchTab('overview', this)">🏠 Overview & Guide</div>
-                <div class="nav-item" data-nav-key="chatbot" onclick="switchTab('chatbot', this)">🤖 AI Chatbot (Gemini)</div>
-                <div class="nav-item" data-nav-key="soil" onclick="switchTab('soil', this)">🧪 Soil & Crop Predictions</div>
-                <div class="nav-item" data-nav-key="weather" onclick="switchTab('weather', this)">🌤️ Weather & Alerts</div>
-                <div class="nav-item" data-nav-key="tutorials" onclick="switchTab('tutorials', this)">🎥 Plant Tutorials & AI Video</div>
-                <div class="nav-item" data-nav-key="market" onclick="switchTab('market', this)">💰 Market & Expense</div>
-                <div class="nav-item" data-nav-key="schemes" onclick="switchTab('schemes', this)">🏛️ Govt. Schemes</div>
-                <div class="nav-item" data-nav-key="profile" onclick="switchTab('profile', this)">👤 Profile Settings</div>
-            </div>
-        </aside>
-
-        <!-- Main Workspace -->
-        <main class="main-workspace">
-            <!-- Header -->
-            <header class="top-header">
-                <div class="header-title">
-                    <h2 id="currentHeaderTitle">Overview & Guide</h2>
-                </div>
-                <div class="header-controls">
-                    <select class="control-select" id="langToggle" onchange="toggleLanguage()">
-                        <option value="en">English</option>
-                        <option value="hi">हिंदी (Hindi)</option>
-                        <option value="mr">मराठी (Marathi)</option>
-                        <option value="pa">ਪੰਜਾਬੀ (Punjabi)</option>
-                        <option value="gu">ગુજરાતી (Gujarati)</option>
-                        <option value="bn">বাংলা (Bengali)</option>
-                        <option value="te">తెలుగు (Telugu)</option>
-                        <option value="ta">தமிழ் (Tamil)</option>
-                        <option value="kn">ಕನ್ನಡ (Kannada)</option>
-                        <option value="ml">മലയാളം (Malayalam)</option>
-                        <option value="or">ଓଡ଼ିଆ (Odia)</option>
-                        <option value="as">অসমীয়া (Assamese)</option>
-                        <option value="ur">اردو (Urdu)</option>
-                    </select>
-                    <div class="sun-control-box" onclick="cycleTheme()" title="Click to change theme">
-                        <div class="sun-icon" id="sunIconMarker"></div>
-                    </div>
-                </div>
-            </header>
-
-            <!-- Scrollable Content Container -->
-            <div class="content-container">
-
-                <!-- 1. OVERVIEW & GUIDE -->
-                <div id="overview" class="dashboard-tab active">
-                    <div class="card-grid">
-                        <div class="card">
-                            <h3 id="welcomeHeading">👋 Welcome to KisaanSaathi</h3>
-                            <p id="welcomeDescription">Empowering farmers with state-of-the-art AI diagnostics, live mandi updates, automated fertilizer schedules, and direct government scheme integration.</p>
-                            <button class="btn" id="tourButton" style="margin-top: 15px;" onclick="alert('Starting interactive tour wizard...')">Start Getting Started Wizard</button>
-                        </div>
-                        <div class="card">
-                            <h3 id="faqHeading">📺 App Intro Guide & FAQs</h3>
-                            <ul style="padding-left: 18px; margin-top: 10px;">
-                                <li>How to upload crop photos for disease scans</li>
-                                <li>Understanding NPK soil health indicators</li>
-                                <li>Connecting your digital Kisan ID for fast subsidy approvals</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 2. AI CHATBOT WITH GEMINI API -->
-                <div id="chatbot" class="dashboard-tab">
-                    <div class="card" style="margin-bottom: 15px; padding: 12px 20px;">
-                        <p id="aiConnectionStatus" style="font-size: 0.855rem;">Connecting to the secure Gemini assistant...</p>
-                    </div>
-                    <div class="chat-wrapper">
-                        <div class="chat-messages" id="chatContainerBox" aria-live="polite">
-                            <div class="chat-bubble ai">Namaste! I’m your KisaanSaathi AI assistant. Ask me about crop health, soil, irrigation, pests, or market planning.</div>
-                        </div>
-                        <div class="chat-input-area">
-                            <label class="tool-icon-btn" title="Upload Plant Leaf Photo">
-                                📷 <input type="file" accept="image/*" style="display: none;" onchange="handleImageUpload(event)">
-                            </label>
-                            <label class="tool-icon-btn" title="Attach Soil Report / Receipt">
-                                📎 <input type="file" style="display: none;">
-                            </label>
-                            <button class="tool-icon-btn" title="Voice Input" onclick="alert('Voice recording started...')">🎙️</button>
-                            <input type="text" id="chatInputText" placeholder="Apna sawal yahan likhein..." onkeypress="if(event.key === 'Enter') sendGeminiMessage()">
-                            <button class="btn" id="sendChatButton" onclick="sendGeminiMessage()">Send</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 3. AI SOIL & CROP PREDICTIONS -->
-                <div id="soil" class="dashboard-tab">
-                    <div class="card-grid">
-                        <div class="card">
-                            <h3>🧪 NPK & Micronutrient Analysis</h3>
-                            <label>Nitrogen (N) mg/kg:</label>
-                            <input type="number" id="inputN" value="48">
-                            <label>Phosphorus (P) mg/kg:</label>
-                            <input type="number" id="inputP" value="26">
-                            <label>Potassium (K) mg/kg:</label>
-                            <input type="number" id="inputK" value="38">
-                            <button class="btn" onclick="runSoilAnalysis()">Run AI Soil Match</button>
-                        </div>
-                        <div class="card" id="soilResultCard">
-                            <h3>🌾 Suitability & Recommendations</h3>
-                            <p><strong>Top Crop Match:</strong> Wheat & Mustard (94% Match)</p>
-                            <p style="margin-top: 10px;"><strong>Organic Alternative:</strong> Vermicompost + Neem Cake mix for nitrogen enrichment.</p>
-                            <p style="margin-top: 10px;"><strong>Irrigation Schedule:</strong> Every 7 days (Moderate moisture required).</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 4. WEATHER & ALERTS -->
-                <div id="weather" class="dashboard-tab">
-                    <div class="card-grid">
-                        <div class="card">
-                            <h3>🌡️ Current Weather (Regional Zone)</h3>
-                            <p style="font-size: 1.8rem; font-weight: 700; margin: 10px 0;">31°C • Partly Cloudy</p>
-                            <p>Humidity: 65% | Wind: 14 km/h</p>
-                        </div>
-                        <div class="card" style="border-left: 5px solid #e11d48;">
-                            <h3>⚠️ Active Weather Advisory</h3>
-                            <p><strong>Heatwave Alert:</strong> High temperatures expected in next 48 hours. Ensure evening irrigation to protect young shoots.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 5. PLANT TUTORIALS & AI VIDEO GENERATOR -->
-                <div id="tutorials" class="dashboard-tab">
-                    <div class="card-grid">
-                        <div class="card">
-                            <h3>✨ AI Video & Animation Generator</h3>
-                            <p>Farming guide ke liye AI video ya animation script create karein.</p>
-                            <label style="margin-top: 10px; display:block;">Video Topic / Prompt:</label>
-                            <input type="text" id="aiVideoPrompt" placeholder="e.g. Tomato drip irrigation process animation...">
-                            <button class="btn" onclick="generateAIVideo()" style="margin-top: 5px;">Generate AI Video Script</button>
-                            <div id="aiVideoOutput" style="margin-top: 12px; font-size: 0.9rem; color: var(--accent); font-weight: 600;"></div>
-                        </div>
-                        <div class="card">
-                            <h3>🍅 Custom Tutorial Link Manager</h3>
-                            <p>Apna ya YouTube tutorial link yahan add karein:</p>
-                            <label style="margin-top: 10px; display:block;">Video Title:</label>
-                            <input type="text" id="customTitle" placeholder="e.g. Wheat Protection Guide">
-                            <label>YouTube / Video URL:</label>
-                            <input type="text" id="customUrl" placeholder="https://youtube.com/...">
-                            <button class="btn" onclick="addCustomTutorial()" style="margin-top: 5px;">Add Tutorial Link</button>
-                        </div>
-                    </div>
-                    <div class="card" id="tutorialListCard">
-                        <h3>📚 Available Plant Tutorials</h3>
-                        <ul style="padding-left: 18px; margin-top: 10px;" id="tutorialUL">
-                            <li><strong>Tomato Crop Management:</strong> Blight prevention & drip setup (<a href="https://www.youtube.com" target="_blank">Watch</a>)</li>
-                            <li><strong>Wheat Rust Control Guide:</strong> Organic pest management (<a href="https://www.youtube.com" target="_blank">Watch</a>)</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- 6. MARKET & EXPENDITURE -->
-                <div id="market" class="dashboard-tab">
-                    <div class="card">
-                        <h3>📈 Live Mandi Prices (Govt API Feed)</h3>
-                        <table class="data-table">
-                            <tr><th>Crop Name</th><th>Mandi Location</th><th>Price (Per Quintal)</th><th>Trend</th></tr>
-                            <tr><td>Gehu (Wheat)</td><td>Indore Mandi</td><td>₹2,320</td><td>📈 Up</td></tr>
-                            <tr><td>Dhaan (Paddy)</td><td>Karnal Mandi</td><td>₹2,200</td><td>➡️ Stable</td></tr>
-                            <tr><td>Sarso (Mustard)</td><td>Jaipur Mandi</td><td>₹5,750</td><td>📈 Up</td></tr>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- 7. GOVT SCHEMES -->
-                <div id="schemes" class="dashboard-tab">
-                    <div class="card-grid">
-                        <div class="card">
-                            <h3>🏛️ PM-KISAN Samman Nidhi</h3>
-                            <p>Direct income support of ₹6,000/year to eligible farmer families.</p>
-                            <button class="btn" style="margin-top: 15px;" onclick="alert('Redirecting to official Govt portal...')">Apply Online / Check Status</button>
-                        </div>
-                        <div class="card">
-                            <h3>🌾 Pradhan Mantri Fasal Bima Yojana</h3>
-                            <p>Comprehensive crop insurance against natural calamities.</p>
-                            <button class="btn" style="margin-top: 15px;" onclick="alert('Opening document checklist...')">View Document Checklist</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 8. PROFILE SETTINGS -->
-                <div id="profile" class="dashboard-tab">
-                    <div class="card" style="max-width: 600px; margin: 0 auto;">
-                        <h3>👤 Farmer Profile & Farm Settings</h3>
-                        <label>Farmer Name:</label>
-                        <input type="text" value="Ramesh Kumar">
-                        <label>Farm Size (Acres):</label>
-                        <input type="number" value="4.5">
-                        <label>Linked Kisan ID / Identifier:</label>
-                        <input type="text" value="[Kisan ID / Redacted securely]" readonly style="background: rgba(0,0,0,0.05);">
-                        <label>Notification Preference:</label>
-                        <select class="control-select" style="width: 100%; margin-top: 8px;">
-                            <option>SMS + WhatsApp Alerts</option>
-                            <option>In-App Only</option>
-                        </select>
-                        <button class="btn" style="margin-top: 20px;" onclick="alert('Profile settings updated successfully!')">Save Changes</button>
-                    </div>
-                </div>
-
-            </div>
-        </main>
+    <!-- Navigation Sidebar -->
+    <div class="navigation">
+        <ul>
+            <li class="list active" onclick="loadPage('overview.html', event)">
+                <a href="#"><ion-icon name="home-outline"></ion-icon></a>
+            </li>
+            <li class="list" onclick="loadPage('chatbotai.html', event)">
+                <a href="#"><ion-icon name="chatbubble-outline"></ion-icon></a>
+            </li>
+            <li class="list" onclick="loadPage('soil&crop.html', event)">
+                <a href="#"><ion-icon name="leaf-outline"></ion-icon></a>
+            </li>
+            <li class="list" onclick="loadPage('weather&alerts.html', event)">
+                <a href="#"><ion-icon name="cloud-outline"></ion-icon></a>
+            </li>
+            <li class="list" onclick="loadPage('tutorial.html', event)">
+                <a href="#"><ion-icon name="videocam-outline"></ion-icon></a>
+            </li>
+            <li class="list" onclick="loadPage('market&expense.html', event)">
+                <a href="#"><ion-icon name="cash-outline"></ion-icon></a>
+            </li>
+            <li class="list" onclick="loadPage('govtschemes.html', event)">
+                <a href="#"><ion-icon name="business-outline"></ion-icon></a>
+            </li>
+            <li class="list" onclick="loadPage('profile.html', event)">
+                <a href="#"><ion-icon name="person-outline"></ion-icon></a>
+            </li>
+        </ul>
     </div>
 
+    <!-- Main Content Area -->
+    <main id="content">
+        <iframe id="pageFrame" src="overview.html" frameborder="0"></iframe>
+    </main>
+
     <script>
-        /* Theme Cycling Logic */
-        const themes = ['theme-light-yellow', 'theme-light-pink', 'theme-light-orange', 'theme-light-blue', 'theme-light-black'];
-        let currentTheme = 0;
-
-        function cycleTheme() {
-            currentTheme = (currentTheme + 1) % themes.length;
-            document.getElementById('appBody').className = themes[currentTheme];
-        }
-
-        /* Tab Switcher Logic */
-        function switchTab(tabId, element) {
-            document.querySelectorAll('.dashboard-tab').forEach(tab => tab.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+        function loadPage(page, event) {
+            const iframe = document.getElementById('pageFrame');
             
-            document.getElementById(tabId).classList.add('active');
-            if(element) element.classList.add('active');
+            // Smooth fade-out transition
+            iframe.classList.add('fade-out');
 
-            const language = document.getElementById('langToggle').value;
-            document.getElementById('currentHeaderTitle').innerText = dashboardLanguages[language].titles[tabId];
-            if (tabId === 'chatbot') checkAiConnection();
-        }
-
-        /* Gemini API Chat Integration */
-        function getLanguageForAssistant() {
-            return document.getElementById('langToggle')?.value || 'en';
-        }
-
-        function createAiReply(prompt) {
-            const lang = getLanguageForAssistant();
-            const text = prompt.toLowerCase();
-            const responses = {
-                en: {
-                    disease: 'Based on your description, this looks like a fungal or nutrient stress issue. Check the leaf color and humidity. Reduce excess moisture, improve airflow, and use a recommended organic fungicide if the spread continues.',
-                    soil: 'Your soil should be tested for NPK balance. Keep nitrogen moderate, add phosphorus for root strength, and maintain potassium to improve drought resistance. Use compost and avoid overwatering.',
-                    water: 'Irrigate early morning or evening. For most crops, watering should match soil moisture and weather. Avoid watering leaves at midday to reduce fungal risk.',
-                    tulsi: 'Yes! For tulsi, use a pot with drainage holes and a well-draining soil mix. Give it 4–6 hours of morning sunlight, water only when the top 2–3 cm of soil feels dry, and pinch flower heads to encourage leafy growth. Avoid standing water and protect it from harsh afternoon heat.',
-                    market: 'Check mandi prices early in the morning. Track nearby mandi trends before selling so you can compare offers and avoid low-value rush decisions.',
-                    pest: 'Use integrated pest management: inspect leaves, remove affected plants, and prefer neem-based treatments before resorting to heavy chemical sprays.',
-                    fertilizer: 'Apply fertilizers in split doses and based on crop stage. Overuse nitrogen can burn roots and increase disease risk.',
-                    default: 'I can help with crop health, irrigation, soil, fertilizer, pest control, or market prices. Tell me the crop and your current problem, and I will suggest a practical next step.'
-                },
-                hi: {
-                    disease: 'आपके वर्णन के आधार पर यह फंगल या पोषक तत्व की कमी जैसी समस्या लग रही है। पत्ती के रंग और नमी का ध्यान रखें। अतिरिक्त नमी कम करें, हवा का प्रवाह बेहतर करें, और अगर संक्रमण बढ़े तो जैविक फंगसाइड का उपयोग करें।',
-                    soil: 'मिट्टी का NPK संतुलन जांचें। नाइट्रोजन को संतुलित रखें, जड़ों के लिए फॉस्फोरस दें, और सूखे के खिलाफ काली मिट्टी में पोटेशियम बढ़ाएं। कम्पोस्ट का उपयोग करें और अधिक पानी देने से बचें।',
-                    water: 'सिंचाई सुबह या शाम को करें। ज्यादातर फसलों के लिए मिट्टी की नमी और मौसम के अनुसार पानी दें। दोपहर में पत्तियों पर पानी न डालें ताकि फंगल रोग कम हो।',
-                    tulsi: 'तुलसी लगाने के लिए नीचे छेद वाला गमला और पानी निकालने वाली मिट्टी लें। इसे सुबह की 4–6 घंटे धूप दें। ऊपर की 2–3 सेंटीमीटर मिट्टी सूखने पर ही पानी दें। पत्तियों की बढ़त के लिए फूलों की कलियां तोड़ते रहें और गमले में पानी जमा न होने दें।',
-                    market: 'सुबह जल्दी मंडी भाव देखें। बेचने से पहले पास के मंडियों का ट्रेंड तुलना करें ताकि कम दाम के कारण नुकसान न हो।',
-                    pest: 'एकीकृत कीट प्रबंधन अपनाएं: पत्तियों की जांच करें, प्रभावित पौधे हटाएं, और भारी रासायनिक स्प्रे से पहले नीम आधारित उपचार अपनाएं।',
-                    fertilizer: 'उर्वरक को फसल के चरण के अनुसार अलग-अलग हिस्सों में दें। अधिक नाइट्रोजन देने से जड़ें खराब हो सकती हैं और बीमारी का खतरा बढ़ सकता है।',
-                    default: 'मैं फसल स्वास्थ्य, सिंचाई, मिट्टी, उर्वरक, कीट प्रबंधन या मंडी भाव में मदद कर सकता हूं। फसल और समस्या बताइए, मैं एक व्यावहारिक अगला कदम सुझाऊंगा।'
-                },
-                mr: {
-                    disease: 'तुमच्या वर्णनावरून हे बुरशी किंवा पोषक तत्वांची कमतरता यासारख्या समस्येमुळे झाले असू शकते. पानेचा रंग आणि ओलावा तपासा. जास्त ओलावा कमी करा, हवा दुरुस्त करा, आणि प्रसार वाढल्यास जैविक फंगसाइड वापरा.',
-                    soil: 'मातीचे NPK संतुलन तपासा. नत्र आणखी संतुलित ठेवा, मुळांच्या विकासासाठी फॉस्फरस द्या, आणि दुष्काळ प्रतिकारासाठी पोटॅशियम वाढवा. कंपोस्ट वापरा आणि जास्त पाणी टाळा.',
-                    water: 'सिंचन सकाळी किंवा संध्याकाळी करा. बहुतेक पिकांमध्ये मातीतील ओलावा आणि हवामानानुसार पाणी द्या. दुपारी पानांवर पाणी देऊ नका, जेणेकरून बुरशीचा धोका कमी होईल.',
-                    tulsi: 'तुळशीसाठी पाण्याचा निचरा होणारी माती आणि छिद्र असलेले कुंडे वापरा. सकाळचे ४–६ तास ऊन द्या. वरची २–३ सेंटीमीटर माती कोरडी झाली कीच पाणी द्या. पाणी साचू देऊ नका आणि भरपूर पाने येण्यासाठी फुलोरे छाटत रहा.',
-                    market: 'सकाळी लवकर मंडी भाव पाहा. विक्रीपूर्व नजीकच्या बाजारपेठांचा ट्रेंड तपासा, जेणेकरून कमी भावासाठी घाईने विक्री होणार नाही.',
-                    pest: 'एकत्रित कीटक व्यवस्थापन वापरा: पाने तपासा, प्रभावित रोपे काढून टाका, आणि जास्त रसायन वापरण्यापूर्वी नीम आधारित उपचार वापरा.',
-                    fertilizer: 'उर्वरक फळ वाढीच्या टप्प्यांनुसार विभाजित द्या. जास्त नत्र दिल्यास मुळे खराब होण्याचा आणि रोगांचा धोका वाढू शकतो.',
-                    default: 'मी पिकांचे आरोग्य, सिंचन, माती, शेणखत, कीटक नियंत्रण किंवा बाजारभावात मदत करू शकतो. फसल आणि समस्या सांगितल्यास मी पुढील योग्य पावले सुचवतो.'
-                }
-            };
-
-            const dictionary = responses[lang] || responses.en;
-            if (text.includes('tulsi') || text.includes('तुलसी') || text.includes('holy basil') || text.includes('basil') || text.includes('plant') || text.includes('पौधा') || text.includes('लगाएं')) return dictionary.tulsi || responses.en.tulsi;
-            if (text.includes('disease') || text.includes('leaf') || text.includes('yellow') || text.includes('fungus') || text.includes('blight')) return dictionary.disease;
-            if (text.includes('soil') || text.includes('npk') || text.includes('fertility') || text.includes('earth')) return dictionary.soil;
-            if (text.includes('water') || text.includes('irrig') || text.includes('rain') || text.includes('drip')) return dictionary.water;
-            if (text.includes('market') || text.includes('price') || text.includes('mandi') || text.includes('sell') || text.includes('sale')) return dictionary.market;
-            if (text.includes('pest') || text.includes('insect') || text.includes('bug') || text.includes('spray')) return dictionary.pest;
-            if (text.includes('fertil') || text.includes('nutrient') || text.includes('urea') || text.includes('compost')) return dictionary.fertilizer;
-            return dictionary.default;
-        }
-
-        function appendChatMessage(text, role) {
-            const box = document.getElementById('chatContainerBox');
-            const message = document.createElement('div');
-            message.className = `chat-bubble ${role}`;
-            message.innerText = text;
-            box.appendChild(message);
-            box.scrollTop = box.scrollHeight;
-            return message;
-        }
-
-        async function checkAiConnection() {
-            const status = document.getElementById('aiConnectionStatus');
-            try {
-                const response = await fetch('http://localhost:8080/api/health');
-                const result = await response.json();
-                status.innerText = result.configured
-                    ? 'Gemini is connected. Ask about crops, soil, irrigation, pests, or markets.'
-                    : 'Gemini backend is running, but GEMINI_API_KEY is not configured.';
-            } catch {
-                status.innerText = 'Gemini is offline. Start the backend with "python server.py" to get real AI answers.';
-            }
-        }
-
-        async function sendGeminiMessage() {
-            const input = document.getElementById('chatInputText');
-            const value = input.value.trim();
-            if(!value) return;
-
-            appendChatMessage(value, 'user');
-            input.value = '';
-            const sendButton = document.getElementById('sendChatButton');
-            sendButton.disabled = true;
-            sendButton.innerText = '...';
-
-            const thinkingMessage = appendChatMessage('Thinking...', 'ai');
-            try {
-                const response = await fetch('http://localhost:8080/api/chat', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        message: value,
-                        language: getLanguageForAssistant()
-                    })
-                });
-
-                const responseText = await response.text();
-                let result;
-                try {
-                    result = JSON.parse(responseText);
-                } catch {
-                    throw new Error(`Backend returned an invalid response (HTTP ${response.status}).`);
-                }
-
-                if (!response.ok) {
-                    throw new Error(result.error || 'The AI service returned an error.');
-                }
-
-                if (!result.reply) {
-                    throw new Error('Gemini returned an empty response.');
-                }
-                thinkingMessage.innerText = result.reply;
-            } catch (error) {
-                thinkingMessage.innerText = `I could not reach Gemini. ${error.message} Start the backend with "python server.py", then try again.`;
-            } finally {
-                sendButton.disabled = false;
-                sendButton.innerText = dashboardLanguages[getLanguageForAssistant()]?.send || 'Send';
-            }
-
-        }
-
-        function handleImageUpload(event) {
-            const box = document.getElementById('chatContainerBox');
-            const aiMsg = document.createElement('div');
-            aiMsg.className = 'chat-bubble ai';
-            aiMsg.innerText = "📷 Photo successfully uploaded! AI scan suggests early fungal stress. Improve spacing, reduce humidity, and use a safe organic spray if the spread continues.";
-            box.appendChild(aiMsg);
-            box.scrollTop = box.scrollHeight;
-        }
-
-        /* AI Video Generator Simulation */
-        function generateAIVideo() {
-            const prompt = document.getElementById('aiVideoPrompt').value;
-            const output = document.getElementById('aiVideoOutput');
-            if(!prompt) {
-                alert('Please enter a video topic or prompt first!');
-                return;
-            }
-            output.innerText = "⏳ Generating AI Animation script & storyboard for: '" + prompt + "'...\n✅ Success! AI Video timeline generated successfully.";
-        }
-
-        /* Add Custom Tutorial Link */
-        function addCustomTutorial() {
-            const title = document.getElementById('customTitle').value.trim();
-            const url = document.getElementById('customUrl').value.trim();
-            if(!title || !url) {
-                alert('Please fill in both title and URL!');
-                return;
-            }
-            let parsedUrl;
-            try {
-                parsedUrl = new URL(url);
-            } catch {
-                alert('Please enter a valid tutorial URL.');
-                return;
-            }
-            if (!['http:', 'https:'].includes(parsedUrl.protocol)) {
-                alert('Tutorial URL must start with http:// or https://.');
-                return;
-            }
-            const ul = document.getElementById('tutorialUL');
-            const li = document.createElement('li');
-            const titleElement = document.createElement('strong');
-            titleElement.textContent = title + ':';
-            const link = document.createElement('a');
-            link.href = parsedUrl.href;
-            link.target = '_blank';
-            link.rel = 'noopener noreferrer';
-            link.textContent = 'Watch';
-            li.append(titleElement, ' Tutorial link added (', link, ')');
-            ul.appendChild(li);
-            alert('Tutorial added successfully!');
-            document.getElementById('customTitle').value = '';
-            document.getElementById('customUrl').value = '';
-        }
-
-        function runSoilAnalysis() {
-            alert('Soil metrics analyzed successfully! Recommended fertilizer mix updated.');
-        }
-
-        const dashboardLanguages = {
-            en: {
-                nav: ['Overview & Guide', 'AI Chatbot (Gemini)', 'Soil & Crop Predictions', 'Weather & Alerts', 'Plant Tutorials & AI Video', 'Market & Expense', 'Government Schemes', 'Profile Settings'],
-                titles: { overview: 'Overview & Guide', chatbot: 'AI Chatbot (Gemini API)', soil: 'AI Soil & Crop Predictions', weather: 'Weather & Alerts', tutorials: 'Plant Tutorials & AI Video Generator', market: 'Market & Expense Tracker', schemes: 'Government Schemes Portal', profile: 'Profile & Settings' },
-                welcome: '👋 Welcome to KisaanSaathi', tour: 'Start Getting Started Wizard', send: 'Send', placeholder: 'Type your question here...'
-            },
-            hi: {
-                nav: ['अवलोकन और गाइड', 'AI चैटबॉट', 'मिट्टी और फसल सुझाव', 'मौसम और अलर्ट', 'पौधों के ट्यूटोरियल', 'बाज़ार और खर्च', 'सरकारी योजनाएं', 'प्रोफ़ाइल सेटिंग्स'],
-                titles: { overview: 'अवलोकन और गाइड', chatbot: 'AI चैटबॉट', soil: 'मिट्टी और फसल सुझाव', weather: 'मौसम और अलर्ट', tutorials: 'पौधों के ट्यूटोरियल', market: 'बाज़ार और खर्च ट्रैकर', schemes: 'सरकारी योजनाएं', profile: 'प्रोफ़ाइल और सेटिंग्स' },
-                welcome: '👋 किसानसाथी में आपका स्वागत है', tour: 'शुरुआती गाइड शुरू करें', send: 'भेजें', placeholder: 'अपना सवाल यहां लिखें...'
-            },
-            mr: {
-                nav: ['आढावा आणि मार्गदर्शक', 'AI चॅटबॉट', 'माती आणि पीक अंदाज', 'हवामान आणि सूचना', 'पीक ट्यूटोरियल', 'बाजार आणि खर्च', 'सरकारी योजना', 'प्रोफाइल सेटिंग्ज'],
-                titles: { overview: 'आढावा आणि मार्गदर्शक', chatbot: 'AI चॅटबॉट', soil: 'माती आणि पीक अंदाज', weather: 'हवामान आणि सूचना', tutorials: 'पीक ट्यूटोरियल', market: 'बाजार आणि खर्च', schemes: 'सरकारी योजना', profile: 'प्रोफाइल आणि सेटिंग्ज' },
-                welcome: '👋 किसानसाथीमध्ये स्वागत आहे', tour: 'सुरुवातीचा मार्गदर्शक सुरू करा', send: 'पाठवा', placeholder: 'तुमचा प्रश्न येथे लिहा...'
-            },
-            pa: {
-                nav: ['ਜਾਇਜ਼ਾ ਅਤੇ ਗਾਈਡ', 'AI ਚੈਟਬੋਟ', 'ਮਿੱਟੀ ਅਤੇ ਫਸਲ ਸੁਝਾਅ', 'ਮੌਸਮ ਅਤੇ ਚੇਤਾਵਨੀਆਂ', 'ਫਸਲ ਟਿਊਟੋਰਿਅਲ', 'ਮੰਡੀ ਅਤੇ ਖਰਚੇ', 'ਸਰਕਾਰੀ ਯੋਜਨਾਵਾਂ', 'ਪ੍ਰੋਫਾਈਲ ਸੈਟਿੰਗਾਂ'],
-                titles: { overview: 'ਜਾਇਜ਼ਾ ਅਤੇ ਗਾਈਡ', chatbot: 'AI ਚੈਟਬੋਟ', soil: 'ਮਿੱਟੀ ਅਤੇ ਫਸਲ ਸੁਝਾਅ', weather: 'ਮੌਸਮ ਅਤੇ ਚੇਤਾਵਨੀਆਂ', tutorials: 'ਫਸਲ ਟਿਊਟੋਰਿਅਲ', market: 'ਮੰਡੀ ਅਤੇ ਖਰਚੇ', schemes: 'ਸਰਕਾਰੀ ਯੋਜਨਾਵਾਂ', profile: 'ਪ੍ਰੋਫਾਈਲ ਅਤੇ ਸੈਟਿੰਗਾਂ' },
-                welcome: '👋 ਕਿਸਾਨਸਾਥੀ ਵਿੱਚ ਤੁਹਾਡਾ ਸਵਾਗਤ ਹੈ', tour: 'ਸ਼ੁਰੂਆਤੀ ਗਾਈਡ ਸ਼ੁਰੂ ਕਰੋ', send: 'ਭੇਜੋ', placeholder: 'ਆਪਣਾ ਸਵਾਲ ਇੱਥੇ ਲਿਖੋ...'
-            },
-            gu: {
-                nav: ['ઝાંખી અને માર્ગદર્શિકા', 'AI ચેટબોટ', 'માટી અને પાક સૂચનો', 'હવામાન અને ચેતવણીઓ', 'પાક ટ્યુટોરિયલ', 'બજાર અને ખર્ચ', 'સરકારી યોજનાઓ', 'પ્રોફાઇલ સેટિંગ્સ'],
-                titles: { overview: 'ઝાંખી અને માર્ગદર્શિકા', chatbot: 'AI ચેટબોટ', soil: 'માટી અને પાક સૂચનો', weather: 'હવામાન અને ચેતવણીઓ', tutorials: 'પાક ટ્યુટોરિયલ', market: 'બજાર અને ખર્ચ', schemes: 'સરકારી યોજનાઓ', profile: 'પ્રોફાઇલ અને સેટિંગ્સ' },
-                welcome: '👋 કિસાનસાથીમાં આપનું સ્વાગત છે', tour: 'પ્રારંભિક માર્ગદર્શિકા શરૂ કરો', send: 'મોકલો', placeholder: 'તમારો પ્રશ્ન અહીં લખો...'
-            },
-            bn: {
-                nav: ['পর্যালোচনা ও গাইড', 'AI চ্যাটবট', 'মাটি ও ফসল পরামর্শ', 'আবহাওয়া ও সতর্কতা', 'ফসল টিউটোরিয়াল', 'বাজার ও খরচ', 'সরকারি প্রকল্প', 'প্রোফাইল সেটিংস'],
-                titles: { overview: 'পর্যালোচনা ও গাইড', chatbot: 'AI চ্যাটবট', soil: 'মাটি ও ফসল পরামর্শ', weather: 'আবহাওয়া ও সতর্কতা', tutorials: 'ফসল টিউটোরিয়াল', market: 'বাজার ও খরচ', schemes: 'সরকারি প্রকল্প', profile: 'প্রোফাইল ও সেটিংস' },
-                welcome: '👋 কিসানসাথীতে স্বাগতম', tour: 'শুরু করার গাইড চালু করুন', send: 'পাঠান', placeholder: 'আপনার প্রশ্ন এখানে লিখুন...'
-            },
-            te: {
-                nav: ['అవలోకనం మరియు గైడ్', 'AI చాట్‌బాట్', 'నేల మరియు పంట సూచనలు', 'వాతావరణం మరియు హెచ్చరికలు', 'పంట ట్యుటోరియల్స్', 'మార్కెట్ మరియు ఖర్చులు', 'ప్రభుత్వ పథకాలు', 'ప్రొఫైల్ సెట్టింగ్‌లు'],
-                titles: { overview: 'అవలోకనం మరియు గైడ్', chatbot: 'AI చాట్‌బాట్', soil: 'నేల మరియు పంట సూచనలు', weather: 'వాతావరణం మరియు హెచ్చరికలు', tutorials: 'పంట ట్యుటోరియల్స్', market: 'మార్కెట్ మరియు ఖర్చులు', schemes: 'ప్రభుత్వ పథకాలు', profile: 'ప్రొఫైల్ మరియు సెట్టింగ్‌లు' },
-                welcome: '👋 కిసాన్‌సాథీకి స్వాగతం', tour: 'ప్రారంభ గైడ్ ప్రారంభించండి', send: 'పంపండి', placeholder: 'మీ ప్రశ్నను ఇక్కడ రాయండి...'
-            },
-            ta: {
-                nav: ['கண்ணோட்டம் மற்றும் வழிகாட்டி', 'AI சாட்பாட்', 'மண் மற்றும் பயிர் பரிந்துரைகள்', 'வானிலை மற்றும் எச்சரிக்கைகள்', 'பயிர் பயிற்சிகள்', 'சந்தை மற்றும் செலவுகள்', 'அரசுத் திட்டங்கள்', 'சுயவிவர அமைப்புகள்'],
-                titles: { overview: 'கண்ணோட்டம் மற்றும் வழிகாட்டி', chatbot: 'AI சாட்பாட்', soil: 'மண் மற்றும் பயிர் பரிந்துரைகள்', weather: 'வானிலை மற்றும் எச்சரிக்கைகள்', tutorials: 'பயிர் பயிற்சிகள்', market: 'சந்தை மற்றும் செலவுகள்', schemes: 'அரசுத் திட்டங்கள்', profile: 'சுயவிவரம் மற்றும் அமைப்புகள்' },
-                welcome: '👋 கிசான்சாத்திக்கு வரவேற்கிறோம்', tour: 'தொடக்க வழிகாட்டியைத் தொடங்குங்கள்', send: 'அனுப்பு', placeholder: 'உங்கள் கேள்வியை இங்கே எழுதுங்கள்...'
-            },
-            kn: {
-                nav: ['ಅವಲೋಕನ ಮತ್ತು ಮಾರ್ಗದರ್ಶಿ', 'AI ಚಾಟ್‌ಬಾಟ್', 'ಮಣ್ಣು ಮತ್ತು ಬೆಳೆ ಸಲಹೆಗಳು', 'ಹವಾಮಾನ ಮತ್ತು ಎಚ್ಚರಿಕೆಗಳು', 'ಬೆಳೆ ಟ್ಯುಟೋರಿಯಲ್‌ಗಳು', 'ಮಾರುಕಟ್ಟೆ ಮತ್ತು ವೆಚ್ಚ', 'ಸರ್ಕಾರಿ ಯೋಜನೆಗಳು', 'ಪ್ರೊಫೈಲ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳು'],
-                titles: { overview: 'ಅವಲೋಕನ ಮತ್ತು ಮಾರ್ಗದರ್ಶಿ', chatbot: 'AI ಚಾಟ್‌ಬಾಟ್', soil: 'ಮಣ್ಣು ಮತ್ತು ಬೆಳೆ ಸಲಹೆಗಳು', weather: 'ಹವಾಮಾನ ಮತ್ತು ಎಚ್ಚರಿಕೆಗಳು', tutorials: 'ಬೆಳೆ ಟ್ಯುಟೋರಿಯಲ್‌ಗಳು', market: 'ಮಾರುಕಟ್ಟೆ ಮತ್ತು ವೆಚ್ಚ', schemes: 'ಸರ್ಕಾರಿ ಯೋಜನೆಗಳು', profile: 'ಪ್ರೊಫೈಲ್ ಮತ್ತು ಸೆಟ್ಟಿಂಗ್‌ಗಳು' },
-                welcome: '👋 ಕಿಸಾನ್‌ಸಾಥಿಗೆ ಸ್ವಾಗತ', tour: 'ಆರಂಭಿಕ ಮಾರ್ಗದರ್ಶಿ ಪ್ರಾರಂಭಿಸಿ', send: 'ಕಳುಹಿಸಿ', placeholder: 'ನಿಮ್ಮ ಪ್ರಶ್ನೆಯನ್ನು ಇಲ್ಲಿ ಬರೆಯಿರಿ...'
-            },
-            ml: {
-                nav: ['അവലോകനവും ഗൈഡും', 'AI ചാറ്റ്ബോട്ട്', 'മണ്ണും വിള നിർദ്ദേശങ്ങളും', 'കാലാവസ്ഥയും മുന്നറിയിപ്പുകളും', 'വിള ട്യൂട്ടോറിയലുകൾ', 'വിപണിയും ചെലവും', 'സർക്കാർ പദ്ധതികൾ', 'പ്രൊഫൈൽ ക്രമീകരണങ്ങൾ'],
-                titles: { overview: 'അവലോകനവും ഗൈഡും', chatbot: 'AI ചാറ്റ്ബോട്ട്', soil: 'മണ്ണും വിള നിർദ്ദേശങ്ങളും', weather: 'കാലാവസ്ഥയും മുന്നറിയിപ്പുകളും', tutorials: 'വിള ട്യൂട്ടോറിയലുകൾ', market: 'വിപണിയും ചെലവും', schemes: 'സർക്കാർ പദ്ധതികൾ', profile: 'പ്രൊഫൈലും ക്രമീകരണങ്ങളും' },
-                welcome: '👋 കിസാൻസാഥിയിലേക്ക് സ്വാഗതം', tour: 'തുടക്ക ഗൈഡ് ആരംഭിക്കുക', send: 'അയയ്ക്കുക', placeholder: 'നിങ്ങളുടെ ചോദ്യം ഇവിടെ എഴുതുക...'
-            },
-            or: {
-                nav: ['ସମୀକ୍ଷା ଏବଂ ଗାଇଡ୍', 'AI ଚାଟବଟ୍', 'ମାଟି ଏବଂ ଫସଲ ପରାମର୍ଶ', 'ପାଣିପାଗ ଏବଂ ସତର୍କତା', 'ଫସଲ ଟ୍ୟୁଟୋରିଆଲ୍', 'ବଜାର ଏବଂ ଖର୍ଚ୍ଚ', 'ସରକାରୀ ଯୋଜନା', 'ପ୍ରୋଫାଇଲ୍ ସେଟିଂସ୍'],
-                titles: { overview: 'ସମୀକ୍ଷା ଏବଂ ଗାଇଡ୍', chatbot: 'AI ଚାଟବଟ୍', soil: 'ମାଟି ଏବଂ ଫସଲ ପରାମର୍ଶ', weather: 'ପାଣିପାଗ ଏବଂ ସତର୍କତା', tutorials: 'ଫସଲ ଟ୍ୟୁଟୋରିଆଲ୍', market: 'ବଜାର ଏବଂ ଖର୍ଚ୍ଚ', schemes: 'ସରକାରୀ ଯୋଜନା', profile: 'ପ୍ରୋଫାଇଲ୍ ଏବଂ ସେଟିଂସ୍' },
-                welcome: '👋 କିସାନସାଥୀକୁ ସ୍ୱାଗତ', tour: 'ଆରମ୍ଭିକ ଗାଇଡ୍ ଆରମ୍ଭ କରନ୍ତୁ', send: 'ପଠାନ୍ତୁ', placeholder: 'ଆପଣଙ୍କ ପ୍ରଶ୍ନ ଏଠାରେ ଲେଖନ୍ତୁ...'
-            },
-            as: {
-                nav: ['অভাৰভিউ আৰু গাইড', 'AI চেটবট', 'মাটি আৰু শস্যৰ পৰামৰ্শ', 'বতৰ আৰু সতৰ্কবাণী', 'শস্যৰ টিউটোৰিয়েল', 'বজাৰ আৰু খৰচ', 'চৰকাৰী আঁচনি', 'প্ৰ’ফাইল ছেটিংছ'],
-                titles: { overview: 'অভাৰভিউ আৰু গাইড', chatbot: 'AI চেটবট', soil: 'মাটি আৰু শস্যৰ পৰামৰ্শ', weather: 'বতৰ আৰু সতৰ্কবাণী', tutorials: 'শস্যৰ টিউটোৰিয়েল', market: 'বজাৰ আৰু খৰচ', schemes: 'চৰকাৰী আঁচনি', profile: 'প্ৰ’ফাইল আৰু ছেটিংছ' },
-                welcome: '👋 কিষাণসাথীলৈ স্বাগতম', tour: 'আৰম্ভণিৰ গাইড আৰম্ভ কৰক', send: 'পঠিয়াওক', placeholder: 'আপোনাৰ প্ৰশ্ন ইয়াত লিখক...'
-            },
-            ur: {
-                nav: ['جائزہ اور رہنمائی', 'AI چیٹ بوٹ', 'مٹی اور فصل کے مشورے', 'موسم اور انتباہات', 'فصل کے ٹیوٹوریلز', 'منڈی اور اخراجات', 'سرکاری اسکیمیں', 'پروفائل سیٹنگز'],
-                titles: { overview: 'جائزہ اور رہنمائی', chatbot: 'AI چیٹ بوٹ', soil: 'مٹی اور فصل کے مشورے', weather: 'موسم اور انتباہات', tutorials: 'فصل کے ٹیوٹوریلز', market: 'منڈی اور اخراجات', schemes: 'سرکاری اسکیمیں', profile: 'پروفائل اور سیٹنگز' },
-                welcome: '👋 کسان ساتھی میں خوش آمدید', tour: 'ابتدائی رہنمائی شروع کریں', send: 'بھیجیں', placeholder: 'اپنا سوال یہاں لکھیں...'
-            }
-        };
-
-        function applyLanguage(language) {
-            const content = dashboardLanguages[language] || dashboardLanguages.en;
-            document.querySelectorAll('.nav-item').forEach((item, index) => {
-                item.innerText = `${item.innerText.split(' ')[0]} ${content.nav[index]}`;
+            setTimeout(() => {
+                iframe.src = page;
+                iframe.onload = () => {
+                    iframe.classList.remove('fade-out');
+                    syncLanguageToIframe(); // Automatically pass selected language to sub-page
+                };
+            }, 250);
+            
+            // Update active state in nav bar
+            document.querySelectorAll('.navigation ul li').forEach(item => {
+                item.classList.remove('active');
             });
-            document.getElementById('welcomeHeading').innerText = content.welcome;
-            document.getElementById('tourButton').innerText = content.tour;
-            document.getElementById('sendChatButton').innerText = content.send;
-            document.getElementById('chatInputText').placeholder = content.placeholder;
-            const activeTab = document.querySelector('.dashboard-tab.active');
-            if (activeTab) {
-                document.getElementById('currentHeaderTitle').innerText = content.titles[activeTab.id];
+            
+            if(event && event.currentTarget) {
+                event.currentTarget.classList.add('active');
             }
-            localStorage.setItem('kisaanSaathiDashboardLanguage', language);
         }
 
-        function toggleLanguage() {
-            applyLanguage(document.getElementById('langToggle').value);
+        // Sync stored language to the iframe content window
+        function syncLanguageToIframe() {
+            try {
+                const iframeWindow = document.getElementById('pageFrame').contentWindow;
+                const savedLang = localStorage.getItem('kisaanLang') || 'en';
+                if (iframeWindow && typeof iframeWindow.changeLanguage === 'function') {
+                    iframeWindow.changeLanguage(savedLang);
+                }
+            } catch (e) {
+                console.log("Language synchronization info: iframe cross-origin restriction or handler missing.");
+            }
         }
 
-        const savedDashboardLanguage = localStorage.getItem('kisaanSaathiDashboardLanguage') || 'en';
-        document.getElementById('langToggle').value = dashboardLanguages[savedDashboardLanguage] ? savedDashboardLanguage : 'en';
-        applyLanguage(document.getElementById('langToggle').value);
+        // Global Theme Customizer
+        function setThemePalette(primaryColor, activeColor, glowColor) {
+            const root = document.documentElement;
+            root.style.setProperty('--primary-bg', primaryColor);
+            root.style.setProperty('--active-bg', activeColor);
+            root.style.setProperty('--active-glow', glowColor);
+            localStorage.setItem('kisaanTheme', JSON.stringify({primaryColor, activeColor, glowColor}));
+        }
+
+        // Restore saved settings on load
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('kisaanTheme');
+            if (savedTheme) {
+                const {primaryColor, activeColor, glowColor} = JSON.parse(savedTheme);
+                setThemePalette(primaryColor, activeColor, glowColor);
+            }
+        });
     </script>
 </body>
 </html>

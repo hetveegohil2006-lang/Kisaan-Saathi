@@ -18,55 +18,15 @@
         body.theme-light-black { background: linear-gradient(to bottom, #1e293b 0%, #0f172a 50%, #020617 100%); --panel-bg: rgba(15, 23, 42, 0.88); --text-primary: #f8fafc; --text-muted: #94a3b8; --accent: #38bdf8; --input-bg: #0f172a; --border-color: #334155; }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
-        body { color: var(--text-primary); min-height: 100vh; display: flex; transition: background 0.3s, color 0.3s; }
-
-        /* Sidebar Structure with Magic Navigation Animation Effect */
-        .sidebar { width: 280px; background: var(--panel-bg); backdrop-filter: blur(10px); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; padding: 20px; height: 100vh; position: fixed; top: 0; left: 0; z-index: 40; }
-        
-        /* Brand Logo Badge */
-        .brand-badge { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; background: #ffffff; padding: 10px 14px; border-radius: 20px; border: 1px solid #fde047; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
-        body.theme-light-black .brand-badge { background: #0f172a; border-color: #334155; }
-        .brand-logo-icon { font-size: 24px; line-height: 1; }
-        .brand-text strong { font-size: 15px; font-weight: 700; color: #1b3818; display: block; line-height: 1.2; letter-spacing: -0.2px; }
-        body.theme-light-black .brand-text strong { color: #f8fafc; }
-        .brand-text small { font-size: 8.5px; color: #386641; font-weight: 700; letter-spacing: 0.4px; display: block; margin-top: 1px; }
-
-        /* Magic Navigation Container & Sliding Indicator */
-        .nav-links { display: flex; flex-direction: column; gap: 4px; flex: 1; overflow-y: auto; position: relative; }
-        
-        /* Magic Sliding Bubble Indicator */
-        .magic-indicator {
-            position: absolute;
-            left: 0;
-            width: 100%;
-            height: 44px;
-            background: var(--accent);
-            border-radius: 12px;
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            z-index: 1;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
-        }
-
-        .nav-item { display: flex; align-items: center; gap: 12px; padding: 11px 14px; border-radius: 12px; font-size: 13px; font-weight: 500; color: var(--text-primary); text-decoration: none; transition: color 0.3s; position: relative; z-index: 2; height: 44px; }
-        .nav-item:hover { color: var(--accent); }
-        body.theme-light-black .nav-item:hover { color: #38bdf8; }
-        .nav-item.active { color: #fff !important; font-weight: 600; }
+        body { color: var(--text-primary); min-height: 100vh; display: flex; transition: background 0.3s, color 0.3s; justify-content: center; }
 
         /* Main Content */
-        .main-content { margin-left: 280px; flex: 1; padding: 30px; display: flex; flex-direction: column; height: 100vh; overflow-y: auto; }
+        .main-content { width: 100%; max-width: 1200px; padding: 30px; display: flex; flex-direction: column; min-height: 100vh; }
 
-        /* Top Header & Controls */
+        /* Top Header */
         .top-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 15px; }
         .header-title-box h1 { font-size: 24px; font-weight: 700; color: var(--text-primary); }
         .header-title-box p { font-size: 13px; color: var(--text-muted); font-weight: 500; margin-top: 2px; }
-        
-        .header-controls { display: flex; gap: 12px; align-items: center; }
-        .control-select { background: var(--input-bg); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 20px; cursor: pointer; font-weight: 500; font-size: 13px; color: var(--text-primary); outline: none; }
-        
-        .sun-control-box { display: flex; align-items: center; justify-content: center; cursor: pointer; background: var(--panel-bg); width: 42px; height: 42px; border-radius: 50%; backdrop-filter: blur(10px); box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 1px solid var(--border-color); transition: transform 0.2s; }
-        .sun-control-box:hover { transform: scale(1.1); }
-        .sun-icon { width: 20px; height: 20px; border-radius: 50%; background: #facc15; box-shadow: 0 0 12px rgba(250, 204, 21, 0.9); transition: all 0.5s; }
-        body.theme-light-black .sun-icon { background: transparent; box-shadow: -4px 2px 0 0 #f8fafc; width: 16px; height: 16px; }
 
         /* Utility Bar: Voice Search & Export */
         .utility-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 15px; margin-bottom: 24px; }
@@ -114,67 +74,21 @@
             .utility-grid { grid-template-columns: 1fr; }
         }
         @media (max-width: 768px) {
-            .sidebar { display: none; }
-            .main-content { margin-left: 0; padding: 15px; }
+            .main-content { padding: 15px; }
             .dashboard-grid-3 { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body id="appBody" class="theme-light-yellow">
 
-    <!-- Sidebar Structure with Magic Navigation Sliding Indicator -->
-    <aside class="sidebar">
-        <div class="brand-badge">
-            <div class="brand-logo-icon">🌱</div>
-            <div class="brand-text">
-                <strong>KisaanSaathi</strong>
-                <small>SMART AGRICULTURE PORTAL</small>
-            </div>
-        </div>
-        <div class="nav-links" id="navLinksContainer">
-            <!-- Magic Sliding Bubble Indicator Element -->
-            <div class="magic-indicator" id="magicIndicator"></div>
-
-            <a href="dashboard.html" class="nav-item">🏠 Overview & Guide</a>
-            <a href="chatbotai.html" class="nav-item">🤖 AI Chatbot (Gemini)</a>
-            <a href="soil.html" class="nav-item">🧪 Soil & Crop Predictions</a>
-            <a href="weather.html" class="nav-item">🌦 Weather & Alerts</a>
-            <a href="tutorials.html" class="nav-item">🎥 Plant Tutorials & AI Video</a>
-            <a href="market.html" class="nav-item active">💰 Market & Expenses</a>
-            <a href="schemes.html" class="nav-item">🏛 Government Schemes</a>
-            <a href="profile.html" class="nav-item">👤 Profile Settings</a>
-        </div>
-    </aside>
-
     <!-- Main Content Area -->
     <div class="main-content">
         
-        <!-- Top Header & Controls -->
+        <!-- Top Header -->
         <header class="top-header">
             <div class="header-title-box">
                 <h1 id="pageHeading">💰 Market & Expenses Dashboard</h1>
                 <p id="subBannerText">Real-time mandi prices, smart expense tracker, and profit calculator</p>
-            </div>
-            <div class="header-controls">
-                <select class="control-select" id="langToggle" onchange="toggleLanguage()">
-                    <option value="en" selected>English</option>
-                    <option value="hi">हिंदी (Hindi)</option>
-                    <option value="mr">मराठी (Marathi)</option>
-                    <option value="pa">ਪੰਜਾਬੀ (Punjabi)</option>
-                    <option value="gu">ગુજરાતી (Gujarati)</option>
-                    <option value="bn">বাংলা (Bengali)</option>
-                    <option value="te">తెలుగు (Telugu)</option>
-                    <option value="ta">தமிழ் (Tamil)</option>
-                    <option value="kn">ಕನ್ನಡ (Kannada)</option>
-                    <option value="ml">മലയാളം (Malayalam)</option>
-                    <option value="or">ଓଡ଼ିଆ (Odia)</option>
-                    <option value="as">অসমীয়া (Assamese)</option>
-                    <option value="ur">اردو (Urdu)</option>
-                </select>
-
-                <div class="sun-control-box" onclick="switchThemeCycle()" title="Toggle Theme Palette">
-                    <div class="sun-icon"></div>
-                </div>
             </div>
         </header>
 
@@ -288,7 +202,6 @@
                         <option value="oct">October </option>
                         <option value="nov">November </option>
                         <option value="dec">December </option>
-
                     </select>
                 </div>
 
@@ -360,44 +273,10 @@
     </div>
 
     <script>
-        // Theme Cycling Logic (5 Themes matching Soil & Crop file)
+        // Theme Synchronizer from localStorage (5 Themes matching Soil & Crop file)
         const themes = ['theme-light-yellow', 'theme-light-pink', 'theme-light-orange', 'theme-light-blue', 'theme-light-black'];
-        let currentThemeIndex = 0;
-
-        function switchThemeCycle() {
-            currentThemeIndex = (currentThemeIndex + 1) % themes.length;
-            document.getElementById('appBody').className = themes[currentThemeIndex];
-            localStorage.setItem('kisaan-portal-theme-index', currentThemeIndex);
-        }
-
-        const savedThemeIndex = localStorage.getItem('kisaan-portal-theme-index');
-        if (savedThemeIndex !== null) {
-            currentThemeIndex = parseInt(savedThemeIndex);
-            document.getElementById('appBody').className = themes[currentThemeIndex];
-        }
-
-        // Magic Navigation Indicator Position & Click Animation Logic
-        const activeItem = document.querySelector('.nav-item.active');
-        const indicator = document.getElementById('magicIndicator');
-
-        function updateIndicatorPosition(element) {
-            const index = Array.from(element.parentNode.querySelectorAll('.nav-item')).indexOf(element);
-            // 44px item height + 4px gap per item
-            const topPosition = index * 48; 
-            indicator.style.transform = `translateY(${topPosition}px)`;
-        }
-
-        if (activeItem) {
-            updateIndicatorPosition(activeItem);
-        }
-
-        document.querySelectorAll('.nav-item').forEach(item => {
-            item.addEventListener('click', function(e) {
-                document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
-                this.classList.add('active');
-                updateIndicatorPosition(this);
-            });
-        });
+        let currentThemeIndex = parseInt(localStorage.getItem('kisaan-portal-theme-index') || '0');
+        document.getElementById('appBody').className = themes[currentThemeIndex];
 
         // Chart.js Market Price Trend Graph
         const ctx = document.getElementById('marketTrendChart').getContext('2d');
@@ -424,19 +303,59 @@
                 }
             }
         });
+// View Details Toggle
+        function toggleExtendedDetails() {
+            const box = document.getElementById('extendedInfoBox');
+            const btn = document.getElementById('viewDetailsBtn');
+            box.classList.toggle('active');
+            if (box.classList.contains('active')) {
+                btn.innerText = "Hide Details";
+            } else {
+                btn.innerText = "View Details";
+            }
+        }
 
+        // --- YAHAN SE LANGUAGE & NUMBER CONVERSION CODE ADD KAREIN ---
+
+        // 1. English numbers ko Hindi/Marathi numerals (०, १, २...) me convert karne ka function
+        function convertDigitsToLang(text, lang) {
+            if (lang !== 'hi' && lang !== 'mr') return text;
+            const englishDigits = ['0','1','2','3','4','5','6','7','8','9'];
+            const devanagariDigits = ['०','१','२','३','४','५','६','७','८','९'];
+            return text.toString().replace(/[0-9]/g, function(w) {
+                return devanagariDigits[englishDigits.indexOf(w)];
+            });
+        }
+
+        // 2. Dashboard se sync hokar language change karne wala main function
+        function changeLanguage(lang) {
+            localStorage.setItem('kisaanLang', lang);
+            document.querySelectorAll('[data-translate]').forEach(el => {
+                let originalText = el.getAttribute('data-original-text') || el.innerText;
+                if (!el.getAttribute('data-original-text')) {
+                    el.setAttribute('data-original-text', originalText);
+                }
+                el.innerText = convertDigitsToLang(originalText, lang);
+            });
+        }
+
+        // 3. Page load hote hi saved language automatically apply ho jayegi
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedLang = localStorage.getItem('kisaanLang') || 'en';
+            changeLanguage(savedLang);
+        });
         // Monthly Custom Expense State Management
         let monthlyExpensesData = {
             'jan': [ { name: 'Seeds & Prep', amount: 4000 }, { name: 'Labor Support', amount: 5000 } ],
             'feb': [ { name: 'Irrigation Pumps', amount: 3000 }, { name: 'Fertilizers', amount: 6000 } ],
             'mar': [ { name: 'Seeds Expense', amount: 4500 }, { name: 'Irrigation & Power', amount: 3200 }, { name: 'Fertilizer & Chemical', amount: 8500 }, { name: 'Labor & Transport', amount: 6800 } ],
-            'apr': [], 'may': [], 'jun': []
+            'apr': [], 'may': [], 'jun': [], 'jul': [], 'aug': [], 'sep': [], 'oct': [], 'nov': [], 'dec': []
         };
 
         function loadMonthExpenses() {
             const month = document.getElementById('expenseMonthSelect').value;
             const container = document.getElementById('customExpenseListContainer');
-            const items = monthlyExpensesData[month];
+            const items = monthlyExpensesData[month] || [];
 
             container.innerHTML = '';
             let totalSum = 0;
@@ -489,9 +408,8 @@
 
         // Profit & Expense Calculation Logic
         function calculateProfit() {
-            // Recalculate based on active month items sum
             const month = document.getElementById('expenseMonthSelect').value;
-            const items = monthlyExpensesData[month];
+            const items = monthlyExpensesData[month] || [];
             const totalExpenses = items.reduce((sum, item) => sum + item.amount, 0);
             calculateProfitWithTotal(totalExpenses);
         }
@@ -525,23 +443,6 @@
         function exportReports() {
             alert("Preparing KisaanSaathi Market & Expense Report for download...");
             setTimeout(() => { alert("Export successful! PDF/Excel report saved to your downloads."); }, 1000);
-        }
-
-        const translations = {
-            'en': { heading: '💰 Market & Expenses Dashboard', banner: 'Real-time mandi prices, smart expense tracker, and profit calculator' },
-            'hi': { heading: '💰 बाज़ार और खर्च डैशबोर्ड', banner: 'वास्तविक समय मंडी भाव, स्मार्ट खर्च ट्रैकर और लाभ कैलकुलेटर' },
-            'mr': { heading: '💰 बाजार आणि खर्च डॅशबोर्ड', banner: 'रिअल-टाइम बाजारभाव, स्मार्ट खर्च ट्रॅकर आणि नफा कॅल्क्युलेटर' },
-            'pa': { heading: '💰 ਬਾਜ਼ਾਰ ਅਤੇ ਖਰਚ ਡੈਸ਼ਬورد', banner: 'ਅਸਲ-ਸਮੇਂ ਦੀ ਮੰਡੀ ਕੀਮਤਾਂ, ਸਮਾਰਟ ਖਰਚ ਟ੍ਰੈਕਰ ਅਤੇ ਲਾਭ ਕੈਲਕੁਲੇਟਰ' },
-            'gu': { heading: '💰 બજાર અને ખર્ચ ડેશબોર્ડ', banner: 'વાસ્તવિક સમય મંડી ભાવ, સ્માર્ટ ખર્ચ ટ્રેકર અને નફા કેલ્ક્યુલેટર' },
-            'bn': { heading: '💰 বাজার ও খরচ ড্যাশবোর্ড', banner: 'রিয়েল-টাইম মান্ডি দাম, স্মার্ট খরচ ট্র্যাকার এবং লাভ ক্যালকুলেটর' }
-        };
-
-        function toggleLanguage() {
-            const lang = document.getElementById('langToggle').value;
-            if (translations[lang]) {
-                document.getElementById('pageHeading').innerText = translations[lang].heading;
-                document.getElementById('subBannerText').innerText = translations[lang].banner;
-            }
         }
     </script>
 </body>

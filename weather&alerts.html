@@ -19,40 +19,18 @@
         body.theme-light-black { background: linear-gradient(to bottom, #1e293b 0%, #0f172a 50%, #020617 100%); --panel-bg: rgba(15, 23, 42, 0.88); --text-primary: #f8fafc; --text-muted: #94a3b8; --accent: #38bdf8; --input-bg: #0f172a; --border-color: #334155; }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
-        body { color: var(--text-primary); min-height: 100vh; display: flex; transition: background 0.3s, color 0.3s; }
+        body { color: var(--text-primary); min-height: 100vh; display: flex; flex-direction: column; transition: background 0.3s, color 0.3s; padding: 25px; }
 
-        /* Sidebar Structure */
-        .sidebar { width: 260px; background: var(--panel-bg); backdrop-filter: blur(10px); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; padding: 20px; height: 100vh; position: fixed; top: 0; left: 0; z-index: 40; }
-        
-        /* Logo Badge */
-        .brand-badge { display: flex; align-items: center; gap: 12px; margin-bottom: 25px; background: #ffffff; padding: 10px 14px; border-radius: 20px; border: 1px solid #fde047; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
-        .brand-logo-icon { font-size: 24px; line-height: 1; }
-        .brand-text strong { font-size: 15px; font-weight: 700; color: #1b3818; display: block; line-height: 1.2; letter-spacing: -0.2px; }
-        .brand-text small { font-size: 8.5px; color: #386641; font-weight: 700; letter-spacing: 0.4px; display: block; margin-top: 1px; }
+        /* Main Fullscreen Container Layout */
+        .standalone-container { width: 100%; max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px; flex: 1; }
 
-        .nav-links { display: flex; flex-direction: column; gap: 5px; flex: 1; overflow-y: auto; }
-        .nav-item { display: flex; align-items: center; gap: 12px; padding: 11px 14px; border-radius: 12px; font-size: 13px; font-weight: 500; color: var(--text-primary); text-decoration: none; transition: 0.2s; }
-        .nav-item:hover { background: rgba(0, 0, 0, 0.05); color: var(--accent); }
-        .nav-item.active { background: var(--accent); color: #fff; font-weight: 600; }
-
-        /* Main Content */
-        .main-content { margin-left: 260px; flex: 1; padding: 30px; display: flex; flex-direction: column; height: 100vh; overflow-y: auto; }
-
-        /* Top Header & Controls */
-        .top-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-        .header-title-box h1 { font-size: 24px; font-weight: 700; color: var(--text-primary); }
+        /* Top Header */
+        .top-header { display: flex; justify-content: space-between; align-items: center; background: var(--panel-bg); backdrop-filter: blur(12px); border-radius: 24px; border: 1px solid var(--border-color); padding: 20px 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.04); }
+        .header-title-box h1 { font-size: 24px; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 10px; }
         .header-title-box p { font-size: 13px; color: var(--text-muted); font-weight: 500; margin-top: 2px; }
-        
-        .header-controls { display: flex; gap: 12px; align-items: center; }
-        .control-select { background: var(--input-bg); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 20px; cursor: pointer; font-weight: 500; font-size: 13px; color: var(--text-primary); outline: none; }
-        
-        .sun-control-box { display: flex; align-items: center; justify-content: center; cursor: pointer; background: var(--panel-bg); width: 42px; height: 42px; border-radius: 50%; backdrop-filter: blur(10px); box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 1px solid var(--border-color); transition: transform 0.2s; }
-        .sun-control-box:hover { transform: scale(1.1); }
-        .sun-icon { width: 20px; height: 20px; border-radius: 50%; background: #facc15; box-shadow: 0 0 12px rgba(250, 204, 21, 0.9); transition: all 0.5s; }
-        body.theme-light-black .sun-icon { background: transparent; box-shadow: -4px 2px 0 0 #f8fafc; width: 16px; height: 16px; }
 
         /* Grid Layout */
-        .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+        .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
         .card { background: var(--panel-bg); backdrop-filter: blur(12px); border-radius: 24px; border: 1px solid var(--border-color); padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.04); display: flex; flex-direction: column; gap: 16px; }
         .card h3 { font-size: 17px; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 8px; }
 
@@ -68,14 +46,13 @@
         .alert-card-item { border-radius: 14px; padding: 14px; display: flex; gap: 12px; align-items: flex-start; border: 1px solid transparent; margin-bottom: 10px; background: var(--input-bg); }
         .alert-card-item.high { border-left: 5px solid #dc2626; }
         .alert-card-item.moderate { border-left: 5px solid #d97706; }
-        .alert-card-item.safe { border-left: 5px solid #16a34a; }
         .alert-content { flex: 1; }
         .alert-content h4 { font-size: 13px; font-weight: 700; display: flex; justify-content: space-between; }
         .alert-content p { font-size: 12px; color: var(--text-muted); margin-top: 3px; line-height: 1.4; }
         .btn-acknowledge { background: var(--accent); color: #fff; border: none; padding: 4px 10px; border-radius: 6px; font-size: 10px; font-weight: 700; cursor: pointer; margin-top: 6px; }
 
         /* Full Width Cards & Charts/Maps */
-        .full-card { background: var(--panel-bg); backdrop-filter: blur(12px); border-radius: 24px; border: 1px solid var(--border-color); padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.04); margin-bottom: 30px; }
+        .full-card { background: var(--panel-bg); backdrop-filter: blur(12px); border-radius: 24px; border: 1px solid var(--border-color); padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.04); }
         .chart-wrapper { position: relative; height: 220px; width: 100%; margin-top: 15px; }
         .map-container { height: 250px; width: 100%; border-radius: 16px; margin-top: 10px; border: 1px solid var(--border-color); z-index: 10; }
 
@@ -89,62 +66,16 @@
         @media (max-width: 1024px) {
             .dashboard-grid { grid-template-columns: 1fr; }
         }
-        @media (max-width: 768px) {
-            .sidebar { display: none; }
-            .main-content { margin-left: 0; padding: 15px; }
-        }
     </style>
 </head>
 <body id="appBody" class="theme-light-yellow">
 
-    <!-- Sidebar Structure (All 8 Options Intact) -->
-    <aside class="sidebar">
-        <div class="brand-badge">
-            <div class="brand-logo-icon">🌱</div>
-            <div class="brand-text">
-                <strong>KisaanSaathi</strong>
-                <small>SMART AGRICULTURE PORTAL</small>
-            </div>
-        </div>
-        <div class="nav-links">
-            <a href="dashboard.html" class="nav-item">🏠 Overview & Guide</a>
-            <a href="chatbotai.html" class="nav-item">🤖 AI Chatbot (Gemini)</a>
-            <a href="soil.html" class="nav-item">🧪 Soil & Crop Predictions</a>
-            <a href="weather.html" class="nav-item active">🌤️ Weather & Alerts</a>
-            <a href="tutorials.html" class="nav-item">🎥 Plant Tutorials & AI Video</a>
-            <a href="market.html" class="nav-item">💰 Market & Expense</a>
-            <a href="schemes.html" class="nav-item">🏛️ Government Schemes</a>
-            <a href="profile.html" class="nav-item">👤 Profile Settings</a>
-        </div>
-    </aside>
-
-    <!-- Main Content Area -->
-    <div class="main-content">
+    <div class="standalone-container">
+        <!-- Top Header -->
         <header class="top-header">
             <div class="header-title-box">
                 <h1 id="pageHeading">🌤️ Weather & Alerts</h1>
                 <p id="subBannerText">Stay updated with the latest weather information and advisories</p>
-            </div>
-            <div class="header-controls">
-                <select class="control-select" id="langToggle" onchange="toggleLanguage()">
-                    <option value="en" selected>English</option>
-                    <option value="hi">हिंदी (Hindi)</option>
-                    <option value="mr">मराठी (Marathi)</option>
-                    <option value="pa">ਪੰਜਾਬੀ (Punjabi)</option>
-                    <option value="gu">ગુજરાતી (Gujarati)</option>
-                    <option value="bn">বাংলা (Bengali)</option>
-                    <option value="te">తెలుగు (Telugu)</option>
-                    <option value="ta">தமிழ் (Tamil)</option>
-                    <option value="kn">ಕನ್ನಡ (Kannada)</option>
-                    <option value="ml">മലയാളം (Malayalam)</option>
-                    <option value="or">ଓଡ଼ିଆ (Odia)</option>
-                    <option value="as">অসমীয়া (Assamese)</option>
-                    <option value="ur">اردو (Urdu)</option>
-                </select>
-
-                <div class="sun-control-box" onclick="switchThemeCycle()" title="Toggle Theme Palette">
-                    <div class="sun-icon"></div>
-                </div>
             </div>
         </header>
 
@@ -172,12 +103,12 @@
                 </div>
             </div>
 
-            <!-- Card 2: Smart Alerts (Editable/Acknowledged) -->
+            <!-- Card 2: Smart Alerts -->
             <div class="card">
                 <h3>🚨 Smart Weather Alerts</h3>
                 
                 <div class="alert-card-item high" id="alert1">
-                    <span style="font-size: 22px;">🌧️️</span>
+                    <span style="font-size: 22px;">🌧</span>
                     <div class="alert-content">
                         <h4>Rainfall Warning <span style="font-size:10px; background:#fee2e2; color:#991b1b; padding:2px 6px; border-radius:4px;">High Risk 🔴</span></h4>
                         <p>Delay irrigation due to expected heavy rainfall in your local district over the next 24 hours.</p>
@@ -220,25 +151,13 @@
             <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">Live regional overlays for rain, wind vectors, and temperature zones. Red pin marks your GPS location.</p>
             <div id="weatherMap" class="map-container"></div>
         </div>
-
     </div>
 
     <script>
-        // Theme Cycling Logic (5 Themes)
+        // Theme Synchronizer from localStorage
         const themes = ['theme-light-yellow', 'theme-light-pink', 'theme-light-orange', 'theme-light-blue', 'theme-light-black'];
-        let currentThemeIndex = 0;
-
-        function switchThemeCycle() {
-            currentThemeIndex = (currentThemeIndex + 1) % themes.length;
-            document.getElementById('appBody').className = themes[currentThemeIndex];
-            localStorage.setItem('kisaan-portal-theme-index', currentThemeIndex);
-        }
-
-        const savedThemeIndex = localStorage.getItem('kisaan-portal-theme-index');
-        if (savedThemeIndex !== null) {
-            currentThemeIndex = parseInt(savedThemeIndex);
-            document.getElementById('appBody').className = themes[currentThemeIndex];
-        }
+        let currentThemeIndex = parseInt(localStorage.getItem('kisaan-portal-theme-index') || '0');
+        document.getElementById('appBody').className = themes[currentThemeIndex];
 
         // Initialize Leaflet Map centered around Thane, Maharashtra
         const map = L.map('weatherMap').setView([19.2183, 72.9781], 10);
@@ -303,7 +222,6 @@
         function fetchWeatherData() {
             const loc = document.getElementById('locationInput').value;
             alert(`Fetching live OpenWeatherMap data for "${loc}"...`);
-            // Simulated live data refresh
             document.getElementById('tempDisplay').innerText = '32°C';
             document.getElementById('humidityVal').innerText = '68%';
             document.getElementById('windVal').innerText = '12 km/h';
@@ -312,38 +230,58 @@
         function acknowledgeAlert(alertId) {
             const el = document.getElementById(alertId);
             el.style.opacity = '0.5';
-            el.querySelector('.btn-acknowledge').innerText = '✓ Resolved';
-            el.querySelector('.btn-acknowledge').style.background = '#16a34a';
+            const btn = el.querySelector('.btn-acknowledge');
+            btn.innerText = '✓ Resolved';
+            btn.style.background = '#16a34a';
         }
 
         function downloadWeatherReport() {
-            alert("Preparing KisaanSaathi Weather Forecast & Advisory PDF Report...");
-            setTimeout(() => { alert("Weather report downloaded successfully!"); }, 1000);
+            alert('Downloading weather trend analytics report...');
         }
 
         function shareForecastWhatsApp() {
-            const loc = document.getElementById('locationInput').value;
-            const text = encodeURIComponent(`KisaanSaathi Weather Forecast for ${loc}: Temp 34°C, Humidity 74%. Rainfall alert active for tonight.`);
-            window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
+            alert('Weather forecast report link generated for WhatsApp sharing.');
         }
-
-        // Localization Dictionary
-        const translations = {
-            'en': { heading: '🌤️ Weather & Alerts', banner: 'Stay updated with the latest weather information and advisories' },
-            'hi': { heading: '🌤️ मौसम और चेतावनियाँ', banner: 'नवीनतम मौसम की जानकारी और सलाह के साथ अपडेट रहें' },
-            'mr': { heading: '🌤️ हवामान आणि सतर्कता', banner: 'नवीनतम हवामान माहिती आणि सल्ल्याlarıyla अपडेट राहा' },
-            'pa': { heading: '🌤️ ਮੌਸਮ ਅਤੇ ਚੇਤਾਵਨੀਆਂ', banner: 'ਤਾਜ਼ਾ ਮੌਸਮ ਜਾਣਕਾਰੀ ਅਤੇ ਸਲਾਹ ਨਾਲ ਅੱਪਡੇਟ ਰਹੋ' },
-            'gu': { heading: '🌤️ હવામાન અને ચેતવણીઓ', banner: 'नवीनतम हवाમાન માહિતી અને સલાહ સાથે અપડેટ રહો' },
-            'bn': { heading: '🌤️ আবহাওয়া ও সতর্কতা', banner: 'সর্বশেষ আবহাওয়া তথ্য এবং পরামর্শের সাথে আপডেট থাকুন' }
-        };
-
-        function toggleLanguage() {
-            const lang = document.getElementById('langToggle').value;
-            if (translations[lang]) {
-                document.getElementById('pageHeading').innerText = translations[lang].heading;
-                document.getElementById('subBannerText').innerText = translations[lang].banner;
+        // View Details Toggle
+        function toggleExtendedDetails() {
+            const box = document.getElementById('extendedInfoBox');
+            const btn = document.getElementById('viewDetailsBtn');
+            box.classList.toggle('active');
+            if (box.classList.contains('active')) {
+                btn.innerText = "Hide Details";
+            } else {
+                btn.innerText = "View Details";
             }
         }
+        
+        // 1. English numbers ko Hindi/Marathi numerals (०, १, २...) me convert karne ka function
+        function convertDigitsToLang(text, lang) {
+            if (lang !== 'hi' && lang !== 'mr') return text;
+            const englishDigits = ['0','1','2','3','4','5','6','7','8','9'];
+            const devanagariDigits = ['०','१','२','३','४','५','६','७','८','९'];
+            return text.toString().replace(/[0-9]/g, function(w) {
+                return devanagariDigits[englishDigits.indexOf(w)];
+            });
+        }
+
+        // 2. Dashboard se sync hokar language change karne wala main function
+        function changeLanguage(lang) {
+            localStorage.setItem('kisaanLang', lang);
+            document.querySelectorAll('[data-translate]').forEach(el => {
+                let originalText = el.getAttribute('data-original-text') || el.innerText;
+                if (!el.getAttribute('data-original-text')) {
+                    el.setAttribute('data-original-text', originalText);
+                }
+                el.innerText = convertDigitsToLang(originalText, lang);
+            });
+        }
+
+        // 3. Page load hote hi saved language automatically apply ho jayegi
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedLang = localStorage.getItem('kisaanLang') || 'en';
+            changeLanguage(savedLang);
+        });
+
     </script>
 </body>
 </html>

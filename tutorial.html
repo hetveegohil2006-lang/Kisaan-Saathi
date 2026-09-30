@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plant Tutorials & AI Video - KisaanSaathi Smart Agriculture Portal</title>
+    <title>🎥 Plant Tutorials & AI Video - KisaanSaathi Smart Agriculture Portal</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         /* 5 Themes Color Palettes */
@@ -14,40 +14,18 @@
         body.theme-light-black { background: linear-gradient(to bottom, #1e293b 0%, #0f172a 50%, #020617 100%); --panel-bg: rgba(15, 23, 42, 0.88); --text-primary: #f8fafc; --text-muted: #94a3b8; --accent: #38bdf8; --input-bg: #0f172a; --border-color: #334155; }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
-        body { color: var(--text-primary); min-height: 100vh; display: flex; transition: background 0.3s, color 0.3s; }
+        body { color: var(--text-primary); min-height: 100vh; display: flex; flex-direction: column; transition: background 0.3s, color 0.3s; padding: 25px; }
 
-        /* Sidebar Structure */
-        .sidebar { width: 260px; background: var(--panel-bg); backdrop-filter: blur(10px); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; padding: 20px; height: 100vh; position: fixed; top: 0; left: 0; z-index: 40; }
-        
-        /* Logo Badge */
-        .brand-badge { display: flex; align-items: center; gap: 12px; margin-bottom: 25px; background: #ffffff; padding: 10px 14px; border-radius: 20px; border: 1px solid #fde047; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
-        .brand-logo-icon { font-size: 24px; line-height: 1; }
-        .brand-text strong { font-size: 15px; font-weight: 700; color: #1b3818; display: block; line-height: 1.2; letter-spacing: -0.2px; }
-        .brand-text small { font-size: 8.5px; color: #386641; font-weight: 700; letter-spacing: 0.4px; display: block; margin-top: 1px; }
+        /* Main Fullscreen Container Layout */
+        .standalone-container { width: 100%; max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px; flex: 1; }
 
-        .nav-links { display: flex; flex-direction: column; gap: 5px; flex: 1; overflow-y: auto; }
-        .nav-item { display: flex; align-items: center; gap: 12px; padding: 11px 14px; border-radius: 12px; font-size: 13px; font-weight: 500; color: var(--text-primary); text-decoration: none; transition: 0.2s; }
-        .nav-item:hover { background: rgba(0, 0, 0, 0.05); color: var(--accent); }
-        .nav-item.active { background: var(--accent); color: #fff; font-weight: 600; }
-
-        /* Main Content */
-        .main-content { margin-left: 260px; flex: 1; padding: 30px; display: flex; flex-direction: column; height: 100vh; overflow-y: auto; }
-
-        /* Top Header & Controls */
-        .top-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-        .header-title-box h1 { font-size: 24px; font-weight: 700; color: var(--text-primary); }
+        /* Top Header */
+        .top-header { display: flex; justify-content: space-between; align-items: center; background: var(--panel-bg); backdrop-filter: blur(12px); border-radius: 24px; border: 1px solid var(--border-color); padding: 20px 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.04); }
+        .header-title-box h1 { font-size: 24px; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 10px; }
         .header-title-box p { font-size: 13px; color: var(--text-muted); font-weight: 500; margin-top: 2px; }
-        
-        .header-controls { display: flex; gap: 12px; align-items: center; }
-        .control-select { background: var(--input-bg); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 20px; cursor: pointer; font-weight: 500; font-size: 13px; color: var(--text-primary); outline: none; }
-        
-        .sun-control-box { display: flex; align-items: center; justify-content: center; cursor: pointer; background: var(--panel-bg); width: 42px; height: 42px; border-radius: 50%; backdrop-filter: blur(10px); box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 1px solid var(--border-color); transition: transform 0.2s; }
-        .sun-control-box:hover { transform: scale(1.1); }
-        .sun-icon { width: 20px; height: 20px; border-radius: 50%; background: #facc15; box-shadow: 0 0 12px rgba(250, 204, 21, 0.9); transition: all 0.5s; }
-        body.theme-light-black .sun-icon { background: transparent; box-shadow: -4px 2px 0 0 #f8fafc; width: 16px; height: 16px; }
 
         /* Card Layout */
-        .card { background: var(--panel-bg); backdrop-filter: blur(12px); border-radius: 24px; border: 1px solid var(--border-color); padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.04); margin-bottom: 24px; }
+        .card { background: var(--panel-bg); backdrop-filter: blur(12px); border-radius: 24px; border: 1px solid var(--border-color); padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.04); }
         .card h3 { font-size: 17px; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 8px; margin-bottom: 15px; }
 
         /* Search & Add Tutorial Form */
@@ -55,7 +33,7 @@
         @media(max-width: 900px) { .form-grid { grid-template-columns: 1fr; } }
         .input-group { display: flex; flex-direction: column; gap: 6px; }
         .input-group label { font-size: 12px; font-weight: 600; color: var(--text-muted); }
-        .text-input { background: var(--input-bg); border: 1px solid var(--border-color); padding: 10px 14px; border-radius: 12px; font-size: 13px; color: var(--text-primary); outline: none; }
+        .text-input { background: var(--input-bg); border: 1px solid var(--border-color); padding: 10px 14px; border-radius: 12px; font-size: 13px; color: var(--text-primary); outline: none; width: 100%; }
         
         .btn { padding: 11px 20px; border-radius: 12px; font-weight: 700; font-size: 13px; cursor: pointer; border: none; display: flex; align-items: center; justify-content: center; gap: 8px; transition: transform 0.2s; }
         .btn:hover { transform: translateY(-2px); }
@@ -89,70 +67,27 @@
         .library-card-thumb img { width: 100%; height: 100%; object-fit: cover; }
         .status-pill { position: absolute; top: 10px; right: 10px; padding: 3px 8px; border-radius: 6px; font-size: 10px; font-weight: 700; }
         .status-pill.available { background: #dcfce7; color: #166534; }
-        .status-pill.ai { background: #fef9c3; color: #854d0e; }
         
         .library-card-body { padding: 12px; display: flex; flex-direction: column; gap: 6px; }
         .library-card-body h4 { font-size: 13px; font-weight: 700; }
         .library-card-body p { font-size: 11px; color: var(--text-muted); }
         .library-card-footer { padding: 10px 12px; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
 
-        /* Modal Overlay */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); display: none; align-items: center; justify-content: center; z-index: 100; }
-        .modal-box { background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 24px; padding: 30px; width: 400px; max-width: 90%; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
-        .modal-box h3 { font-size: 20px; font-weight: 700; margin-bottom: 10px; }
-        .modal-box p { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; }
+        /* Video Modal Overlay */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); display: none; align-items: center; justify-content: center; z-index: 100; }
+        .modal-box { background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 24px; padding: 25px; width: 600px; max-width: 90%; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.3); display: flex; flex-direction: column; gap: 15px; }
+        .modal-box h3 { font-size: 18px; font-weight: 700; }
+        .modal-video-frame { width: 100%; height: 315px; background: #000; border-radius: 12px; overflow: hidden; }
     </style>
 </head>
 <body id="appBody" class="theme-light-yellow">
 
-    <!-- Sidebar Structure (All 8 Options Intact) -->
-    <aside class="sidebar">
-        <div class="brand-badge">
-            <div class="brand-logo-icon">🌱</div>
-            <div class="brand-text">
-                <strong>KisaanSaathi</strong>
-                <small>SMART AGRICULTURE PORTAL</small>
-            </div>
-        </div>
-        <div class="nav-links">
-            <a href="dashboard.html" class="nav-item">🏠 Overview & Guide</a>
-            <a href="chatbotai.html" class="nav-item">🤖 AI Chatbot (Gemini)</a>
-            <a href="soil.html" class="nav-item">🧪 Soil & Crop Predictions</a>
-            <a href="weather.html" class="nav-item">🌤️ Weather & Alerts</a>
-            <a href="tutorials.html" class="nav-item active">🎥 Plant Tutorials & AI Video</a>
-            <a href="market.html" class="nav-item">💰 Market & Expense</a>
-            <a href="schemes.html" class="nav-item">🏛️ Government Schemes</a>
-            <a href="profile.html" class="nav-item">👤 Profile Settings</a>
-        </div>
-    </aside>
-
-    <!-- Main Content Area -->
-    <div class="main-content">
+    <div class="standalone-container">
+        <!-- Top Header -->
         <header class="top-header">
             <div class="header-title-box">
                 <h1 id="pageHeading">🎥 Plant Tutorials & AI Video</h1>
                 <p id="subBannerText">Access YouTube guides or generate AI-driven tutorial videos for your crops</p>
-            </div>
-            <div class="header-controls">
-                <select class="control-select" id="langToggle" onchange="toggleLanguage()">
-                    <option value="en" selected>English</option>
-                    <option value="hi">हिंदी (Hindi)</option>
-                    <option value="mr">मराठी (Marathi)</option>
-                    <option value="pa">ਪੰਜਾਬੀ (Punjabi)</option>
-                    <option value="gu">ગુજરાતી (Gujarati)</option>
-                    <option value="bn">বাংলা (Bengali)</option>
-                    <option value="te">తెలుగు (Telugu)</option>
-                    <option value="ta">தமிழ் (Tamil)</option>
-                    <option value="kn">ಕನ್ನಡ (Kannada)</option>
-                    <option value="ml">മലയാളം (Malayalam)</option>
-                    <option value="or">ଓଡ଼ିଆ (Odia)</option>
-                    <option value="as">অসমীয়া (Assamese)</option>
-                    <option value="ur">اردو (Urdu)</option>
-                </select>
-
-                <div class="sun-control-box" onclick="switchThemeCycle()" title="Toggle Theme Palette">
-                    <div class="sun-icon"></div>
-                </div>
             </div>
         </header>
 
@@ -166,7 +101,7 @@
                 </div>
                 <div class="input-group">
                     <label>YouTube / Video URL (Optional)</label>
-                    <input type="text" id="videoUrlInput" class="text-input" placeholder="https://youtube.com/watch?v=...">
+                    <input type="text" id="videoUrlInput" class="text-input" placeholder="https://youtube.com/watch?v=..." value="http://www.youtube.com/watch?v=qw-__s7o4wI">
                 </div>
                 <button class="btn btn-primary" onclick="searchTutorial()">Add Tutorial Link</button>
             </div>
@@ -213,142 +148,166 @@
         <!-- Tutorial Library Section -->
         <div class="card">
             <div class="library-filters">
-                <h3>📚 Tutorial Library</h3>
+                <h3>📚 Tutorial Library (10+ Verified Guides)</h3>
                 <div class="filter-buttons">
-                    <button class="filter-btn active" onclick="filterLibrary('all', this)">All Crops</button>
+                    <button class="filter-btn active" onclick="filterLibrary('all', this)">All Topics</button>
                     <button class="filter-btn" onclick="filterLibrary('tomato', this)">🍅 Tomato</button>
-                    <button class="filter-btn" onclick="filterLibrary('wheat', this)">🌾 Wheat</button>
-                    <button class="filter-btn" onclick="filterLibrary('rice', this)">🌾 Rice</button>
+                    <button class="filter-btn" onclick="filterLibrary('farming', this)">🚜 Farming Guides</button>
+                    <button class="filter-btn" onclick="filterLibrary('pest', this)">🛡️ Pest & Disease</button>
                 </div>
             </div>
 
             <div class="library-grid" id="libraryGridContainer">
-                
+                <!-- 1 -->
                 <div class="library-card" data-category="tomato">
-                    <div class="library-card-thumb">
-                        <img src="https://images.unsplash.com/photo-1592417817098-8f3d69204b56?w=500&auto=format&fit=crop&q=60" alt="Tomato">
-                        <span class="status-pill available">Available</span>
-                    </div>
-                    <div class="library-card-body">
-                        <h4>Tomato Disease Control</h4>
-                        <p>Fighting blight and root rot with organic sprays.</p>
-                    </div>
-                    <div class="library-card-footer">
-                        <span style="font-size:10px; font-weight:600; color:var(--text-muted);">YouTube Guide</span>
-                        <button class="btn btn-primary" style="padding:6px 12px; font-size:11px;" onclick="watchVideo('http://www.youtube.com/watch?v=qw-__s7o4wI')">Play</button>
-                    </div>
+                    <div class="library-card-thumb"><img src="https://images.unsplash.com/photo-1592417817098-8f3d69204b56?w=500&auto=format&fit=crop&q=60" alt="Tomato"><span class="status-pill available">Verified</span></div>
+                    <div class="library-card-body"><h4>What’s Killing Your Tomato Plants?</h4><p>joegardenerTV • 3 Fungal Diseases</p></div>
+                    <div class="library-card-footer"><span style="font-size:10px; color:var(--text-muted);">YouTube Guide</span><button class="btn btn-primary" style="padding:6px 12px; font-size:11px;" onclick="watchVideo('http://www.youtube.com/watch?v=qw-__s7o4wI')">Play</button></div>
                 </div>
 
-                <div class="library-card" data-category="wheat">
-                    <div class="library-card-thumb">
-                        <img src="https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=500&auto=format&fit=crop&q=60" alt="Wheat">
-                        <span class="status-pill ai">AI-Generated</span>
-                    </div>
-                    <div class="library-card-body">
-                        <h4>Wheat Rust Prevention</h4>
-                        <p>AI custom guide on timing fungicide application.</p>
-                    </div>
-                    <div class="library-card-footer">
-                        <span style="font-size:10px; font-weight:600; color:var(--text-muted);">AI Script & Audio</span>
-                        <button class="btn btn-primary" style="padding:6px 12px; font-size:11px;" onclick="alert('Playing AI-generated wheat guide video...')">Play</button>
-                    </div>
+                <!-- 2 -->
+                <div class="library-card" data-category="tomato">
+                    <div class="library-card-thumb"><img src="https://images.unsplash.com/photo-1592417817098-8f3d69204b56?w=500&auto=format&fit=crop&q=60" alt="Tomato"><span class="status-pill available">Verified</span></div>
+                    <div class="library-card-body"><h4>10 Common Tomato Diseases</h4><p>Gardening Know How • Identification</p></div>
+                    <div class="library-card-footer"><span style="font-size:10px; color:var(--text-muted);">YouTube Guide</span><button class="btn btn-primary" style="padding:6px 12px; font-size:11px;" onclick="watchVideo('http://www.youtube.com/watch?v=gjMIh19zH7k')">Play</button></div>
                 </div>
 
-                <div class="library-card" data-category="rice">
-                    <div class="library-card-thumb">
-                        <img src="https://images.unsplash.com/photo-1536304993881-ff6e9eefa2a6?w=500&auto=format&fit=crop&q=60" alt="Rice">
-                        <span class="status-pill available">Available</span>
-                    </div>
-                    <div class="library-card-body">
-                        <h4>Rice Paddy Water Management</h4>
-                        <p>Optimizing intermittent irrigation techniques.</p>
-                    </div>
-                    <div class="library-card-footer">
-                        <span style="font-size:10px; font-weight:600; color:var(--text-muted);">YouTube Guide</span>
-                        <button class="btn btn-primary" style="padding:6px 12px; font-size:11px;" onclick="alert('Opening Rice tutorial video...')">Play</button>
-                    </div>
+                <!-- 3 -->
+                <div class="library-card" data-category="tomato">
+                    <div class="library-card-thumb"><img src="https://images.unsplash.com/photo-1592417817098-8f3d69204b56?w=500&auto=format&fit=crop&q=60" alt="Tomato"><span class="status-pill available">Verified</span></div>
+                    <div class="library-card-body"><h4>Tomato Pests & Organic Solutions</h4><p>Next Level Gardening • Treatment</p></div>
+                    <div class="library-card-footer"><span style="font-size:10px; color:var(--text-muted);">YouTube Guide</span><button class="btn btn-primary" style="padding:6px 12px; font-size:11px;" onclick="watchVideo('http://www.youtube.com/watch?v=6db7a5Hum_I')">Play</button></div>
                 </div>
 
+                <!-- 4 -->
+                <div class="library-card" data-category="farming">
+                    <div class="library-card-thumb"><img src="https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=500&auto=format&fit=crop&q=60" alt="Farming"><span class="status-pill available">Verified</span></div>
+                    <div class="library-card-body"><h4>How To Start A Small Farm</h4><p>Market Gardener Institute • Guide</p></div>
+                    <div class="library-card-footer"><span style="font-size:10px; color:var(--text-muted);">YouTube Guide</span><button class="btn btn-primary" style="padding:6px 12px; font-size:11px;" onclick="watchVideo('https://www.youtube.com/watch?v=RPjEszQGnes')">Play</button></div>
+                </div>
+
+                <!-- 5 -->
+                <div class="library-card" data-category="farming">
+                    <div class="library-card-thumb"><img src="https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=500&auto=format&fit=crop&q=60" alt="Farming"><span class="status-pill available">Verified</span></div>
+                    <div class="library-card-body"><h4>How to Start a Farm From Scratch</h4><p>The Forest Gardener • Profit</p></div>
+                    <div class="library-card-footer"><span style="font-size:10px; color:var(--text-muted);">YouTube Guide</span><button class="btn btn-primary" style="padding:6px 12px; font-size:11px;" onclick="watchVideo('https://www.youtube.com/watch?v=fRlUhUWS0Hk')">Play</button></div>
+                </div>
+
+                <!-- 6 -->
+                <div class="library-card" data-category="pest">
+                    <div class="library-card-thumb"><img src="https://images.unsplash.com/photo-1536304993881-ff6e9eefa2a6?w=500&auto=format&fit=crop&q=60" alt="Pest"><span class="status-pill available">Verified</span></div>
+                    <div class="library-card-body"><h4>Effective Pest & Disease Management</h4><p>MicrolearningDaily • Agronomy</p></div>
+                    <div class="library-card-footer"><span style="font-size:10px; color:var(--text-muted);">YouTube Guide</span><button class="btn btn-primary" style="padding:6px 12px; font-size:11px;" onclick="watchVideo('https://www.youtube.com/watch?v=tnn4R0j3f-4')">Play</button></div>
+                </div>
             </div>
         </div>
-
     </div>
 
-    <!-- Upgrade Modal Popup -->
-    <div class="modal-overlay" id="upgradeModal">
+    <!-- Video Modal -->
+    <div class="modal-overlay" id="videoModal">
         <div class="modal-box">
-            <span style="font-size: 36px;">⚠️</span>
-            <h3>Daily Limit Reached</h3>
-            <p>You have reached your free daily limit of 5 AI-guided video generations. Upgrade your KisaanSaathi account to continue generating unlimited tutorials.</p>
-            <div style="display: flex; gap: 10px;">
-                <button class="btn btn-secondary" style="flex:1;" onclick="closeUpgradeModal()">Cancel</button>
-                <button class="btn btn-primary" style="flex:1;" onclick="buyPremiumPlan()">Buy Premium Plan</button>
+            <h3 id="modalTitle">Playing Tutorial Video</h3>
+            <div class="modal-video-frame" id="modalVideoContent">
+                <iframe id="youtubeIframe" width="100%" height="100%" src="" frameborder="0" allowfullscreen></iframe>
             </div>
+            <button class="btn btn-secondary" onclick="closeModal()">Close Player</button>
         </div>
     </div>
 
     <script>
-        // Theme Cycling Logic (5 Themes)
+        // View Details Toggle
+        function toggleExtendedDetails() {
+            const box = document.getElementById('extendedInfoBox');
+            const btn = document.getElementById('viewDetailsBtn');
+            box.classList.toggle('active');
+            if (box.classList.contains('active')) {
+                btn.innerText = "Hide Details";
+            } else {
+                btn.innerText = "View Details";
+            }
+        }
+
+        // --- YAHAN SE LANGUAGE & NUMBER CONVERSION CODE ADD KAREIN ---
+
+        // 1. English numbers ko Hindi/Marathi numerals (०, १, २...) me convert karne ka function
+        function convertDigitsToLang(text, lang) {
+            if (lang !== 'hi' && lang !== 'mr') return text;
+            const englishDigits = ['0','1','2','3','4','5','6','7','8','9'];
+            const devanagariDigits = ['०','१','२','३','४','५','६','७','८','९'];
+            return text.toString().replace(/[0-9]/g, function(w) {
+                return devanagariDigits[englishDigits.indexOf(w)];
+            });
+        }
+
+        // 2. Dashboard se sync hokar language change karne wala main function
+        function changeLanguage(lang) {
+            localStorage.setItem('kisaanLang', lang);
+            document.querySelectorAll('[data-translate]').forEach(el => {
+                let originalText = el.getAttribute('data-original-text') || el.innerText;
+                if (!el.getAttribute('data-original-text')) {
+                    el.setAttribute('data-original-text', originalText);
+                }
+                el.innerText = convertDigitsToLang(originalText, lang);
+            });
+        }
+
+        // 3. Page load hote hi saved language automatically apply ho jayegi
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedLang = localStorage.getItem('kisaanLang') || 'en';
+            changeLanguage(savedLang);
+        });
+        
+        // Theme Synchronizer from localStorage (5 Themes)
         const themes = ['theme-light-yellow', 'theme-light-pink', 'theme-light-orange', 'theme-light-blue', 'theme-light-black'];
-        let currentThemeIndex = 0;
-
-        function switchThemeCycle() {
-            currentThemeIndex = (currentThemeIndex + 1) % themes.length;
-            document.getElementById('appBody').className = themes[currentThemeIndex];
-            localStorage.setItem('kisaan-portal-theme-index', currentThemeIndex);
-        }
-
-        const savedThemeIndex = localStorage.getItem('kisaan-portal-theme-index');
-        if (savedThemeIndex !== null) {
-            currentThemeIndex = parseInt(savedThemeIndex);
-            document.getElementById('appBody').className = themes[currentThemeIndex];
-        }
-
-        let aiVideosCreatedToday = 4; // Simulated count out of 5
+        let currentThemeIndex = parseInt(localStorage.getItem('kisaan-portal-theme-index') || '0');
+        document.getElementById('appBody').className = themes[currentThemeIndex];
 
         function searchTutorial() {
             const title = document.getElementById('searchTitleInput').value;
-            const urlInput = document.getElementById('videoUrlInput').value;
-            alert(`Searching YouTube for "${title}"...`);
-            // Simulated response update
-            document.getElementById('resultVideoTitle').innerText = title + " | Expert Farming Masterclass";
-            document.getElementById('resultChannelName').innerText = "KisaanSaathi Verified Agronomist • 120K views";
+            const url = document.getElementById('videoUrlInput').value;
+            alert(`Searching YouTube index for: "${title}"...`);
+            if(url) {
+                document.getElementById('resultVideoTitle').innerText = title;
+            }
         }
 
         function watchVideo(url) {
-            window.open(url, '_blank');
+            const modal = document.getElementById('videoModal');
+            const iframe = document.getElementById('youtubeIframe');
+            let embedUrl = url;
+            if (url.includes('watch?v=')) {
+                embedUrl = url.replace('watch?v=', 'embed/');
+            }
+            iframe.src = embedUrl;
+            modal.style.display = 'flex';
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('videoModal');
+            const iframe = document.getElementById('youtubeIframe');
+            iframe.src = '';
+            modal.style.display = 'none';
         }
 
         function shareVideo(title, url) {
-            const text = encodeURIComponent(`Watch this helpful farming tutorial on KisaanSaathi: ${title} - ${url}`);
-            window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
+            if (navigator.share) {
+                navigator.share({ title: title, url: url }).catch(() => {});
+            } else {
+                alert(`Link copied to clipboard: ${url}`);
+            }
         }
 
         function generateAIVideo() {
-            if (aiVideosCreatedToday >= 5) {
-                document.getElementById('upgradeModal').style.display = 'flex';
-                return;
-            }
-            aiVideosCreatedToday++;
-            document.getElementById('dailyLimitText').innerText = `Daily Quota: ${5 - aiVideosCreatedToday} / 5 left`;
-            alert(`AI Video Generation successful! Generated custom tutorial script and synthesized voiceover. (${aiVideosCreatedToday}/5 used today)`);
+            alert('Initiating Gemini AI Video Script & Audio Generation Engine...');
         }
 
         function downloadAIScript() {
-            alert("Downloading AI tutorial script as text (.txt)...");
-        }
-
-        function closeUpgradeModal() {
-            document.getElementById('upgradeModal').style.display = 'none';
-        }
-
-        function buyPremiumPlan() {
-            alert("Redirecting to KisaanSaathi Premium Subscription Gateway...");
-            closeUpgradeModal();
+            alert('Downloading generated AI tutorial script as PDF...');
         }
 
         function filterLibrary(category, btnElement) {
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            const buttons = document.querySelectorAll('.filter-btn');
+            buttons.forEach(b => b.classList.remove('active'));
             btnElement.classList.add('active');
 
             const cards = document.querySelectorAll('.library-card');
@@ -360,24 +319,6 @@
                 }
             });
         }
-
-        // Localization Dictionary
-        const translations = {
-            'en': { heading: '🎥 Plant Tutorials & AI Video', banner: 'Access YouTube guides or generate AI-driven tutorial videos for your crops' },
-            'hi': { heading: '🎥 पादप ट्यूटोरियल और एआई वीडियो', banner: 'अपनी फसलों के लिए YouTube गाइड या एआई-संचालित वीडियो प्राप्त करें' },
-            'mr': { heading: '🎥 वनस्पती ट्यूटोरियल आणि AI व्हिडिओ', banner: 'तुमच्या पिकांसाठी YouTube मार्गदर्शक किंवा AI-संचालित व्हिडिओ मिळवा' },
-            'pa': { heading: '🎥 ਪਲਾਂਟ ਟਿਊਟੋਰਿਅਲ ਅਤੇ AI ਵੀਡੀਓ', banner: 'ਆਪਣੀਆਂ ਫ਼ਸਲਾਂ ਲਈ YouTube ਗਾਈਡ ਜਾਂ AI-ਚਲਿਤ ਵੀਡੀਓ ਪ੍ਰਾਪਤ ਕਰੋ' },
-            'gu': { heading: '🎥 પ્લાન્ટ ટ્યુટોરિયલ્સ અને AI વિડિઓ', banner: 'તમારા પાક માટે YouTube માર્ગદર્શિકા અથવા AI-संचालित વિડિઓ મેળવો' },
-            'bn': { heading: '🎥 উদ্ভিদ টিউটোরিয়াল এবং AI ভিডিও', banner: 'আপনার ফসলের জন্য YouTube নির্দেশিকা বা AI- চালিত ভিডিও তৈরি করুন' }
-        };
-
-        function toggleLanguage() {
-            const lang = document.getElementById('langToggle').value;
-            if (translations[lang]) {
-                document.getElementById('pageHeading').innerText = translations[lang].heading;
-                document.getElementById('subBannerText').innerText = translations[lang].banner;
-            }
-        }
     </script>
 </body>
-</html>9
+</html>

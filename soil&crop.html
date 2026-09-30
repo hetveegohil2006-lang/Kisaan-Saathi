@@ -16,40 +16,18 @@
         body.theme-light-black { background: linear-gradient(to bottom, #1e293b 0%, #0f172a 50%, #020617 100%); --panel-bg: rgba(15, 23, 42, 0.88); --text-primary: #f8fafc; --text-muted: #94a3b8; --accent: #38bdf8; --input-bg: #0f172a; --border-color: #334155; }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
-        body { color: var(--text-primary); min-height: 100vh; display: flex; transition: background 0.3s, color 0.3s; }
+        body { color: var(--text-primary); min-height: 100vh; display: flex; flex-direction: column; transition: background 0.3s, color 0.3s; padding: 25px; }
 
-        /* Sidebar Structure */
-        .sidebar { width: 260px; background: var(--panel-bg); backdrop-filter: blur(10px); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; padding: 20px; height: 100vh; position: fixed; top: 0; left: 0; z-index: 40; }
-        
-        /* Exact Brand Logo Badge matching design reference */
-        .brand-badge { display: flex; align-items: center; gap: 12px; margin-bottom: 25px; background: #ffffff; padding: 10px 14px; border-radius: 20px; border: 1px solid #fde047; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
-        .brand-logo-icon { font-size: 24px; line-height: 1; }
-        .brand-text strong { font-size: 15px; font-weight: 700; color: #1b3818; display: block; line-height: 1.2; letter-spacing: -0.2px; }
-        .brand-text small { font-size: 8.5px; color: #386641; font-weight: 700; letter-spacing: 0.4px; display: block; margin-top: 1px; }
+        /* Standalone Fullscreen Container Layout */
+        .standalone-container { width: 100%; max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px; flex: 1; }
 
-        .nav-links { display: flex; flex-direction: column; gap: 5px; flex: 1; overflow-y: auto; }
-        .nav-item { display: flex; align-items: center; gap: 12px; padding: 11px 14px; border-radius: 12px; font-size: 13px; font-weight: 500; color: var(--text-primary); text-decoration: none; transition: 0.2s; }
-        .nav-item:hover { background: rgba(0, 0, 0, 0.05); color: var(--accent); }
-        .nav-item.active { background: var(--accent); color: #fff; font-weight: 600; }
-
-        /* Main Content */
-        .main-content { margin-left: 260px; flex: 1; padding: 30px; display: flex; flex-direction: column; height: 100vh; overflow-y: auto; }
-
-        /* Top Header & Controls */
-        .top-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-        .header-title-box h1 { font-size: 24px; font-weight: 700; color: var(--text-primary); }
+        /* Top Header */
+        .top-header { display: flex; justify-content: space-between; align-items: center; background: var(--panel-bg); backdrop-filter: blur(12px); border-radius: 24px; border: 1px solid var(--border-color); padding: 20px 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.04); }
+        .header-title-box h1 { font-size: 24px; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 10px; }
         .header-title-box p { font-size: 13px; color: var(--text-muted); font-weight: 500; margin-top: 2px; }
-        
-        .header-controls { display: flex; gap: 12px; align-items: center; }
-        .control-select { background: var(--input-bg); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 20px; cursor: pointer; font-weight: 500; font-size: 13px; color: var(--text-primary); outline: none; }
-        
-        .sun-control-box { display: flex; align-items: center; justify-content: center; cursor: pointer; background: var(--panel-bg); width: 42px; height: 42px; border-radius: 50%; backdrop-filter: blur(10px); box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 1px solid var(--border-color); transition: transform 0.2s; }
-        .sun-control-box:hover { transform: scale(1.1); }
-        .sun-icon { width: 20px; height: 20px; border-radius: 50%; background: #facc15; box-shadow: 0 0 12px rgba(250, 204, 21, 0.9); transition: all 0.5s; }
-        body.theme-light-black .sun-icon { background: transparent; box-shadow: -4px 2px 0 0 #f8fafc; width: 16px; height: 16px; }
 
         /* Grid Layout */
-        .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+        .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
         .card { background: var(--panel-bg); backdrop-filter: blur(12px); border-radius: 24px; border: 1px solid var(--border-color); padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.04); display: flex; flex-direction: column; gap: 16px; }
         .card h3 { font-size: 17px; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 8px; }
 
@@ -91,7 +69,7 @@
         .risk-content p { font-size: 12px; color: var(--text-primary); margin-top: 3px; line-height: 1.4; }
 
         /* Action Buttons & Charts Row */
-        .full-card { background: var(--panel-bg); backdrop-filter: blur(12px); border-radius: 24px; border: 1px solid var(--border-color); padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.04); margin-bottom: 30px; }
+        .full-card { background: var(--panel-bg); backdrop-filter: blur(12px); border-radius: 24px; border: 1px solid var(--border-color); padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.04); }
         .action-buttons-row { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-top: 20px; }
         .btn { padding: 12px 24px; border-radius: 14px; font-weight: 700; font-size: 13px; cursor: pointer; border: 1px solid transparent; display: flex; align-items: center; gap: 8px; transition: transform 0.2s; }
         .btn:hover { transform: translateY(-2px); }
@@ -105,63 +83,16 @@
             .dashboard-grid { grid-template-columns: 1fr; }
             .crops-grid-container { grid-template-columns: 1fr; }
         }
-        @media (max-width: 768px) {
-            .sidebar { display: none; }
-            .main-content { margin-left: 0; padding: 15px; }
-            .soil-edit-row { grid-template-columns: 1fr; }
-        }
     </style>
 </head>
 <body id="appBody" class="theme-light-yellow">
 
-    <!-- Sidebar Structure with Exact Brand Logo Badge -->
-    <aside class="sidebar">
-        <div class="brand-badge">
-            <div class="brand-logo-icon"> 🌱</div>
-            <div class="brand-text">
-                <strong>KisaanSaathi</strong>
-                <small>SMART AGRICULTURE PORTAL</small>
-            </div>
-        </div>
-        <div class="nav-links">
-            <a href="dashboard.html" class="nav-item">🏠 Overview & Guide</a>
-            <a href="chatbotai.html" class="nav-item">🤖 AI Chatbot (Gemini)</a>
-            <a href="soil.html" class="nav-item active">🧪 Soil & Crop Predictions</a>
-            <a href="weather.html" class="nav-item">🌦 Weather & Alerts</a>
-            <a href="tutorials.html" class="nav-item">🎥 Plant Tutorials & AI Video</a>
-            <a href="market.html" class="nav-item">💰 Market & Expense</a>
-            <a href="schemes.html" class="nav-item">🏛️ Government Schemes</a>
-            <a href="profile.html" class="nav-item">👤 Profile Settings</a>
-        </div>
-    </aside>
-
-    <!-- Main Content Area -->
-    <div class="main-content">
+    <div class="standalone-container">
+        <!-- Top Header -->
         <header class="top-header">
             <div class="header-title-box">
                 <h1 id="pageHeading">🧪 Soil & Crop Predictions</h1>
                 <p id="subBannerText">AI-powered analytics and real-time crop suitability engine</p>
-            </div>
-            <div class="header-controls">
-                <select class="control-select" id="langToggle" onchange="toggleLanguage()">
-                    <option value="en" selected>English</option>
-                    <option value="hi">हिंदी (Hindi)</option>
-                    <option value="mr">मराठी (Marathi)</option>
-                    <option value="pa">ਪੰਜਾਬੀ (Punjabi)</option>
-                    <option value="gu">ગુજરાતી (Gujarati)</option>
-                    <option value="bn">বাংলা (Bengali)</option>
-                    <option value="te">తెలుగు (Telugu)</option>
-                    <option value="ta">தமிழ் (Tamil)</option>
-                    <option value="kn">ಕನ್ನಡ (Kannada)</option>
-                    <option value="ml">മലയാളം (Malayalam)</option>
-                    <option value="or">ଓଡ଼ିଆ (Odia)</option>
-                    <option value="as">অসমীয়া (Assamese)</option>
-                    <option value="ur">اردو (Urdu)</option>
-                </select>
-
-                <div class="sun-control-box" onclick="switchThemeCycle()" title="Toggle Theme Palette">
-                    <div class="sun-icon"></div>
-                </div>
             </div>
         </header>
 
@@ -220,9 +151,9 @@
         </div>
 
         <!-- Middle Card: Recommended Crops with Dynamic Suitability Scores -->
-        <div class="full-card" style="margin-bottom: 24px;">
+        <div class="full-card">
             <h3>🌾 Recommended Crops & Suitability Scores</h3>
-            <div class="crops-grid-container">
+            <div class="crops-grid-container" style="margin-top: 15px;">
                 
                 <!-- Crop 1 -->
                 <div class="crop-card-item">
@@ -285,141 +216,117 @@
                 </div>
 
             </div>
-        </div>
 
-        <!-- Lower Card: Interactive Charts & Action Buttons -->
-        <div class="full-card">
-            <h3>📈 Soil Health Trends & Insights</h3>
-            <div class="chart-wrapper">
-                <canvas id="soilTrendChart"></canvas>
-            </div>
             <div class="action-buttons-row">
-                <button class="btn btn-primary" onclick="downloadReport()">💾 Download PDF Report</button>
-                <button class="btn btn-secondary" onclick="shareViaWhatsApp()">📤 Share via WhatsApp / SMS</button>
+                <button class="btn btn-primary" onclick="generateSoilReport()">💾 Download Full Soil Advisory</button>
+                <button class="btn btn-secondary" onclick="resetSoilValues()">🔄 Reset Parameters</button>
             </div>
         </div>
-
     </div>
 
     <script>
-        // Theme Cycling Logic (5 Themes)
-        const themes = ['theme-light-yellow', 'theme-light-pink', 'theme-light-orange', 'theme-light-blue', 'theme-light-black'];
-        let currentThemeIndex = 0;
-
-        function switchThemeCycle() {
-            currentThemeIndex = (currentThemeIndex + 1) % themes.length;
-            document.getElementById('appBody').className = themes[currentThemeIndex];
-            localStorage.setItem('kisaan-portal-theme-index', currentThemeIndex);
-        }
-
-        const savedThemeIndex = localStorage.getItem('kisaan-portal-theme-index');
-        if (savedThemeIndex !== null) {
-            currentThemeIndex = parseInt(savedThemeIndex);
-            document.getElementById('appBody').className = themes[currentThemeIndex];
-        }
-
-        // Chart.js Soil Nutrient Trends
-        const ctx = document.getElementById('soilTrendChart').getContext('2d');
-        const soilTrendChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['Week 1', 'Week 2', 'Week 3', 'Current'],
-                datasets: [{
-                    label: 'Moisture Trend (%)',
-                    data: [30, 38, 40, 42],
-                    borderColor: '#386641',
-                    backgroundColor: 'rgba(56, 102, 65, 0.1)',
-                    fill: true,
-                    tension: 0.3
-                }, {
-                    label: 'Nitrogen Level',
-                    data: [25, 28, 32, 35],
-                    borderColor: '#f97316',
-                    backgroundColor: 'transparent',
-                    borderDash: [5, 5],
-                    tension: 0.3
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { position: 'bottom' } },
-                scales: {
-                    y: { beginAtZero: true, grid: { display: false } },
-                    x: { grid: { display: false } }
-                }
+        // View Details Toggle
+        function toggleExtendedDetails() {
+            const box = document.getElementById('extendedInfoBox');
+            const btn = document.getElementById('viewDetailsBtn');
+            box.classList.toggle('active');
+            if (box.classList.contains('active')) {
+                btn.innerText = "Hide Details";
+            } else {
+                btn.innerText = "View Details";
             }
+        }
+
+        // --- YAHAN SE LANGUAGE & NUMBER CONVERSION CODE ADD KAREIN ---
+
+        // 1. English numbers ko Hindi/Marathi numerals (०, १, २...) me convert karne ka function
+        function convertDigitsToLang(text, lang) {
+            if (lang !== 'hi' && lang !== 'mr') return text;
+            const englishDigits = ['0','1','2','3','4','5','6','7','8','9'];
+            const devanagariDigits = ['०','१','२','३','४','५','६','७','८','९'];
+            return text.toString().replace(/[0-9]/g, function(w) {
+                return devanagariDigits[englishDigits.indexOf(w)];
+            });
+        }
+
+        // 2. Dashboard se sync hokar language change karne wala main function
+        function changeLanguage(lang) {
+            localStorage.setItem('kisaanLang', lang);
+            document.querySelectorAll('[data-translate]').forEach(el => {
+                let originalText = el.getAttribute('data-original-text') || el.innerText;
+                if (!el.getAttribute('data-original-text')) {
+                    el.setAttribute('data-original-text', originalText);
+                }
+                el.innerText = convertDigitsToLang(originalText, lang);
+            });
+        }
+
+        // 3. Page load hote hi saved language automatically apply ho jayegi
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedLang = localStorage.getItem('kisaanLang') || 'en';
+            changeLanguage(savedLang);
         });
 
-        // Dynamic Score Calculator based on input changes
-        function updatePredictions() {
-            const moisture = parseInt(document.getElementById('moistureInput').value) || 40;
-            const ph = parseFloat(document.getElementById('phInput').value) || 7.0;
-            const n = parseInt(document.getElementById('nInput').value) || 30;
+        // Theme Synchronizer from localStorage (5 Themes)
+        const themes = ['theme-light-yellow', 'theme-light-pink', 'theme-light-orange', 'theme-light-blue', 'theme-light-black'];
+        let currentThemeIndex = parseInt(localStorage.getItem('kisaan-portal-theme-index') || '0');
+        document.getElementById('appBody').className = themes[currentThemeIndex];
 
-            let wheatScore = Math.min(98, Math.max(40, Math.round(70 + (moisture * 0.2) - Math.abs(ph - 6.5) * 5 + (n * 0.1))));
-            let mustardScore = Math.min(95, Math.max(35, Math.round(65 + (moisture * 0.15) + (n * 0.15))));
-            let onionScore = Math.min(90, Math.max(30, Math.round(60 + (moisture * 0.25) - Math.abs(ph - 6.8) * 8)));
+        // Dynamic Soil & Crop Prediction Calculations
+        function updatePredictions() {
+            const moisture = parseFloat(document.getElementById('moistureInput').value) || 40;
+            const ph = parseFloat(document.getElementById('phInput').value) || 6.5;
+            const n = parseFloat(document.getElementById('nInput').value) || 30;
+
+            let wheatScore = Math.min(98, Math.max(40, Math.round(80 + (n - 35) * 0.4 - Math.abs(ph - 6.8) * 10)));
+            let mustardScore = Math.min(95, Math.max(35, Math.round(75 + (moisture - 40) * 0.3)));
+            let onionScore = Math.min(90, Math.max(30, Math.round(70 + (ph - 6.0) * 8)));
 
             document.getElementById('wheatScoreText').innerText = wheatScore + '%';
             document.getElementById('wheatBar').style.width = wheatScore + '%';
-            document.getElementById('wheatPotential').innerText = wheatScore > 80 ? 'High Potential' : 'Moderate Potential';
-
+            
             document.getElementById('mustardScoreText').innerText = mustardScore + '%';
             document.getElementById('mustardBar').style.width = mustardScore + '%';
 
             document.getElementById('onionScoreText').innerText = onionScore + '%';
             document.getElementById('onionBar').style.width = onionScore + '%';
 
-            if (n < 40) {
-                document.getElementById('aiTipText').innerText = "Add organic compost for nitrogen balance. Delay heavy irrigation due to expected rain.";
+            const tipText = document.getElementById('aiTipText');
+            if (ph < 6.0) {
+                tipText.innerText = "Soil is slightly acidic. Consider adding agricultural lime to balance pH levels.";
+            } else if (n > 80) {
+                tipText.innerText = "Nitrogen levels are high. Avoid excessive urea application to prevent leaf burn.";
             } else {
-                document.getElementById('aiTipText').innerText = "Soil nutrient levels are optimal. Suitable for immediate sowing.";
+                tipText.innerText = "Soil parameters are balanced. Maintain optimal watering schedule for steady root development.";
             }
         }
 
         function handleReportUpload(event) {
             const file = event.target.files[0];
             if (file) {
-                alert(`Successfully uploaded "${file.name}". AI scanner is analyzing lab parameters...`);
-                setTimeout(() => {
-                    document.getElementById('moistureInput').value = 55;
-                    document.getElementById('nInput').value = 65;
-                    updatePredictions();
-                    alert("AI scan complete! Soil parameters updated automatically from lab report.");
-                }, 1000);
+                alert(`Successfully uploaded "${file.name}". AI soil diagnostics are scanning parameters...`);
+                document.getElementById('moistureInput').value = 55;
+                document.getElementById('phInput').value = 7.1;
+                document.getElementById('nInput').value = 48;
+                updatePredictions();
             }
         }
 
         function showCropTips(cropName) {
-            alert(`AI Agronomist Tips for ${cropName}:\n• Ensure proper drainage before irrigation.\n• Recommended fertilizer: NPK 12:32:16 split dosage.`);
+            alert(`Showing customized agronomy care tips and fertilizer scheduling for ${cropName}.`);
         }
 
-        function downloadReport() {
-            alert("Preparing KisaanSaathi Soil & Crop Health PDF Report...");
-            setTimeout(() => { alert("Report downloaded successfully to your device!"); }, 1000);
+        function generateSoilReport() {
+            alert('Soil advisory report generated successfully and ready for download.');
         }
 
-        function shareViaWhatsApp() {
-            const text = encodeURIComponent("KisaanSaathi Soil Health Report: Wheat suitability 88%, Nitrogen level optimized. Check portal for full details.");
-            window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
-        }
-
-        const translations = {
-            'en': { heading: '🧪 Soil & Crop Predictions', banner: 'AI-powered analytics and real-time crop suitability engine' },
-            'hi': { heading: '🧪 मिट्टी और फसल पूर्वानुमान', banner: 'एआई-संचालित विश्लेषण और वास्तविक समय फसल उपयुक्तता इंजन' },
-            'mr': { heading: '🧪 माती आणि पीक अंदाज', banner: 'AI-संचलित विश्लेषण आणि रिअल-टाइम पीक सुसंगतता इंजिन' },
-            'pa': { heading: '🧪 ਮਿੱਟੀ ਅਤੇ ਫਸਲ ਅਨੁਮਾਨ', banner: 'ਏਆਈ-ਸੰਚਾਲਿਤ ਵਿਸ਼ਲੇਸ਼ਣ ਅਤੇ ਅਸਲ-ਸਮੇਂ ਦੀ ਫਸਲ ਅਨੁਕੂਲਤਾ ਇੰਜਣ' },
-            'gu': { heading: '🧪 જમીન અને પાક અનુમાન', banner: 'AI-સંચાલિત વિશ્લેષણ અને વાસ્તવિક સમય પાક યોગ્યતા એન્જિન' },
-            'bn': { heading: '🧪 মাটি ও ফসল পূর্বাভাস', banner: 'AI-চালিত বিশ্লেষণ এবং রিয়েল-টাইম শস্য উপযুক্ততা ইঞ্জিন' }
-        };
-
-        function toggleLanguage() {
-            const lang = document.getElementById('langToggle').value;
-            if (translations[lang]) {
-                document.getElementById('pageHeading').innerText = translations[lang].heading;
-                document.getElementById('subBannerText').innerText = translations[lang].banner;
-            }
+        function resetSoilValues() {
+            document.getElementById('moistureInput').value = 42;
+            document.getElementById('phInput').value = 6.8;
+            document.getElementById('nInput').value = 35;
+            document.getElementById('kInput').value = 78;
+            updatePredictions();
+            alert('Parameters reset to default farm values.');
         }
     </script>
 </body>
