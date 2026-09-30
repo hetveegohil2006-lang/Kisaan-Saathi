@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Market & Expenses - KisaanSaathi Smart Agriculture Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js for Interactive Price Trends -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* 5 Themes Color Palettes matching your Soil & Crop File exactly */
+        body.theme-light-yellow { background: linear-gradient(to bottom, #fef08a 0%, #fef9c3 50%, #e2e8f0 100%); --panel-bg: rgba(255, 255, 255, 0.88); --text-primary: #1b3818; --text-muted: #4b6b48; --accent: #386641; --input-bg: #ffffff; --border-color: #fde047; }
+        body.theme-light-pink { background: linear-gradient(to bottom, #fbcfe8 0%, #fce7f3 50%, #e2e8f0 100%); --panel-bg: rgba(255, 255, 255, 0.88); --text-primary: #500724; --text-muted: #831843; --accent: #be185d; --input-bg: #ffffff; --border-color: #f472b6; }
+        body.theme-light-orange { background: linear-gradient(to bottom, #fed7aa 0%, #ffedd5 50%, #e2e8f0 100%); --panel-bg: rgba(255, 255, 255, 0.88); --text-primary: #431407; --text-muted: #7c2d12; --accent: #c2410c; --input-bg: #ffffff; --border-color: #fb923c; }
+        body.theme-light-blue { background: linear-gradient(to bottom, #bae6fd 0%, #e0f2fe 50%, #cbd5e1 100%); --panel-bg: rgba(255, 255, 255, 0.88); --text-primary: #082f49; --text-muted: #0369a1; --accent: #0369a1; --input-bg: #ffffff; --border-color: #38bdf8; }
+        body.theme-light-black { background: linear-gradient(to bottom, #1e293b 0%, #0f172a 50%, #020617 100%); --panel-bg: rgba(15, 23, 42, 0.88); --text-primary: #f8fafc; --text-muted: #94a3b8; --accent: #38bdf8; --input-bg: #0f172a; --border-color: #334155; }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+        body { color: var(--text-primary); min-height: 100vh; display: flex; transition: background 0.3s, color 0.3s; }
+
+        /* Sidebar Structure with Magic Navigation Animation Effect */
+        .sidebar { width: 280px; background: var(--panel-bg); backdrop-filter: blur(10px); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; padding: 20px; height: 100vh; position: fixed; top: 0; left: 0; z-index: 40; }
+        
+        /* Exact Brand Logo Badge */
+        .brand-badge { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; background: #ffffff; padding: 10px 14px; border-radius: 20px; border: 1px solid #fde047; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
+        body.theme-light-black .brand-badge { background: #0f172a; border-color: #334155; }
+        .brand-logo-icon { font-size: 24px; line-height: 1; }
+        .brand-text strong { font-size: 15px; font-weight: 700; color: #1b3818; display: block; line-height: 1.2; letter-spacing: -0.2px; }
+        body.theme-light-black .brand-text strong { color: #f8fafc; }
+        .brand-text small { font-size: 8.5px; color: #386641; font-weight: 700; letter-spacing: 0.4px; display: block; margin-top: 1px; }
+
+        /* Magic Navigation Container & Sliding Indicator */
+        .nav-links { display: flex; flex-direction: column; gap: 4px; flex: 1; overflow-y: auto; position: relative; }
+        
+        /* Magic Sliding Bubble Indicator */
+        .magic-indicator {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 44px;
+            background: var(--accent);
+            border-radius: 12px;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 1;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+        }
+
+        .nav-item { display: flex; align-items: center; gap: 12px; padding: 11px 14px; border-radius: 12px; font-size: 13px; font-weight: 500; color: var(--text-primary); text-decoration: none; transition: color 0.3s; position: relative; z-index: 2; height: 44px; }
+        .nav-item:hover { color: var(--accent); }
+        body.theme-light-black .nav-item:hover { color: #38bdf8; }
+        .nav-item.active { color: #fff !important; font-weight: 600; }
+
+        /* Main Content */
+        .main-content { margin-left: 280px; flex: 1; padding: 30px; display: flex; flex-direction: column; height: 100vh; overflow-y: auto; }
+
+        /* Top Header & Controls */
+        .top-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 15px; }
+        .header-title-box h1 { font-size: 24px; font-weight: 700; color: var(--text-primary); }
+        .header-title-box p { font-size: 13px; color: var(--text-muted); font-weight: 500; margin-top: 2px; }
+        
+        .header-controls { display: flex; gap: 12px; align-items: center; }
+        .control-select { background: var(--input-bg); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 20px; cursor: pointer; font-weight: 500; font-size: 13px; color: var(--text-primary); outline: none; }
+        
+        .sun-control-box { display: flex; align-items: center; justify-content: center; cursor: pointer; background: var(--panel-bg); width: 42px; height: 42px; border-radius: 50%; backdrop-filter: blur(10px); box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 1px solid var(--border-color); transition: transform 0.2s; }
+        .sun-control-box:hover { transform: scale(1.1); }
+        .sun-icon { width: 20px; height: 20px; border-radius: 50%; background: #facc15; box-shadow: 0 0 12px rgba(250, 204, 21, 0.9); transition: all 0.5s; }
+        body.theme-light-black .sun-icon { background: transparent; box-shadow: -4px 2px 0 0 #f8fafc; width: 16px; height: 16px; }
+
+        /* Utility Bar: Voice Search & Export */
+        .utility-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 15px; margin-bottom: 24px; }
+        .search-box-wrapper { position: relative; display: flex; align-items: center; }
+        .search-box-wrapper i { position: absolute; left: 16px; color: var(--text-muted); }
+        .search-input { width: 100%; background: var(--panel-bg); border: 1px solid var(--border-color); padding: 12px 16px 12px 45px; border-radius: 16px; font-size: 13px; color: var(--text-primary); outline: none; backdrop-filter: blur(12px); font-weight: 500; }
+
+        /* Dashboard Grid Layout (3-Column Desktop Grid) */
+        .dashboard-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 24px; }
+        .card { background: var(--panel-bg); backdrop-filter: blur(12px); border-radius: 24px; border: 1px solid var(--border-color); padding: 22px; box-shadow: 0 10px 30px rgba(0,0,0,0.04); display: flex; flex-direction: column; gap: 14px; }
+        .card h3 { font-size: 16px; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 8px; }
+        .card-desc { font-size: 12px; color: var(--text-muted); font-weight: 500; margin-top: -8px; }
+
+        /* Mandi Prices Table */
+        .mandi-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .mandi-table th { text-align: left; padding-bottom: 8px; font-size: 11px; text-transform: uppercase; color: var(--text-muted); border-bottom: 1px solid var(--border-color); }
+        .mandi-table td { padding: 10px 0; border-bottom: 1px solid rgba(0,0,0,0.03); font-weight: 500; }
+        body.theme-light-black .mandi-table td { border-bottom: 1px solid rgba(255,255,255,0.05); }
+
+        .badge { padding: 3px 8px; border-radius: 6px; font-size: 10px; font-weight: 700; text-transform: uppercase; display: inline-block; }
+        .badge.green { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+        .badge.red { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+
+        /* Comparison Progress Bars */
+        .comparison-item { display: flex; flex-direction: column; gap: 4px; font-size: 12px; }
+        .comparison-bar-bg { background: rgba(0,0,0,0.06); border-radius: 6px; height: 8px; width: 100%; overflow: hidden; }
+        body.theme-light-black .comparison-bar-bg { background: rgba(255,255,255,0.1); }
+        .comparison-bar-fill { height: 100%; border-radius: 6px; background: var(--accent); }
+
+        /* Form Controls */
+        .input-group { display: flex; flex-direction: column; gap: 4px; }
+        .input-group label { font-size: 11px; font-weight: 600; color: var(--text-muted); }
+        .input-field { background: var(--input-bg); border: 1px solid var(--border-color); padding: 9px 12px; border-radius: 12px; font-size: 13px; font-weight: 600; color: var(--text-primary); outline: none; width: 100%; }
+
+        .btn { padding: 10px 18px; border-radius: 12px; font-weight: 700; font-size: 12px; cursor: pointer; border: 1px solid transparent; display: flex; align-items: center; justify-content: center; gap: 8px; transition: transform 0.2s; width: 100%; }
+        .btn:hover { transform: translateY(-2px); }
+        .btn-primary { background: var(--accent); color: #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .btn-secondary { background: var(--input-bg); color: var(--text-primary); border-color: var(--border-color); }
+
+        .chart-wrapper { position: relative; height: 140px; width: 100%; margin-top: 5px; }
+
+        /* Responsive Breakpoints */
+        @media (max-width: 1200px) {
+            .dashboard-grid-3 { grid-template-columns: repeat(2, 1fr); }
+            .utility-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 768px) {
+            .sidebar { display: none; }
+            .main-content { margin-left: 0; padding: 15px; }
+            .dashboard-grid-3 { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body id="appBody" class="theme-light-yellow">
+
+    <!-- Sidebar Structure with Magic Navigation Sliding Indicator -->
+    <aside class="sidebar">
+        <div class="brand-badge">
+            <div class="brand-logo-icon">🌱</div>
+            <div class="brand-text">
+                <strong>KisaanSaathi</strong>
+                <small>SMART AGRICULTURE PORTAL</small>
+            </div>
+        </div>
+        <div class="nav-links" id="navLinksContainer">
+            <!-- Magic Sliding Bubble Indicator Element -->
+            <div class="magic-indicator" id="magicIndicator"></div>
+
+            <a href="dashboard.html" class="nav-item">🏠 Overview & Guide</a>
+            <a href="chatbotai.html" class="nav-item">🤖 AI Chatbot (Gemini)</a>
+            <a href="soil.html" class="nav-item">🧪 Soil & Crop Predictions</a>
+            <a href="weather.html" class="nav-item">🌦 Weather & Alerts</a>
+            <a href="tutorials.html" class="nav-item">🎥 Plant Tutorials & AI Video</a>
+            <a href="market.html" class="nav-item active">💰 Market & Expenses</a>
+            <a href="schemes.html" class="nav-item">🏛 Government Schemes</a>
+            <a href="profile.html" class="nav-item">👤 Profile Settings</a>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+        
+        <!-- Top Header & Controls -->
+        <header class="top-header">
+            <div class="header-title-box">
+                <h1 id="pageHeading">💰 Market & Expenses Dashboard</h1>
+                <p id="subBannerText">Real-time mandi prices, smart expense tracker, and profit calculator</p>
+            </div>
+            <div class="header-controls">
+                <select class="control-select" id="langToggle" onchange="toggleLanguage()">
+                    <option value="en" selected>English</option>
+                    <option value="hi">हिंदी (Hindi)</option>
+                    <option value="mr">मराठी (Marathi)</option>
+                    <option value="pa">ਪੰਜਾਬੀ (Punjabi)</option>
+                    <option value="gu">ગુજરાતી (Gujarati)</option>
+                    <option value="bn">বাংলা (Bengali)</option>
+                    <option value="te">తెలుగు (Telugu)</option>
+                    <option value="ta">தமிழ் (Tamil)</option>
+                    <option value="kn">ಕನ್ನಡ (Kannada)</option>
+                    <option value="ml">മലയാളം (Malayalam)</option>
+                    <option value="or">ଓଡ଼ିଆ (Odia)</option>
+                    <option value="as">অসমীয়া (Assamese)</option>
+                    <option value="ur">اردو (Urdu)</option>
+                </select>
+
+                <div class="sun-control-box" onclick="switchThemeCycle()" title="Toggle Theme Palette">
+                    <div class="sun-icon"></div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Utility Row: Voice Search & One-Click Export -->
+        <div class="utility-grid">
+            <div class="search-box-wrapper">
+                <i class="fa-solid fa-microphone"></i>
+                <input type="text" id="voiceSearchInput" class="search-input" placeholder='Voice Search... Speak or type e.g., "Wheat price in Pune"'>
+            </div>
+            <div>
+                <button class="btn btn-primary" style="height: 100%;" onclick="exportReports()">
+                    <i class="fa-solid fa-file-export"></i> One-Click Export (PDF / Excel)
+                </button>
+            </div>
+        </div>
+
+        <!-- 3-Column Dashboard Layout -->
+        <div class="dashboard-grid-3">
+            
+            <!-- COLUMN 1: Market & Prices -->
+            <div class="card">
+                <h3>📈 Live Mandi Prices</h3>
+                <p class="card-desc">Real-time crop prices from nearby mandis.</p>
+                
+                <table class="mandi-table">
+                    <thead>
+                        <tr>
+                            <th>Crop</th>
+                            <th>Mandi</th>
+                            <th>Price / Quintal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Wheat</strong></td>
+                            <td style="color:var(--text-muted);">Mandi A</td>
+                            <td>₹2,450 <span class="badge green">🟢 ⬆</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Onions</strong></td>
+                            <td style="color:var(--text-muted);">Mandi A</td>
+                            <td>₹1,800 <span class="badge red">🔴 ⬇</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Tomato</strong></td>
+                            <td style="color:var(--text-muted);">Mandi B</td>
+                            <td>₹1,200 <span class="badge green">🟢 ⬆</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button class="btn btn-secondary" onclick="alert('Crop pinned successfully to your quick access header!')">📌 Pin Favorite Crop</button>
+            </div>
+
+            <!-- COLUMN 2: Smart Price Comparison -->
+            <div class="card">
+                <h3>📊 Smart Comparison</h3>
+                <p class="card-desc">Side-by-side price comparison across mandis.</p>
+                
+                <div class="comparison-item">
+                    <div style="display:flex; justify-content:between;"><span>Mandi A (Pune)</span><strong>₹2,450</strong></div>
+                    <div class="comparison-bar-bg"><div class="comparison-bar-fill" style="width: 90%;"></div></div>
+                </div>
+                <div class="comparison-item">
+                    <div style="display:flex; justify-content:between;"><span>Mandi B (Nashik)</span><strong>₹2,380</strong></div>
+                    <div class="comparison-bar-bg"><div class="comparison-bar-fill" style="width: 78%; background: #f59e0b;"></div></div>
+                </div>
+                <div class="comparison-item">
+                    <div style="display:flex; justify-content:between;"><span>Mandi C (Solapur)</span><strong>₹2,410</strong></div>
+                    <div class="comparison-bar-bg"><div class="comparison-bar-fill" style="width: 84%; background: #06b6d4;"></div></div>
+                </div>
+
+                <div style="background: rgba(56, 102, 65, 0.08); border: 1px dashed var(--accent); padding: 10px; border-radius: 12px; font-size: 11px; font-weight: 500;">
+                    🧠 <strong>AI Highlight:</strong> Best selling location today is <strong>Mandi A</strong> (Highest net return after transit cost).
+                </div>
+            </div>
+
+            <!-- COLUMN 3: Price Trend Graphs -->
+            <div class="card">
+                <h3>📉 Weekly Trend Graphs</h3>
+                <p class="card-desc">Wheat market trend over the last 4 weeks.</p>
+                <div class="chart-wrapper">
+                    <canvas id="marketTrendChart"></canvas>
+                </div>
+                <div style="font-size: 11px; color:var(--text-muted); text-align:center; font-weight:600;">
+                    📈 Stable upward trajectory projected for next week.
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Second Row: Expenses & Profit Calculator -->
+        <div class="dashboard-grid-3">
+            
+            <!-- COLUMN 1: Daily Expense Entry Form -->
+            <div class="card">
+                <h3>🚜 Daily Expense Entry</h3>
+                <p class="card-desc">Log your farm expenses with emoji categories.</p>
+                
+                <div class="input-group">
+                    <label>🌱 Seeds Expense (₹)</label>
+                    <input type="number" id="seedExp" class="input-field" value="4500" oninput="calculateProfit()">
+                </div>
+                <div class="input-group">
+                    <label>💧 Irrigation & Power (₹)</label>
+                    <input type="number" id="irrigationExp" class="input-field" value="3200" oninput="calculateProfit()">
+                </div>
+                <div class="input-group">
+                    <label>🧪 Fertilizer & Chemical (₹)</label>
+                    <input type="number" id="fertExp" class="input-field" value="8500" oninput="calculateProfit()">
+                </div>
+                <div class="input-group">
+                    <label>🚜 Labor & Transport (₹)</label>
+                    <input type="number" id="laborExp" class="input-field" value="6800" oninput="calculateProfit()">
+                </div>
+                <button class="btn btn-primary" onclick="alert('Daily expense recorded successfully!')">💾 Save Expense Record</button>
+            </div>
+
+            <!-- COLUMN 2: Smart Expense Analyzer & Alerts -->
+            <div class="card">
+                <h3>🧠 Smart Expense Analyzer</h3>
+                <p class="card-desc">AI grouping and cost optimization alerts.</p>
+                
+                <div style="font-size: 12px; display:flex; flex-direction:column; gap:8px;">
+                    <div><strong>High Impact Cost:</strong> Fertilizer & Chemicals (37%)</div>
+                    <div><strong>Medium Impact Cost:</strong> Labor & Transport (30%)</div>
+                    <div><strong>Low Impact Cost:</strong> Seeds & Irrigation (33%)</div>
+                </div>
+
+                <div id="expenseAlertBox" style="background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.3); padding: 12px; border-radius: 12px; font-size: 11px; color: #dc2626; font-weight: 600;">
+                    ⚠️ <strong>Expense Alert:</strong> Fertilizer cost exceeds 30% threshold. Consider switching to organic alternatives to reduce input costs.
+                </div>
+
+                <div style="background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.3); padding: 10px; border-radius: 12px; font-size: 11px; font-weight: 600;">
+                    🏅 <strong>Badge Progress:</strong> You are ₹1,200 away from unlocking the <strong>Cost Cutter</strong> badge!
+                </div>
+            </div>
+
+            <!-- COLUMN 3: Profitability Calculator -->
+            <div class="card">
+                <h3>✅ Profitability Calculator</h3>
+                <p class="card-desc">Auto-calculate net return vs total expenses.</p>
+                
+                <div class="input-group">
+                    <label>Total Expenses Calculated (₹)</label>
+                    <input type="text" id="totalExpDisplay" class="input-field" value="₹23,000" readonly style="background: rgba(0,0,0,0.03);">
+                </div>
+                <div class="input-group">
+                    <label>Expected Total Yield Sale Price (₹)</label>
+                    <input type="number" id="expectedSalePrice" class="input-field" value="38500" oninput="calculateProfit()">
+                </div>
+
+                <div style="background: var(--input-bg); border: 1px solid var(--border-color); padding: 14px; border-radius: 14px; text-align: center;">
+                    <span style="font-size: 11px; font-weight: 600; color: var(--text-muted);">Estimated Net Profit</span>
+                    <h2 id="netProfitValue" style="font-size: 20px; font-weight: 700; color: #166534; margin-top: 2px;">₹15,500</h2>
+                    <div class="comparison-bar-bg" style="margin-top: 8px;">
+                        <div id="profitProgressBar" class="comparison-bar-fill" style="width: 65%; background: #22c55e;"></div>
+                    </div>
+                </div>
+
+                <button class="btn btn-secondary" onclick="alert('Gamified savings target updated!')">🎯 Set Monthly Savings Goal</button>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        // Theme Cycling Logic (5 Themes matching Soil & Crop file)
+        const themes = ['theme-light-yellow', 'theme-light-pink', 'theme-light-orange', 'theme-light-blue', 'theme-light-black'];
+        let currentThemeIndex = 0;
+
+        function switchThemeCycle() {
+            currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+            document.getElementById('appBody').className = themes[currentThemeIndex];
+            localStorage.setItem('kisaan-portal-theme-index', currentThemeIndex);
+        }
+
+        const savedThemeIndex = localStorage.getItem('kisaan-portal-theme-index');
+        if (savedThemeIndex !== null) {
+            currentThemeIndex = parseInt(savedThemeIndex);
+            document.getElementById('appBody').className = themes[currentThemeIndex];
+        }
+
+        // Magic Navigation Indicator Position & Click Animation Logic
+        const activeItem = document.querySelector('.nav-item.active');
+        const indicator = document.getElementById('magicIndicator');
+
+        function updateIndicatorPosition(element) {
+            const index = Array.from(element.parentNode.querySelectorAll('.nav-item')).indexOf(element);
+            // 44px item height + 4px gap per item
+            const topPosition = index * 48; 
+            indicator.style.transform = `translateY(${topPosition}px)`;
+        }
+
+        if (activeItem) {
+            updateIndicatorPosition(activeItem);
+        }
+
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+                this.classList.add('active');
+                updateIndicatorPosition(this);
+            });
+        });
+
+        // Chart.js Market Price Trend Graph
+        const ctx = document.getElementById('marketTrendChart').getContext('2d');
+        const marketTrendChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Week 1', 'Week 2', 'Week 3', 'Current'],
+                datasets: [{
+                    label: 'Wheat Price (₹/Quintal)',
+                    data: [2300, 2350, 2400, 2450],
+                    borderColor: '#386641',
+                    backgroundColor: 'rgba(56, 102, 65, 0.1)',
+                    fill: true,
+                    tension: 0.3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { grid: { display: false } },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+
+        // Profit & Expense Calculation Logic
+        function calculateProfit() {
+            const seed = parseFloat(document.getElementById('seedExp').value) || 0;
+            const irrigation = parseFloat(document.getElementById('irrigationExp').value) || 0;
+            const fert = parseFloat(document.getElementById('fertExp').value) || 0;
+            const labor = parseFloat(document.getElementById('laborExp').value) || 0;
+
+            const totalExpenses = seed + irrigation + fert + labor;
+            document.getElementById('totalExpDisplay').value = '₹' + totalExpenses.toLocaleString('en-IN');
+
+            const salePrice = parseFloat(document.getElementById('expectedSalePrice').value) || 0;
+            const netProfit = salePrice - totalExpenses;
+
+            const profitElem = document.getElementById('netProfitValue');
+            const barElem = document.getElementById('profitProgressBar');
+
+            profitElem.innerText = '₹' + netProfit.toLocaleString('en-IN');
+            if (netProfit >= 0) {
+                profitElem.style.color = '#166534';
+                barElem.style.background = '#22c55e';
+                barElem.style.width = Math.min(100, Math.max(10, (netProfit / salePrice) * 100)) + '%';
+            } else {
+                profitElem.style.color = '#dc2626';
+                barElem.style.background = '#ef4444';
+                barElem.style.width = '100%';
+            }
+
+            // Fertilizer Alert Check (>30%)
+            const alertBox = document.getElementById('expenseAlertBox');
+            if (fert / totalExpenses > 0.3) {
+                alertBox.style.display = 'block';
+            } else {
+                alertBox.style.display = 'none';
+            }
+        }
+
+        function exportReports() {
+            alert("Preparing KisaanSaathi Market & Expense Report for download...");
+            setTimeout(() => { alert("Export successful! PDF/Excel report saved to your downloads."); }, 1000);
+        }
+
+        const translations = {
+            'en': { heading: '💰 Market & Expenses Dashboard', banner: 'Real-time mandi prices, smart expense tracker, and profit calculator' },
+            'hi': { heading: '💰 बाज़ार और खर्च डैशबोर्ड', banner: 'वास्तविक समय मंडी भाव, स्मार्ट खर्च ट्रैकर और लाभ कैलकुलेटर' },
+            'mr': { heading: '💰 बाजार आणि खर्च डॅशबोर्ड', banner: 'रिअल-टाइम बाजारभाव, स्मार्ट खर्च ट्रॅकर आणि नफा कॅल्क्युलेटर' },
+            'pa': { heading: '💰 ਬਾਜ਼ਾਰ ਅਤੇ ਖਰਚ ਡੈਸ਼ਬورد', banner: 'ਅਸਲ-ਸਮੇਂ ਦੀ ਮੰਡੀ ਕੀਮਤਾਂ, ਸਮਾਰਟ ਖਰਚ ਟ੍ਰੈਕਰ ਅਤੇ ਲਾਭ ਕੈਲਕੁਲੇਟਰ' },
+            'gu': { heading: '💰 બજાર અને ખર્ચ ડેશબોર્ડ', banner: 'વાસ્તવિક સમય મંડી ભાવ, સ્માર્ટ ખર્ચ ટ્રેકર અને નફા કેલ્ક્યુલેટર' },
+            'bn': { heading: '💰 বাজার ও খরচ ড্যাশবোর্ড', banner: 'রিয়েল-টাইম মান্ডি দাম, স্মার্ট খরচ ট্র্যাকার এবং লাভ ক্যালকুলেটর' }
+        };
+
+        function toggleLanguage() {
+            const lang = document.getElementById('langToggle').value;
+            if (translations[lang]) {
+                document.getElementById('pageHeading').innerText = translations[lang].heading;
+                document.getElementById('subBannerText').innerText = translations[lang].banner;
+            }
+        }
+    </script>
+</body>
+</html>
