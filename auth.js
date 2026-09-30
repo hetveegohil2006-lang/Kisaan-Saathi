@@ -74,6 +74,26 @@ function getLanguage() {
     return localStorage.getItem("kisaanLang") || localStorage.getItem("aiLanguage") || "en";
 }
 
+function updateGuideMessage() {
+    const messages = {
+        en: "Choose email or mobile, then request a verification code.",
+        hi: "ईमेल या मोबाइल चुनें, फिर सत्यापन कोड का अनुरोध करें।",
+        mr: "ईमेल किंवा मोबाइल निवडा आणि पडताळणी कोड मागवा.",
+        pa: "ਈਮੇਲ ਜਾਂ ਮੋਬਾਈਲ ਚੁਣੋ, ਫਿਰ ਤਸਦੀਕ ਕੋਡ ਮੰਗੋ।",
+        gu: "ઇમેઇલ અથવા મોબાઇલ પસંદ કરો, પછી ચકાસણી કોડ મંગાવો.",
+        bn: "ইমেল বা মোবাইল বেছে নিয়ে যাচাই কোডের জন্য অনুরোধ করুন।",
+        te: "ఇమెయిల్ లేదా మొబైల్‌ను ఎంచుకుని, ధృవీకరణ కోడ్‌ను అభ్యర్థించండి.",
+        ta: "மின்னஞ்சல் அல்லது கைப்பேசியைத் தேர்ந்தெடுத்து சரிபார்ப்புக் குறியீட்டைக் கோரவும்.",
+        kn: "ಇಮೇಲ್ ಅಥವಾ ಮೊಬೈಲ್ ಆಯ್ಕೆಮಾಡಿ, ನಂತರ ಪರಿಶೀಲನಾ ಕೋಡ್ ಕೇಳಿ.",
+        ml: "ഇമെയിൽ അല്ലെങ്കിൽ മൊബൈൽ തിരഞ്ഞെടുത്ത് സ്ഥിരീകരണ കോഡ് അഭ്യർത്ഥിക്കുക.",
+        or: "ଇମେଲ୍ କିମ୍ବା ମୋବାଇଲ୍ ବାଛନ୍ତୁ, ତାପରେ ଯାଞ୍ଚ କୋଡ୍ ମାଗନ୍ତୁ।",
+        as: "ইমেইল বা ম’বাইল বাছনি কৰি পৰীক্ষা কোডৰ বাবে অনুৰোধ কৰক।",
+        ur: "ای میل یا موبائل منتخب کریں، پھر تصدیقی کوڈ طلب کریں۔"
+    };
+    const guideMessage = document.getElementById("guideMessage");
+    if (guideMessage) guideMessage.textContent = messages[getLanguage()] || messages.en;
+}
+
 function handleError(error) {
     const messages = {
         "auth/invalid-credential": "The email or password is incorrect.",
@@ -99,6 +119,7 @@ async function sendPhoneCode(phone) {
 function updateContactMethod() {
     const isEmail = getChannel() === "email";
     const isSignup = Boolean(document.getElementById("signupForm"));
+    const translate = (text) => window.portalTranslateText?.(text, getLanguage()) || text;
     const emailGroup = document.getElementById("emailGroup");
     if (emailGroup) emailGroup.hidden = !isEmail;
     document.getElementById("phoneGroup").hidden = isEmail;
@@ -107,20 +128,20 @@ function updateContactMethod() {
     document.getElementById("phonePasswordNote")?.toggleAttribute("hidden", isEmail);
     const codeHelp = document.getElementById("codeHelp");
     if (codeHelp) {
-        codeHelp.textContent = isEmail
+        codeHelp.textContent = translate(isEmail
             ? "We’ll email a one-time code to verify your address."
-            : "We’ll text a one-time code to verify your mobile number.";
+            : "We’ll text a one-time code to verify your mobile number.");
     }
     document.getElementById("email").required = isEmail;
     document.getElementById("phone").required = !isEmail;
     document.getElementById("password").required = isEmail;
     document.getElementById("verificationCode").required = isSignup || !isEmail;
     if (document.getElementById("sendOtpButton")) {
-        document.getElementById("sendOtpButton").textContent = isEmail ? "Send email code" : "Send SMS code";
+        document.getElementById("sendOtpButton").textContent = translate(isEmail ? "Send email code" : "Send SMS code");
     }
     const codeLabel = document.querySelector('label[for="verificationCode"]');
     if (codeLabel) {
-        codeLabel.textContent = isEmail ? "Email Verification Code" : "SMS Verification Code";
+        codeLabel.textContent = translate(isEmail ? "Email Verification Code" : "SMS Verification Code");
     }
     confirmationResult = null;
 }
@@ -245,7 +266,9 @@ if (languageSelector) {
         window.setPortalLanguage?.(languageSelector.value);
     });
 }
-document.getElementById("guideMessage").textContent = getLanguage() === "hi"
-    ? "नमस्ते! अपनी चुनी हुई भाषा में आगे बढ़ें।"
-    : "Choose email or mobile, then request a verification code.";
+window.addEventListener("portal-language-changed", () => {
+    updateGuideMessage();
+    updateContactMethod();
+});
+updateGuideMessage();
 updateContactMethod();

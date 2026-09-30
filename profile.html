@@ -245,29 +245,29 @@
             <div class="profile-card">
                 <div class="profile-header-layout">
                     <div class="avatar-container" id="avatarBox" title="Click to change photo" onclick="openPhotoModal()">
-                        <img id="profileAvatar" src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=300&q=80" alt="Farmer Photo">
+                        <img id="profileAvatar" alt="Farmer Photo">
                         <div class="avatar-placeholder-fallback" id="avatarFallback">👤</div>
                         <div class="avatar-overlay">Change</div>
                     </div>
                     <div class="profile-title-info">
-                        <h2 id="displayName">Ramesh Kumar</h2>
-                        <p id="displayRole">Farmer from Uttar Pradesh</p>
+                        <h2 id="displayName">Farmer profile</h2>
+                        <p id="displayRole">Farmer profile</p>
                     </div>
                 </div>
 
                 <ul class="profile-details-list">
-                    <li><span class="icon">📞</span><strong>Phone:</strong>&nbsp;<span id="displayPhone">+91 98765 43210</span></li>
-                    <li><span class="icon">📍</span><strong>Village:</strong>&nbsp;<span id="displayVillage">Gorakhpur</span></li>
-                    <li><span class="icon">🌾</span><strong>Farm Area:</strong>&nbsp;<span id="displayArea">5 acres</span></li>
-                    <li><span class="icon">🌿</span><strong>Crops:</strong>&nbsp;<span id="displayCrops">Wheat, Rice, Vegetables</span></li>
-                    <li><span class="icon">💚</span><strong>Soil Health:</strong>&nbsp;<span id="displaySoil">Good</span></li>
+                    <li><span class="icon">📞</span><strong>Phone:</strong>&nbsp;<span id="displayPhone">Not provided</span></li>
+                    <li><span class="icon">📍</span><strong>Village:</strong>&nbsp;<span id="displayVillage">Not provided</span></li>
+                    <li><span class="icon">🌾</span><strong>Farm Area:</strong>&nbsp;<span id="displayArea">Not provided</span></li>
+                    <li><span class="icon">🌿</span><strong>Crops:</strong>&nbsp;<span id="displayCrops">Not provided</span></li>
+                    <li><span class="icon">💚</span><strong>Soil Health:</strong>&nbsp;<span id="displaySoil">Not provided</span></li>
                 </ul>
 
                 <!-- Extended Info Accordion -->
                 <div class="extended-info" id="extendedInfoBox">
-                    <p><strong>Registration ID:</strong> KS-UP-88492</p>
-                    <p><strong>Primary Irrigation Source:</strong> Tube well & Canal</p>
-                    <p><strong>Associated Krishi Kendra:</strong> Gorakhpur Agro-Hub</p>
+                    <p><strong>Registration ID:</strong> Not provided</p>
+                    <p><strong>Primary Irrigation Source:</strong> Not provided</p>
+                    <p><strong>Associated Krishi Kendra:</strong> Not provided</p>
                 </div>
 
                 <div class="profile-actions">
@@ -376,25 +376,30 @@
         document.getElementById('appBody').className = themes[currentThemeIndex];
 
         // Profile Data State Management via LocalStorage
-        let profileData = JSON.parse(localStorage.getItem('kisaanFarmerProfile')) || {
-            name: "Ramesh Kumar",
-            role: "Farmer from Uttar Pradesh",
-            phone: "+91 98765 43210",
-            village: "Gorakhpur",
-            area: "5 acres",
-            crops: "Wheat, Rice, Vegetables",
-            soil: "Good",
-            avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=300&q=80"
+        const savedAccount = JSON.parse(localStorage.getItem('kisaanSaathiUser') || 'null');
+        const savedProfile = JSON.parse(localStorage.getItem('kisaanFarmerProfile') || 'null');
+        const isSeedProfile = !savedAccount && savedProfile?.name === "Ramesh Kumar"
+            && savedProfile?.phone === "+91 98765 43210"
+            && savedProfile?.village === "Gorakhpur";
+        let profileData = !isSeedProfile && savedProfile ? savedProfile : {
+            name: savedAccount?.name || "Farmer profile",
+            role: "Farmer profile",
+            phone: savedAccount?.phone || savedAccount?.email || "",
+            village: "",
+            area: "",
+            crops: "",
+            soil: "",
+            avatar: ""
         };
 
         function renderProfile() {
             document.getElementById('displayName').innerText = profileData.name;
             document.getElementById('displayRole').innerText = profileData.role;
-            document.getElementById('displayPhone').innerText = profileData.phone;
-            document.getElementById('displayVillage').innerText = profileData.village;
-            document.getElementById('displayArea').innerText = profileData.area;
-            document.getElementById('displayCrops').innerText = profileData.crops;
-            document.getElementById('displaySoil').innerText = profileData.soil;
+            document.getElementById('displayPhone').innerText = profileData.phone || "Not provided";
+            document.getElementById('displayVillage').innerText = profileData.village || "Not provided";
+            document.getElementById('displayArea').innerText = profileData.area || "Not provided";
+            document.getElementById('displayCrops').innerText = profileData.crops || "Not provided";
+            document.getElementById('displaySoil').innerText = profileData.soil || "Not provided";
             
             const imgElement = document.getElementById('profileAvatar');
             const fallbackElement = document.getElementById('avatarFallback');
@@ -484,16 +489,32 @@
         // Log Out & Delete Account Handlers
         function logoutAccount() {
             if (confirm("Are you sure you want to log out of KisaanSaathi?")) {
+                clearLocalAccount();
                 alert("Logged out successfully.");
-                window.location.href = "dashboard.html";
+                navigateToPortal("login.html");
             }
+        }
+
+        function clearLocalAccount() {
+            localStorage.removeItem('kisaanSaathiLoggedIn');
+            localStorage.removeItem('kisaanSaathiUser');
+            localStorage.removeItem('kisaanName');
+        }
+
+        function navigateToPortal(page) {
+            if (window.top && window.top !== window) {
+                window.top.location.replace(page);
+                return;
+            }
+            window.location.replace(page);
         }
 
         function deleteAccount() {
             if (confirm("⚠️ WARNING: This will permanently delete your profile and saved portal data. Proceed?")) {
                 localStorage.removeItem('kisaanFarmerProfile');
+                clearLocalAccount();
                 alert("Account deleted successfully.");
-                window.location.href = "dashboard.html";
+                navigateToPortal("index.html");
             }
         }
 

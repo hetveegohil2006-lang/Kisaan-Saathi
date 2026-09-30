@@ -16,8 +16,8 @@
 
         body, html {
             width: 100%;
-            height: 100vh;
-            overflow: hidden;
+            min-height: 100vh;
+            overflow-x: hidden;
             transition: background 0.8s ease-in-out;
         }
 
@@ -31,19 +31,23 @@
         .page-container {
             position: relative;
             width: 100%;
-            height: 100%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 20px 100px 20px;
         }
 
         /* Top Navigation Bar */
         .top-nav {
-            position: absolute;
-            top: 20px;
-            left: 30px;
-            right: 30px;
+            width: 100%;
+            max-width: 1200px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             z-index: 40;
+            margin-bottom: 20px;
         }
 
         .brand-badge {
@@ -122,26 +126,23 @@
 
         /* Center Greeting Glassmorphism Card */
         .greeting-card {
-            position: absolute;
-            top: 110px;
-            left: 50%;
-            transform: translateX(-50%);
             background: rgba(255, 255, 255, 0.88);
             backdrop-filter: blur(16px);
             padding: 30px;
             border-radius: 24px;
             text-align: center;
-            max-width: 500px;
-            width: 90%;
+            max-width: 520px;
+            width: 100%;
             box-shadow: 0 25px 50px rgba(0,0,0,0.12);
             border: 1px solid rgba(255, 255, 255, 0.6);
             z-index: 30;
+            margin: auto 0;
         }
 
         .avatar-container {
             width: 80px;
             height: 80px;
-            margin: 0 auto 15px auto;
+            margin: 0 auto;
             border-radius: 50%;
             border: 3px solid #386641;
             background: rgba(56, 102, 65, 0.15);
@@ -149,6 +150,22 @@
             align-items: center;
             justify-content: center;
             box-shadow: 0 8px 20px rgba(56, 102, 65, 0.25);
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .avatar-container:hover {
+            transform: translateY(-4px) scale(1.04);
+        }
+
+        .avatar-container.is-speaking {
+            animation: guideBounce 0.7s ease-in-out infinite alternate;
+            box-shadow: 0 0 0 8px rgba(56, 102, 65, 0.12), 0 8px 20px rgba(56, 102, 65, 0.25);
+        }
+
+        @keyframes guideBounce {
+            from { transform: translateY(0) rotate(-2deg); }
+            to { transform: translateY(-6px) rotate(2deg); }
         }
 
         .avatar-container img {
@@ -173,36 +190,17 @@
 
         .guide-stage {
             position: relative;
-            display: inline-flex;
+            display: flex;
+            align-items: center;
             justify-content: center;
-            margin-bottom: 12px;
-        }
-
-        .avatar-container {
-            cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .avatar-container:hover {
-            transform: translateY(-4px) scale(1.04);
-        }
-
-        .avatar-container.is-speaking {
-            animation: guideBounce 0.7s ease-in-out infinite alternate;
-            box-shadow: 0 0 0 8px rgba(56, 102, 65, 0.12), 0 8px 20px rgba(56, 102, 65, 0.25);
-        }
-
-        @keyframes guideBounce {
-            from { transform: translateY(0) rotate(-2deg); }
-            to { transform: translateY(-6px) rotate(2deg); }
+            gap: 15px;
+            margin-bottom: 20px;
         }
 
         .speech-bubble {
-            position: absolute;
-            left: calc(100% + 14px);
-            top: -14px;
-            width: 210px;
-            padding: 10px 12px;
+            position: relative;
+            max-width: 260px;
+            padding: 10px 14px;
             border-radius: 14px;
             background: #ffffff;
             color: #386641;
@@ -217,13 +215,13 @@
             content: "";
             position: absolute;
             left: -7px;
-            top: 24px;
-            width: 13px;
-            height: 13px;
+            top: 50%;
+            transform: translateY(-50%) rotate(45deg);
+            width: 12px;
+            height: 12px;
             background: #ffffff;
             border-left: 1px solid rgba(56, 102, 65, 0.2);
             border-bottom: 1px solid rgba(56, 102, 65, 0.2);
-            transform: rotate(45deg);
         }
 
         .quick-prompts {
@@ -231,7 +229,7 @@
             flex-wrap: wrap;
             justify-content: center;
             gap: 7px;
-            margin: -8px 0 18px;
+            margin-bottom: 20px;
         }
 
         .quick-prompt {
@@ -239,7 +237,7 @@
             background: rgba(220, 235, 222, 0.55);
             color: #386641;
             border-radius: 999px;
-            padding: 6px 10px;
+            padding: 6px 12px;
             font-size: 0.72rem;
             font-weight: 700;
             cursor: pointer;
@@ -308,25 +306,24 @@
         .btn-dashboard:hover { transform: translateY(-2px); }
 
         /* Floating Clouds & Landscape */
-        .clouds-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 35; }
+        .clouds-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; }
         .cloud { fill: rgba(255, 255, 255, 0.75); animation: driftCloud 25s linear infinite alternate; }
         @keyframes driftCloud { from { transform: translateX(0); } to { transform: translateX(35px); } }
 
-        .landscape-svg-container { position: absolute; bottom: 0; left: 0; width: 100%; height: 260px; pointer-events: none; z-index: 20; }
+        .landscape-svg-container { position: fixed; bottom: 0; left: 0; width: 100%; height: 180px; pointer-events: none; z-index: 5; }
         .landscape-svg-container svg { width: 100%; height: 100%; display: block; }
-    </style>
-    <style>
+
+        /* Responsive Breakpoints for Mobile */
         @media (max-width: 600px) {
-            body, html { min-height: 100%; height: auto; overflow-x: hidden; overflow-y: auto; }
-            .page-container { display: flow-root; min-height: 100vh; height: auto; padding-bottom: 160px; }
-            .top-nav { top: 15px; left: 15px; right: 15px; }
+            .page-container { padding: 15px 15px 90px 15px; }
+            .top-nav { margin-bottom: 10px; }
             .tap-badge { display: none; }
-            .greeting-card { position: relative; top: auto; left: auto; transform: none; width: calc(100% - 30px); margin: 95px auto 0; padding: 24px 20px; }
-            .guide-stage { display: flex; align-items: center; width: 100%; gap: 8px; }
-            .guide-stage .avatar-container { width: 64px; height: 64px; margin: 0; flex: 0 0 64px; }
-            .speech-bubble { position: relative; left: auto; top: auto; transform: none; width: auto; max-width: calc(100% - 72px); }
-            .speech-bubble::before { left: -7px; top: 24px; transform: rotate(45deg); }
-            .landscape-svg-container { min-height: 120px; }
+            .greeting-card { padding: 20px 16px; margin-top: 10px; }
+            .guide-stage { flex-direction: column; gap: 10px; }
+            .speech-bubble { text-align: center; width: 100%; max-width: 100%; }
+            .speech-bubble::before { left: 50%; top: -6px; transform: translateX(-50%) rotate(45deg); }
+            .button-group { flex-direction: column; }
+            .landscape-svg-container { height: 100px; }
         }
     </style>
 </head>
@@ -363,7 +360,7 @@
         <main class="greeting-card">
             <div class="guide-stage">
                 <div class="avatar-container" id="avatarButton" onclick="speakGreeting()" role="button" tabindex="0" aria-label="Ask your guide to speak">
-                <img id="avatarImg" src="images/malechild.png" alt="Guide Avatar">
+                    <img id="avatarImg" src="images/malechild.png" alt="Guide Avatar">
                 </div>
                 <div class="speech-bubble" id="speechBubble" aria-live="polite">Tap me and I’ll guide you around the portal.</div>
             </div>
@@ -403,7 +400,7 @@
             document.getElementById('appBody').className = themes[currentThemeIndex];
         }
 
-        // Load data strictly from localStorage (Jo user ne enter kiya hai wahi aayega)
+        // Load data from localStorage
         const companionType = localStorage.getItem('aiCompanion') || 'boy';
         const companionName = localStorage.getItem('aiCompanionName') || 'Guide';
         const language = localStorage.getItem('aiLanguage') || 'en';
@@ -416,7 +413,7 @@
             avatarImg.src = 'images/malechild.png';
         }
 
-        // Multi-language Greeting Translations using exact user input name
+        // Multi-language Greeting Translations
         const greetingData = {
             en: {
                 title: `Namaste ${companionName}! 🙏✨`,
@@ -498,7 +495,6 @@
             }
         };
 
-        // Apply translated content based on saved language preference and custom name
         const currentLangContent = greetingData[language] || greetingData['en'];
         document.getElementById('greetingTitle').innerText = currentLangContent.title;
         document.getElementById('greetingText').innerText = currentLangContent.text;
@@ -520,15 +516,13 @@
 
         function showGuideTip(topic) {
             const tips = guideTips[language] || guideTips.en;
-            const tip = tips[topic];
+            const tip = tips[topic] || tips.soil;
             document.getElementById('speechBubble').innerText = tip;
             speakText(tip);
         }
 
         function speakText(text) {
-            if (!('speechSynthesis' in window)) {
-                return;
-            }
+            if (!('speechSynthesis' in window)) return;
             window.speechSynthesis.cancel();
             const avatarButton = document.getElementById('avatarButton');
             const utterance = new SpeechSynthesisUtterance(text);
@@ -539,7 +533,6 @@
             window.speechSynthesis.speak(utterance);
         }
 
-        // Text-to-Speech function for voice greeting
         function speakGreeting() {
             if ('speechSynthesis' in window) {
                 const textToSpeak = document.getElementById('greetingText').innerText;
@@ -550,9 +543,11 @@
             }
         }
 
-        // Redirect to main dashboard page
         function goToDashboard() {
-            localStorage.setItem('kisaanSaathiLoggedIn', 'true');
+            if (localStorage.getItem('kisaanSaathiLoggedIn') !== 'true') {
+                window.location.replace('login.html');
+                return;
+            }
             window.location.href = 'dashboard.html';
         }
     </script>
