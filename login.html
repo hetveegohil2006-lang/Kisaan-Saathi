@@ -83,7 +83,7 @@
             letter-spacing: 1px;
         }
 
-        /* Sun/Moon Control with Tap Badge */
+        /* Theme Switcher Group */
         .theme-switcher-group {
             display: flex;
             align-items: center;
@@ -91,9 +91,24 @@
             z-index: 50;
         }
 
+        .auth-language {
+            max-width: 150px;
+            padding: 10px 14px;
+            border: 1px solid rgba(74, 124, 54, 0.3);
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #2d4a27;
+            font-size: 0.88rem;
+            font-weight: 600;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            outline: none;
+            cursor: pointer;
+        }
+
         .tap-badge {
             background: rgba(255, 255, 255, 0.85);
-            padding: 6px 14px;
+            padding: 8px 14px;
             border-radius: 20px;
             font-size: 0.75rem;
             font-weight: 700;
@@ -156,12 +171,14 @@
         body.theme-light-black .brand-badge, 
         body.theme-light-black .tap-badge, 
         body.theme-light-black .sun-control-box,
+        body.theme-light-black .auth-language,
         body.theme-light-black .form-card { 
             background: rgba(30, 41, 59, 0.9); 
             border-color: rgba(255,255,255,0.1); 
         }
         body.theme-light-black .brand-text strong, 
         body.theme-light-black .tap-badge,
+        body.theme-light-black .auth-language,
         body.theme-light-black .form-card h2,
         body.theme-light-black .form-group label { color: #ffffff; }
         body.theme-light-black .form-card p,
@@ -171,7 +188,7 @@
         /* Center Glassmorphism Form Card */
         .form-card {
             position: absolute;
-            top: 140px;
+            top: 130px;
             left: 50%;
             transform: translateX(-50%);
             background: rgba(255, 255, 255, 0.88);
@@ -183,7 +200,12 @@
             box-shadow: 0 25px 50px rgba(0,0,0,0.12);
             border: 1px solid rgba(255, 255, 255, 0.6);
             z-index: 30;
+            max-height: 75vh;
+            overflow-y: auto;
         }
+
+        .form-card::-webkit-scrollbar { width: 6px; }
+        .form-card::-webkit-scrollbar-thumb { background: rgba(74, 124, 54, 0.3); border-radius: 10px; }
 
         .form-card h2 {
             color: #1b3818;
@@ -253,16 +275,21 @@
 
         .contact-methods label { display: inline-flex; align-items: center; gap: 6px; }
 
-        .auth-language {
-            max-width: 150px;
-            padding: 8px 10px;
+        .btn-code {
+            margin-top: 8px;
+            padding: 8px 12px;
             border: 1px solid rgba(74, 124, 54, 0.3);
-            border-radius: 12px;
-            background: rgba(255,255,255,.9);
+            border-radius: 10px;
+            background: rgba(74, 124, 54, 0.1);
             color: #2d4a27;
+            font-size: 0.82rem;
+            font-weight: 700;
+            cursor: pointer;
         }
 
+        .btn-code:hover { background: rgba(74, 124, 54, 0.18); }
         body.theme-light-black .field-hint { color: #cbd5e1; }
+        body.theme-light-black .btn-code { background: rgba(56, 189, 248, 0.15); color: #bae6fd; border-color: rgba(255,255,255,0.15); }
 
         .btn-submit {
             width: 100%;
@@ -279,9 +306,7 @@
             margin-top: 10px;
         }
 
-        .btn-submit:hover {
-            transform: translateY(-2px);
-        }
+        .btn-submit:hover { transform: translateY(-2px); }
 
         .form-footer {
             text-align: center;
@@ -296,9 +321,7 @@
             text-decoration: none;
         }
 
-        .form-footer a:hover {
-            text-decoration: underline;
-        }
+        .form-footer a:hover { text-decoration: underline; }
 
         .guide-widget {
             position: fixed;
@@ -358,7 +381,6 @@
         body.theme-light-black .guide-message { background: #1e293b; color: #e2e8f0; }
         body.theme-light-black .guide-message button { background: rgba(56,189,248,0.15); color: #bae6fd; }
 
-        /* Top-Layer Floating Clouds */
         .clouds-layer {
             position: absolute;
             top: 0;
@@ -379,7 +401,6 @@
             to { transform: translateX(35px); }
         }
 
-        /* Bottom Ghibli Landscape */
         .landscape-svg-container {
             position: absolute;
             bottom: 0;
@@ -390,29 +411,26 @@
             z-index: 20;
         }
 
-        .landscape-svg-container svg {
-            width: 100%;
-            height: 100%;
-            display: block;
-        }
+        .landscape-svg-container svg { width: 100%; height: 100%; display: block; }
     </style>
     <style>
+        /* Mobile Adaptability */
         @media (max-width: 600px) {
             body, html { min-height: 100%; height: auto; overflow-x: hidden; overflow-y: auto; }
             .page-container { display: flow-root; min-height: 100vh; height: auto; }
             .top-nav { top: 15px; left: 15px; right: 15px; }
             .tap-badge { display: none; }
-            .form-card { position: relative; top: auto; left: auto; transform: none; margin: 95px auto 20px; width: calc(100% - 30px); padding: 28px 22px; }
-            .guide-widget { position: relative; right: auto; bottom: auto; width: auto; max-width: calc(100% - 24px); margin: 0 12px 150px auto; }
+            .form-card { position: relative; top: auto; left: auto; transform: none; margin: 95px auto 20px; width: calc(100% - 30px); padding: 28px 22px; max-height: none; }
+            .guide-widget { position: relative; right: auto; bottom: auto; width: auto; max-width: calc(100% - 24px); margin: 0 12px 110px auto; }
             .guide-message { display: block; width: min(190px, calc(100vw - 82px)); }
             .guide-avatar { width: 50px; height: 50px; }
-            .landscape-svg-container { min-height: 160px; }
+            .landscape-svg-container { min-height: 120px; }
         }
 
         @media (max-height: 700px) and (min-width: 601px) {
             body, html { height: auto; min-height: 100%; overflow-y: auto; }
             .page-container { min-height: 700px; }
-            .form-card { top: 105px; max-height: calc(100vh - 145px); overflow-y: auto; }
+            .form-card { top: 105px; max-height: calc(100vh - 145px); }
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -429,7 +447,7 @@
 <body class="theme-light-yellow" id="appBody">
 
     <div class="page-container">
-        <!-- Top-Layer Floating Clouds -->
+        <!-- Clouds Layer -->
         <svg class="clouds-layer" viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
             <g class="cloud">
                 <path d="M 120 180 Q 145 155 180 175 Q 215 150 250 180 Q 275 195 260 215 L 105 215 Q 90 195 120 180 Z" />
@@ -447,12 +465,12 @@
                 </div>
             </a>
 
-            <!-- Sun/Moon Theme Switcher -->
+            <!-- Corrected Order: Language Dropdown -> Tap Badge -> Sun Button -->
             <div class="theme-switcher-group">
-                <div class="tap-badge">✨ Tap to Change Theme</div>
                 <select class="auth-language" id="authLanguage" aria-label="Choose language">
                     <option value="en">English</option><option value="hi">हिंदी</option><option value="mr">मराठी</option><option value="pa">ਪੰਜਾਬੀ</option><option value="gu">ગુજરાતી</option><option value="bn">বাংলা</option><option value="te">తెలుగు</option><option value="ta">தமிழ்</option><option value="kn">ಕನ್ನಡ</option><option value="ml">മലയാളം</option><option value="or">ଓଡ଼ିଆ</option><option value="as">অসমীয়া</option><option value="ur">اردو</option>
                 </select>
+                <div class="tap-badge">✨ Tap to Change Theme</div>
                 <button type="button" class="sun-control-box" onclick="switchThemeCycle()" title="Tap to switch theme" aria-label="Change color theme">
                     <span class="sun-icon" aria-hidden="true"></span>
                 </button>
@@ -519,27 +537,6 @@
                 <path d="M0,160 C320,100 640,110 960,150 C1280,190 1380,140 1440,130 L1440,320 L0,320 Z" fill="#86efac" opacity="0.5"></path>
                 <path d="M0,200 C360,150 720,170 1080,190 C1260,200 1380,180 1440,170 L1440,320 L0,320 Z" fill="#4ade80" opacity="0.8"></path>
                 <path d="M0,240 C400,190 800,210 1440,220 L1440,320 L0,320 Z" fill="#16a34a"></path>
-
-                <!-- Wooden Fences -->
-                <g fill="#854d0e">
-                    <rect x="150" y="210" width="8" height="45" rx="2" />
-                    <rect x="175" y="215" width="8" height="45" rx="2" />
-                    <rect x="145" y="222" width="40" height="5" />
-                    <rect x="145" y="240" width="40" height="5" />
-
-                    <rect x="1220" y="200" width="8" height="45" rx="2" />
-                    <rect x="1245" y="205" width="8" height="45" rx="2" />
-                    <rect x="1215" y="212" width="40" height="5" />
-                    <rect x="1215" y="230" width="40" height="5" />
-                </g>
-
-                <!-- Sunflowers -->
-                <g>
-                    <circle cx="280" cy="275" r="7" fill="#facc15" /><circle cx="280" cy="275" r="3" fill="#78350f" />
-                    <circle cx="310" cy="290" r="8" fill="#facc15" /><circle cx="310" cy="290" r="3" fill="#78350f" />
-                    <circle cx="720" cy="280" r="8" fill="#facc15" /><circle cx="720" cy="280" r="3" fill="#78350f" />
-                    <circle cx="1120" cy="275" r="7" fill="#facc15" /><circle cx="1120" cy="275" r="3" fill="#78350f" />
-                </g>
             </svg>
         </div>
     </div>
@@ -547,9 +544,7 @@
     <script>
         function speakGuide(message) {
             const text = message || document.getElementById('guideMessage').innerText;
-            if (!('speechSynthesis' in window)) {
-                return;
-            }
+            if (!('speechSynthesis' in window)) return;
             window.speechSynthesis.cancel();
             const avatar = document.getElementById('guideAvatar');
             const utterance = new SpeechSynthesisUtterance(text);
@@ -578,6 +573,6 @@
             localStorage.setItem('kisaanSaathiTheme', themes[currentThemeIndex]);
         }
     </script>
-    <script type="module" src="auth.js"></script>
+    <script type="module" src="auth.js?v=20260930"></script>
 </body>
 </html>

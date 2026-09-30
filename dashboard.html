@@ -177,6 +177,11 @@
             main { height: calc(100vh - 100px - env(safe-area-inset-bottom)); height: calc(100dvh - 100px - env(safe-area-inset-bottom)); }
         }
     </style>
+    <script>
+        if (localStorage.getItem('kisaanSaathiLoggedIn') !== 'true') {
+            window.location.replace('login.html');
+        }
+    </script>
 </head>
 <body>
 
@@ -218,6 +223,7 @@
     <script>
         function loadPage(page, event) {
             const iframe = document.getElementById('pageFrame');
+            event?.preventDefault();
             
             // Smooth fade-out transition
             iframe.classList.add('fade-out');
@@ -264,9 +270,19 @@
             document.querySelectorAll('.navigation a span').forEach((label) => {
                 const source = label.dataset.english || label.textContent;
                 label.dataset.english = source;
-                label.textContent = window.portalTranslateText(source, lang);
+                label.textContent = window.portalTranslateText?.(source, lang) || source;
+            });
+            document.querySelectorAll('.navigation a[aria-label]').forEach((link) => {
+                const source = link.dataset.englishLabel || link.getAttribute('aria-label');
+                link.dataset.englishLabel = source;
+                link.setAttribute('aria-label', window.portalTranslateText?.(source, lang) || source);
             });
         }
+
+        window.addEventListener('message', (event) => {
+            if (event.origin !== location.origin || event.data?.type !== 'kisaan-language-changed') return;
+            updateNavigationLanguage(event.data.lang);
+        });
 
         window.addEventListener('storage', (event) => {
             if (event.key === 'kisaanLang' || event.key === 'aiLanguage') {
@@ -274,6 +290,10 @@
                 syncLanguageToIframe();
             }
         });
+
+        window.addEventListener('DOMContentLoaded', () => {
+            updateNavigationLanguage(localStorage.getItem('kisaanLang') || localStorage.getItem('aiLanguage') || 'en');
+        }, { once: true });
 
         // Global Theme Customizer
         function setThemePalette(primaryColor, activeColor, glowColor) {

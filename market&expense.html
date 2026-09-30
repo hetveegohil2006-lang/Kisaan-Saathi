@@ -402,6 +402,9 @@
             }
 
             monthlyExpensesData[month].push({ name, amount });
+            if (typeof window.saveExpenseToFirestore === 'function') {
+                window.saveExpenseToFirestore(name, amount);
+            }
 
             // Clear input fields
             document.getElementById('customExpName').value = '';
@@ -453,6 +456,51 @@
             alert("Preparing KisaanSaathi Market & Expense Report for download...");
             setTimeout(() => { alert("Export successful! PDF/Excel report saved to your downloads."); }, 1000);
         }
+    </script>
+    <script type="module">
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js";
+        import { addExpense, getExpenses } from "./firestore-db.js";
+        import { getApps, initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
+        import { firebaseConfig } from "./firebase-config.js";
+
+        const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                window.currentUserUid = user.uid;
+                try {
+                    const firestoreExpenses = await getExpenses(user.uid);
+                    if (firestoreExpenses && firestoreExpenses.length > 0) {
+                        firestoreExpenses.forEach(exp => {
+                            const m = exp.date ? new Date(exp.date).toLocaleString('en-US', { month: 'short' }).toLowerCase() : 'mar';
+                            const targetMonth = monthlyExpensesData[m] ? m : 'mar';
+                            const exists = monthlyExpensesData[targetMonth].some(i => i.name === (exp.description || exp.category) && i.amount === exp.amount);
+                            if (!exists) {
+                                monthlyExpensesData[targetMonth].push({ name: exp.description || exp.category, amount: exp.amount });
+                            }
+                        });
+                        if (typeof loadMonthExpenses === 'function') loadMonthExpenses();
+                    }
+                } catch (e) {
+                    console.warn("Could not load expenses from Firestore:", e);
+                }
+            }
+        });
+
+        window.saveExpenseToFirestore = async function(name, amount) {
+            if (window.currentUserUid) {
+                try {
+                    await addExpense(window.currentUserUid, {
+                        category: "Other",
+                        amount: amount,
+                        description: name
+                    });
+                } catch (e) {
+                    console.warn("Could not save expense to Firestore:", e);
+                }
+            }
+        };
     </script>
 </body>
 </html>
