@@ -493,7 +493,7 @@
 
                 <div class="form-group" id="phoneGroup" hidden>
                     <label for="phone">Mobile Number</label>
-                    <input type="tel" id="phone" placeholder="Enter 10-digit mobile number" autocomplete="tel" inputmode="numeric" required>
+                    <input type="tel" id="phone" placeholder="Enter 10-digit mobile number" autocomplete="tel" inputmode="numeric">
                 </div>
 
                 <div class="form-group">
@@ -522,7 +522,7 @@
 
                 <div class="form-group" id="emailPasswordGroup">
                     <label for="password">Create Password</label>
-                    <input type="password" id="password" placeholder="At least 6 characters" autocomplete="new-password" required>
+                    <input type="password" id="password" placeholder="At least 6 characters" autocomplete="new-password">
                 </div>
                 <div class="form-group" id="phonePasswordNote" hidden>
                     <p class="field-hint">Your mobile number will be used as your sign-in method.</p>
@@ -588,6 +588,41 @@
             bodyElement.className = themes[currentThemeIndex];
             localStorage.setItem('kisaanSaathiTheme', themes[currentThemeIndex]);
         }
+
+        // --- NEW: Toggle Logic for Signup Email / Mobile Switching ---
+        const contactMethodRadios = document.querySelectorAll('input[name="contactMethod"]');
+        const emailGroup = document.getElementById('emailGroup');
+        const phoneGroup = document.getElementById('phoneGroup');
+        const emailPasswordGroup = document.getElementById('emailPasswordGroup');
+        const phonePasswordNote = document.getElementById('phonePasswordNote');
+        const codeHelp = document.getElementById('codeHelp');
+        const emailInput = document.getElementById('email');
+        const phoneInput = document.getElementById('phone');
+        const passwordInput = document.getElementById('password');
+
+        contactMethodRadios.forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                if (e.target.value === 'phone') {
+                    emailGroup.hidden = true;
+                    emailPasswordGroup.hidden = true;
+                    phoneGroup.hidden = false;
+                    phonePasswordNote.hidden = false;
+                    emailInput.removeAttribute('required');
+                    phoneInput.setAttribute('required', 'true');
+                    passwordInput.removeAttribute('required');
+                    codeHelp.textContent = 'We’ll send an SMS code to verify your mobile number.';
+                } else {
+                    emailGroup.hidden = false;
+                    emailPasswordGroup.hidden = false;
+                    phoneGroup.hidden = true;
+                    phonePasswordNote.hidden = true;
+                    emailInput.setAttribute('required', 'true');
+                    phoneInput.removeAttribute('required');
+                    passwordInput.setAttribute('required', 'true');
+                    codeHelp.textContent = 'We’ll email a one-time code to verify your address.';
+                }
+            });
+        });
     </script>
     <script type="module" src="auth.js?v=20260930"></script>
 </body>
