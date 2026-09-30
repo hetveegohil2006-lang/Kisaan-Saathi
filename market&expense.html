@@ -23,7 +23,7 @@
         /* Sidebar Structure with Magic Navigation Animation Effect */
         .sidebar { width: 280px; background: var(--panel-bg); backdrop-filter: blur(10px); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; padding: 20px; height: 100vh; position: fixed; top: 0; left: 0; z-index: 40; }
         
-        /* Exact Brand Logo Badge */
+        /* Brand Logo Badge */
         .brand-badge { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; background: #ffffff; padding: 10px 14px; border-radius: 20px; border: 1px solid #fde047; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
         body.theme-light-black .brand-badge { background: #0f172a; border-color: #334155; }
         .brand-logo-icon { font-size: 24px; line-height: 1; }
@@ -191,7 +191,7 @@
             </div>
         </div>
 
-        <!-- 3-Column Dashboard Layout -->
+        <!-- 3-Column Dashboard Layout (Row 1) -->
         <div class="dashboard-grid-3">
             
             <!-- COLUMN 1: Market & Prices -->
@@ -265,31 +265,49 @@
 
         </div>
 
-        <!-- Second Row: Expenses & Profit Calculator -->
+        <!-- Second Row: Customizable Monthly Expenses & Profit Calculator -->
         <div class="dashboard-grid-3">
             
-            <!-- COLUMN 1: Daily Expense Entry Form -->
+            <!-- COLUMN 1: Customizable Monthly Expense Manager -->
             <div class="card">
-                <h3>🚜 Daily Expense Entry</h3>
-                <p class="card-desc">Log your farm expenses with emoji categories.</p>
+                <h3>🚜 Monthly Custom Expense Manager</h3>
+                <p class="card-desc">Select a month and add custom farm expenditures.</p>
                 
                 <div class="input-group">
-                    <label>🌱 Seeds Expense (₹)</label>
-                    <input type="number" id="seedExp" class="input-field" value="4500" oninput="calculateProfit()">
+                    <label>📅 Select Month</label>
+                    <select id="expenseMonthSelect" class="input-field" onchange="loadMonthExpenses()">
+                        <option value="jan">January </option>
+                        <option value="feb">February </option>
+                        <option value="mar" selected> March </option>
+                        <option value="apr">April </option>
+                        <option value="may">May </option>
+                        <option value="jun">June </option>
+                        <option value="jul">July </option>
+                        <option value="aug">August </option>
+                        <option value="sep">September </option>
+                        <option value="oct">October </option>
+                        <option value="nov">November </option>
+                        <option value="dec">December </option>
+
+                    </select>
                 </div>
+
                 <div class="input-group">
-                    <label>💧 Irrigation & Power (₹)</label>
-                    <input type="number" id="irrigationExp" class="input-field" value="3200" oninput="calculateProfit()">
+                    <label>🏷 Expense Category / Item Name</label>
+                    <input type="text" id="customExpName" class="input-field" placeholder="e.g., Tractor Rental, Pesticide">
                 </div>
+
                 <div class="input-group">
-                    <label>🧪 Fertilizer & Chemical (₹)</label>
-                    <input type="number" id="fertExp" class="input-field" value="8500" oninput="calculateProfit()">
+                    <label>💵 Cost Amount (₹)</label>
+                    <input type="number" id="customExpAmount" class="input-field" placeholder="e.g., 2500">
                 </div>
-                <div class="input-group">
-                    <label>🚜 Labor & Transport (₹)</label>
-                    <input type="number" id="laborExp" class="input-field" value="6800" oninput="calculateProfit()">
+
+                <button class="btn btn-primary" onclick="addCustomExpense()">➕ Add to Monthly Budget</button>
+
+                <!-- Dynamic List of Custom Added Expenses -->
+                <div style="max-height: 110px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; margin-top: 4px;" id="customExpenseListContainer">
+                    <!-- Populated dynamically via JS -->
                 </div>
-                <button class="btn btn-primary" onclick="alert('Daily expense recorded successfully!')">💾 Save Expense Record</button>
             </div>
 
             <!-- COLUMN 2: Smart Expense Analyzer & Alerts -->
@@ -298,13 +316,13 @@
                 <p class="card-desc">AI grouping and cost optimization alerts.</p>
                 
                 <div style="font-size: 12px; display:flex; flex-direction:column; gap:8px;">
-                    <div><strong>High Impact Cost:</strong> Fertilizer & Chemicals (37%)</div>
+                    <div><strong>High Impact Cost:</strong> Inputs & Chemicals (37%)</div>
                     <div><strong>Medium Impact Cost:</strong> Labor & Transport (30%)</div>
                     <div><strong>Low Impact Cost:</strong> Seeds & Irrigation (33%)</div>
                 </div>
 
                 <div id="expenseAlertBox" style="background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.3); padding: 12px; border-radius: 12px; font-size: 11px; color: #dc2626; font-weight: 600;">
-                    ⚠️ <strong>Expense Alert:</strong> Fertilizer cost exceeds 30% threshold. Consider switching to organic alternatives to reduce input costs.
+                    ⚠️ <strong>Expense Alert:</strong> Input costs exceed safety threshold. Consider switching to organic alternatives to save money.
                 </div>
 
                 <div style="background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.3); padding: 10px; border-radius: 12px; font-size: 11px; font-weight: 600;">
@@ -407,14 +425,78 @@
             }
         });
 
+        // Monthly Custom Expense State Management
+        let monthlyExpensesData = {
+            'jan': [ { name: 'Seeds & Prep', amount: 4000 }, { name: 'Labor Support', amount: 5000 } ],
+            'feb': [ { name: 'Irrigation Pumps', amount: 3000 }, { name: 'Fertilizers', amount: 6000 } ],
+            'mar': [ { name: 'Seeds Expense', amount: 4500 }, { name: 'Irrigation & Power', amount: 3200 }, { name: 'Fertilizer & Chemical', amount: 8500 }, { name: 'Labor & Transport', amount: 6800 } ],
+            'apr': [], 'may': [], 'jun': []
+        };
+
+        function loadMonthExpenses() {
+            const month = document.getElementById('expenseMonthSelect').value;
+            const container = document.getElementById('customExpenseListContainer');
+            const items = monthlyExpensesData[month];
+
+            container.innerHTML = '';
+            let totalSum = 0;
+
+            if (items.length === 0) {
+                container.innerHTML = '<div style="font-size:11px; color:var(--text-muted); text-align:center; padding: 10px;">No custom expenses logged for this month yet.</div>';
+            }
+
+            items.forEach((item, index) => {
+                totalSum += item.amount;
+                container.innerHTML += `
+                    <div style="display: flex; justify-content: space-between; align-items: center; font-size: 11px; background: var(--input-bg); padding: 6px 10px; border-radius: 8px; border: 1px solid var(--border-color);">
+                        <span>📌 ${item.name}</span>
+                        <div style="display:flex; gap:8px; align-items:center;">
+                            <strong>₹${item.amount.toLocaleString('en-IN')}</strong>
+                            <i class="fa-solid fa-trash" style="cursor:pointer; color:#dc2626;" onclick="removeExpense('${month}', ${index})"></i>
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Update Total Expenses Display & Recalculate Profit
+            document.getElementById('totalExpDisplay').value = '₹' + totalSum.toLocaleString('en-IN');
+            calculateProfitWithTotal(totalSum);
+        }
+
+        function addCustomExpense() {
+            const month = document.getElementById('expenseMonthSelect').value;
+            const name = document.getElementById('customExpName').value.trim();
+            const amount = parseFloat(document.getElementById('customExpAmount').value);
+
+            if (!name || isNaN(amount) || amount <= 0) {
+                alert("Please enter a valid expense name and amount.");
+                return;
+            }
+
+            monthlyExpensesData[month].push({ name, amount });
+
+            // Clear input fields
+            document.getElementById('customExpName').value = '';
+            document.getElementById('customExpAmount').value = '';
+
+            loadMonthExpenses();
+        }
+
+        function removeExpense(month, index) {
+            monthlyExpensesData[month].splice(index, 1);
+            loadMonthExpenses();
+        }
+
         // Profit & Expense Calculation Logic
         function calculateProfit() {
-            const seed = parseFloat(document.getElementById('seedExp').value) || 0;
-            const irrigation = parseFloat(document.getElementById('irrigationExp').value) || 0;
-            const fert = parseFloat(document.getElementById('fertExp').value) || 0;
-            const labor = parseFloat(document.getElementById('laborExp').value) || 0;
+            // Recalculate based on active month items sum
+            const month = document.getElementById('expenseMonthSelect').value;
+            const items = monthlyExpensesData[month];
+            const totalExpenses = items.reduce((sum, item) => sum + item.amount, 0);
+            calculateProfitWithTotal(totalExpenses);
+        }
 
-            const totalExpenses = seed + irrigation + fert + labor;
+        function calculateProfitWithTotal(totalExpenses) {
             document.getElementById('totalExpDisplay').value = '₹' + totalExpenses.toLocaleString('en-IN');
 
             const salePrice = parseFloat(document.getElementById('expectedSalePrice').value) || 0;
@@ -433,15 +515,12 @@
                 barElem.style.background = '#ef4444';
                 barElem.style.width = '100%';
             }
-
-            // Fertilizer Alert Check (>30%)
-            const alertBox = document.getElementById('expenseAlertBox');
-            if (fert / totalExpenses > 0.3) {
-                alertBox.style.display = 'block';
-            } else {
-                alertBox.style.display = 'none';
-            }
         }
+
+        // Initialize default month view on load
+        window.onload = function() {
+            loadMonthExpenses();
+        };
 
         function exportReports() {
             alert("Preparing KisaanSaathi Market & Expense Report for download...");
