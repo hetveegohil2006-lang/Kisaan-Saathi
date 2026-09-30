@@ -1,0 +1,102 @@
+html,
+body {
+    width: 100%;
+    min-height: 100%;
+    height: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+body {
+    min-height: 100vh;
+    min-height: 100svh;
+}
+
+.page-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    min-height: 100svh;
+    height: auto;
+    isolation: isolate;
+}
+
+.top-nav {
+    position: relative;
+    inset: auto;
+    width: min(1240px, calc(100% - 48px));
+    margin: 0 auto;
+    padding-top: 24px;
+}
+
+.hero-card {
+    position: relative;
+    inset: auto;
+    transform: none;
+    width: min(620px, calc(100% - 48px));
+    max-width: 620px;
+    margin: clamp(36px, 8vh, 88px) auto clamp(210px, 32vh, 270px);
+    padding: clamp(28px, 4vw, 44px);
+}
+
+.hero-card h1 {
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+}
+
+.landscape-svg-container {
+    z-index: 0;
+    height: clamp(220px, 34vh, 320px);
+}
+
+.clouds-layer {
+    position: absolute;
+    height: min(100%, 900px);
+}
+
+@media (min-width: 900px) {
+    .hero-card {
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+@media (max-width: 600px) {
+    .top-nav {
+        width: calc(100% - 24px);
+        padding-top: 14px;
+    }
+
+    .hero-card {
+        width: calc(100% - 28px);
+        margin: 36px auto 210px;
+        padding: 26px 20px;
+    }
+
+    .hero-card h1 {
+        font-size: clamp(1.65rem, 8vw, 2rem);
+    }
+
+    .hero-card p {
+        margin-bottom: 22px;
+    }
+
+    .btn-container {
+        gap: 10px;
+    }
+
+    .btn {
+        flex: 1;
+        padding: 12px 18px;
+    }
+
+    .landscape-svg-container {
+        height: 190px;
+    }
+}
+
+@media (max-width: 360px) {
+    .brand-text small,
+    .tap-badge {
+        display: none;
+    }
+}

@@ -1,0 +1,13 @@
+{
+  "name": "kisaan-saathi-functions",
+  "private": true,
+  "engines": {
+    "node": "20"
+  },
+  "main": "index.js",
+  "dependencies": {
+    "firebase-admin": "^13.0.2",
+    "firebase-functions": "^6.3.2",
+    "nodemailer": "^6.10.0"
+  }
+}

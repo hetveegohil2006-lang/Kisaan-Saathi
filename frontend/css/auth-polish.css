@@ -1,0 +1,274 @@
+html,
+body {
+    width: 100%;
+    min-height: 100%;
+    height: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+body {
+    min-height: 100vh;
+    min-height: 100svh;
+}
+
+.page-container {
+    min-height: 100vh;
+    min-height: 100svh;
+    height: auto;
+    isolation: isolate;
+}
+
+body.theme-light-yellow .page-container {
+    background: linear-gradient(to bottom, #fef08a 0%, #fef9c3 50%, #e2e8f0 100%);
+}
+
+body.theme-light-pink .page-container {
+    background: linear-gradient(to bottom, #fbcfe8 0%, #fce7f3 50%, #e2e8f0 100%);
+}
+
+body.theme-light-orange .page-container {
+    background: linear-gradient(to bottom, #fed7aa 0%, #ffedd5 50%, #e2e8f0 100%);
+}
+
+body.theme-light-blue .page-container {
+    background: linear-gradient(to bottom, #bae6fd 0%, #e0f2fe 50%, #cbd5e1 100%);
+}
+
+body.theme-light-black .page-container {
+    background: linear-gradient(to bottom, #1e293b 0%, #0f172a 50%, #020617 100%);
+}
+
+.top-nav {
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    width: min(1120px, calc(100% - 40px));
+    margin: 0 auto;
+    padding-top: 20px;
+}
+
+.form-card {
+    position: relative;
+    top: auto;
+    left: auto;
+    transform: none;
+    width: min(480px, calc(100% - 32px));
+    max-height: none;
+    overflow: visible;
+    margin: clamp(28px, 6vh, 64px) auto 140px;
+    padding: 32px;
+    border: 1px solid rgba(255, 255, 255, 0.78);
+    border-radius: 24px;
+    background: rgba(255, 255, 255, 0.94);
+    box-shadow: 0 20px 55px rgba(31, 56, 24, 0.14);
+}
+
+.form-card h2 {
+    font-size: clamp(1.55rem, 4vw, 1.9rem);
+    line-height: 1.2;
+}
+
+.form-card > p {
+    line-height: 1.55;
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-group input,
+.form-group select {
+    min-height: 48px;
+    font-size: 1rem;
+}
+
+.contact-methods {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 20px;
+}
+
+.contact-methods legend {
+    float: left;
+    width: 100%;
+}
+
+.contact-methods label {
+    min-height: 42px;
+    flex: 1 1 auto;
+    padding: 8px 12px;
+    border: 1px solid rgba(74, 124, 54, 0.2);
+    border-radius: 12px;
+    background: rgba(74, 124, 54, 0.06);
+    font-size: 0.9rem;
+}
+
+.contact-methods input {
+    accent-color: #386641;
+}
+
+.contact-methods input[type="radio"] {
+    flex: 0 0 18px;
+    width: 18px;
+    min-height: 18px;
+    height: 18px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+}
+
+.form-footer a {
+    margin-left: 0.2em;
+}
+
+.form-card .field-hint {
+    margin: 6px 0 12px;
+    text-align: left;
+    font-size: 0.82rem;
+}
+
+.form-card [role="status"]:empty {
+    display: none;
+}
+
+.btn-submit,
+.btn-code {
+    min-height: 46px;
+}
+
+.btn-submit {
+    margin-top: 10px;
+}
+
+.auth-language {
+    min-height: 42px;
+    width: min(150px, 34vw);
+    font-size: 0.95rem;
+}
+
+.theme-switcher-group {
+    gap: 8px;
+}
+
+.guide-widget {
+    position: fixed;
+}
+
+.landscape-svg-container {
+    position: relative;
+    bottom: auto;
+    z-index: 0;
+    flex: 0 0 auto;
+    height: clamp(120px, 20vh, 220px);
+    margin-top: -90px;
+    opacity: 0.8;
+}
+
+body.theme-light-black .form-card {
+    background: rgba(30, 41, 59, 0.96);
+    border-color: rgba(255, 255, 255, 0.14);
+}
+
+body.theme-light-black .contact-methods label {
+    color: #f1f5f9;
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.14);
+}
+
+@media (max-width: 600px) {
+    .top-nav {
+        width: calc(100% - 24px);
+        padding-top: 12px;
+        gap: 10px;
+    }
+
+    .brand-badge {
+        min-width: 0;
+        padding: 8px 10px;
+        gap: 7px;
+    }
+
+    .brand-text strong {
+        font-size: 0.92rem;
+    }
+
+    .theme-switcher-group {
+        flex: 0 0 auto;
+        gap: 6px;
+    }
+
+    .sun-control-box {
+        width: 42px;
+        height: 42px;
+    }
+
+    .form-card {
+        width: calc(100% - 24px);
+        margin: 24px auto 32px;
+        padding: 24px 20px;
+        border-radius: 20px;
+    }
+
+    .form-card > p {
+        margin-bottom: 22px;
+    }
+
+    .guide-widget {
+        position: relative;
+        right: auto;
+        bottom: auto;
+        width: max-content;
+        max-width: calc(100% - 24px);
+        margin: 0 12px 120px auto;
+    }
+
+    .guide-message {
+        width: min(230px, calc(100vw - 88px));
+    }
+
+    .landscape-svg-container {
+        height: 150px;
+        margin-top: -76px;
+    }
+}
+
+@media (max-width: 380px) {
+    .top-nav {
+        width: calc(100% - 20px);
+    }
+
+    .brand-text small,
+    .tap-badge {
+        display: none;
+    }
+
+    .auth-language {
+        width: 96px;
+        padding: 7px;
+    }
+
+    .form-card {
+        width: calc(100% - 20px);
+        padding: 22px 16px;
+    }
+
+    .contact-methods {
+        gap: 7px;
+    }
+
+    .contact-methods label {
+        padding: 8px;
+        font-size: 0.84rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .form-card {
+        animation: none;
+    }
+}

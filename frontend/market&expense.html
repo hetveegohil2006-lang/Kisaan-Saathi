@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/mobile-polish.css">
+    <script src="js/portal-language.js" defer></script>
+    <title>Market & Expenses - KisaanSaathi Smart Agriculture Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* 5 Themes Color Palettes */
+        body.theme-light-yellow { background: linear-gradient(to bottom, #fef08a 0%, #fef9c3 50%, #e2e8f0 100%); --panel-bg: rgba(255, 255, 255, 0.88); --text-primary: #1b3818; --text-muted: #4b6b48; --accent: #386641; --input-bg: #ffffff; --border-color: #fde047; }
+        body.theme-light-pink { background: linear-gradient(to bottom, #fbcfe8 0%, #fce7f3 50%, #e2e8f0 100%); --panel-bg: rgba(255, 255, 255, 0.88); --text-primary: #500724; --text-muted: #831843; --accent: #be185d; --input-bg: #ffffff; --border-color: #f472b6; }
+        body.theme-light-orange { background: linear-gradient(to bottom, #fed7aa 0%, #ffedd5 50%, #e2e8f0 100%); --panel-bg: rgba(255, 255, 255, 0.88); --text-primary: #431407; --text-muted: #7c2d12; --accent: #c2410c; --input-bg: #ffffff; --border-color: #fb923c; }
+        body.theme-light-blue { background: linear-gradient(to bottom, #bae6fd 0%, #e0f2fe 50%, #cbd5e1 100%); --panel-bg: rgba(255, 255, 255, 0.88); --text-primary: #082f49; --text-muted: #0369a1; --accent: #0369a1; --input-bg: #ffffff; --border-color: #38bdf8; }
+        body.theme-light-black { background: linear-gradient(to bottom, #1e293b 0%, #0f172a 50%, #020617 100%); --panel-bg: rgba(15, 23, 42, 0.88); --text-primary: #f8fafc; --text-muted: #94a3b8; --accent: #38bdf8; --input-bg: #0f172a; --border-color: #334155; }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+        body { color: var(--text-primary); min-height: 100vh; display: flex; transition: background 0.3s, color 0.3s; justify-content: center; }
+
+        .main-content { width: 100%; max-width: 1200px; padding: 30px; display: flex; flex-direction: column; min-height: 100vh; }
+
+        .top-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 15px; }
+        .header-title-box h1 { font-size: 24px; font-weight: 700; color: var(--text-primary); }
+        .header-title-box p { font-size: 13px; color: var(--text-muted); font-weight: 500; margin-top: 2px; }
+
+        .dashboard-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 24px; }
+        .card { background: var(--panel-bg); backdrop-filter: blur(12px); border-radius: 24px; border: 1px solid var(--border-color); padding: 22px; box-shadow: 0 10px 30px rgba(0,0,0,0.04); display: flex; flex-direction: column; gap: 14px; }
+        .card h3 { font-size: 16px; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 8px; }
+
+        .mandi-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .mandi-table th { text-align: left; padding-bottom: 8px; font-size: 11px; text-transform: uppercase; color: var(--text-muted); border-bottom: 1px solid var(--border-color); }
+        .mandi-table td { padding: 10px 0; border-bottom: 1px solid rgba(0,0,0,0.03); font-weight: 500; }
+
+        .badge { padding: 3px 8px; border-radius: 6px; font-size: 10px; font-weight: 700; text-transform: uppercase; display: inline-block; }
+        .badge.green { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+
+        .btn-action { background: var(--accent); color: #ffffff; border: none; padding: 10px 18px; border-radius: 14px; font-size: 13px; font-weight: 600; cursor: pointer; transition: transform 0.2s; }
+
+        @media (max-width: 900px) {
+            .dashboard-grid-3 { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body id="appBody" class="theme-light-yellow">
+
+    <div class="main-content">
+        <header class="top-header">
+            <div class="header-title-box">
+                <h1>📊 Mandi Market Analysis & Farm Expenses</h1>
+                <p>Live APMC Commodity Rates & Ledger Tracking</p>
+            </div>
+            <button class="btn-action" onclick="exportReports()">Export Financial Summary</button>
+        </header>
+
+        <div class="dashboard-grid-3">
+            <div class="card">
+                <h3>💰 Live APMC Mandi Rates</h3>
+                <div class="table-scroll">
+                    <table class="mandi-table">
+                        <thead>
+                            <tr>
+                                <th>Crop</th>
+                                <th>Mandi</th>
+                                <th>Price (₹/Qtl)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Wheat (गेहूं)</td>
+                                <td>Ludhiana APMC</td>
+                                <td><strong>₹2,450</strong></td>
+                            </tr>
+                            <tr>
+                                <td>Mustard (सरसों)</td>
+                                <td>Jaipur Mandi</td>
+                                <td><strong>₹5,800</strong></td>
+                            </tr>
+                            <tr>
+                                <td>Paddy (धान)</td>
+                                <td>Karnal APMC</td>
+                                <td><strong>₹2,200</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>📝 Add Farm Expense Record</h3>
+                <form id="expenseForm" onsubmit="addExpenseItem(event)">
+                    <div style="display:flex; flex-direction:column; gap:10px;">
+                        <input type="text" id="expName" placeholder="Item (e.g. Urea Bag, Seeds)" required style="padding:8px 12px; border-radius:10px; border:1px solid var(--border-color); outline:none;">
+                        <input type="number" id="expAmount" placeholder="Amount (₹)" required style="padding:8px 12px; border-radius:10px; border:1px solid var(--border-color); outline:none;">
+                        <button type="submit" class="btn-action">Save Expense</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="card">
+                <h3>📈 Farm Profitability Estimate</h3>
+                <div style="font-size:13px; line-height:1.6;">
+                    <p>Total Revenue: <strong style="color:#166534;">₹1,85,000</strong></p>
+                    <p>Total Expenses: <strong style="color:#dc2626;">₹62,000</strong></p>
+                    <hr style="margin:10px 0; border-color:var(--border-color);">
+                    <p style="font-size:15px; font-weight:700;">Net Farm Profit: <span style="color:#166534;">₹1,23,000</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const themes = ['theme-light-yellow', 'theme-light-pink', 'theme-light-orange', 'theme-light-blue', 'theme-light-black'];
+        let currentThemeIndex = parseInt(localStorage.getItem('kisaan-portal-theme-index') || '0');
+        document.getElementById('appBody').className = themes[currentThemeIndex];
+
+        async function addExpenseItem(e) {
+            e.preventDefault();
+            const name = document.getElementById('expName').value;
+            const amount = parseFloat(document.getElementById('expAmount').value);
+            
+            if (window.saveExpenseToFirestore) {
+                await window.saveExpenseToFirestore(name, amount);
+            }
+            alert(`Expense "${name}" (₹${amount}) saved successfully!`);
+            document.getElementById('expenseForm').reset();
+        }
+
+        function exportReports() {
+            alert("Preparing KisaanSaathi Market & Expense Financial Ledger PDF...");
+        }
+    </script>
+    <script type="module">
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js";
+        import { addExpense, getExpenses } from "./firebase/firestore-db.js";
+        import { getApps, initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
+        import { firebaseConfig } from "./firebase/firebase-config.js";
+
+        const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                window.currentUserUid = user.uid;
+            }
+        });
+
+        window.saveExpenseToFirestore = async function(name, amount) {
+            if (window.currentUserUid) {
+                try {
+                    await addExpense(window.currentUserUid, {
+                        category: "Farm Operating Expense",
+                        amount: amount,
+                        description: name
+                    });
+                } catch (e) {
+                    console.warn("Expense save note:", e.message);
+                }
+            }
+        };
+    </script>
+</body>
+</html>

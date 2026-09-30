@@ -1,0 +1,21 @@
+{
+  "name": "kisaan-saathi",
+  "version": "1.0.0",
+  "description": "KisaanSaathi – Smart Agriculture Portal (Frontend + Firebase/Firestore + Cloud Functions)",
+  "main": "frontend/index.html",
+  "scripts": {
+    "start": "npx serve frontend -p 3001",
+    "serve:frontend": "npx serve frontend -p 3001",
+    "deploy:functions": "firebase deploy --only functions",
+    "deploy:firestore": "firebase deploy --only firestore:rules"
+  },
+  "keywords": [
+    "agriculture",
+    "firebase",
+    "firestore",
+    "smart-farming",
+    "kisaansaathi"
+  ],
+  "author": "KisaanSaathi Team",
+  "license": "MIT"
+}

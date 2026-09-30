@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/mobile-polish.css">
+    <script src="js/portal-language.js" defer></script>
+    <title>KisaanSaathi - Smart Agriculture Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+            transition: background 0.8s ease-in-out;
+        }
+
+        /* 5 Themes Color Palettes */
+        body.theme-light-yellow {
+            background: linear-gradient(to bottom, #fef08a 0%, #fef9c3 50%, #e2e8f0 100%);
+        }
+        body.theme-light-pink {
+            background: linear-gradient(to bottom, #fbcfe8 0%, #fce7f3 50%, #e2e8f0 100%);
+        }
+        body.theme-light-orange {
+            background: linear-gradient(to bottom, #fed7aa 0%, #ffedd5 50%, #e2e8f0 100%);
+        }
+        body.theme-light-blue {
+            background: linear-gradient(to bottom, #bae6fd 0%, #e0f2fe 50%, #cbd5e1 100%);
+        }
+        body.theme-light-black {
+            background: linear-gradient(to bottom, #1e293b 0%, #0f172a 50%, #020617 100%);
+        }
+
+        .page-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Top Navigation Bar */
+        .top-nav {
+            position: absolute;
+            top: 25px;
+            left: 35px;
+            right: 35px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 40;
+        }
+
+        .brand-badge {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(74, 124, 54, 0.3);
+            padding: 10px 18px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .brand-text strong {
+            display: block;
+            color: #1f3818;
+            font-size: 1rem;
+        }
+
+        .brand-text small {
+            display: block;
+            color: #4a7c36;
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        /* Sun/Moon Control with Tap Badge */
+        .theme-switcher-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 50;
+        }
+
+        .tap-badge {
+            background: rgba(255, 255, 255, 0.85);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #386641;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(8px);
+            animation: pulseBadge 2s infinite;
+        }
+
+        @keyframes pulseBadge {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+            100% { transform: scale(1); }
+        }
+
+        .sun-control-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.85);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            transition: transform 0.2s ease;
+            appearance: none;
+        }
+
+        .sun-control-box:hover,
+        .sun-control-box:focus-visible {
+            transform: scale(1.1);
+        }
+
+        .sun-control-box:focus-visible,
+        .btn:focus-visible {
+            outline: 3px solid #1b3818;
+            outline-offset: 3px;
+        }
+
+        .sun-icon {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: #facc15;
+            box-shadow: 0 0 20px rgba(250, 204, 21, 0.9);
+            transition: all 0.5s ease;
+            animation: floatIcon 4s ease-in-out infinite alternate;
+        }
+
+        @keyframes floatIcon {
+            from { transform: translateY(0); }
+            to { transform: translateY(-3px); }
+        }
+
+        /* Theme-based Icon Shifts */
+        body.theme-light-yellow .sun-icon { background: #facc15; box-shadow: 0 0 20px rgba(250, 204, 21, 0.9); }
+        body.theme-light-pink .sun-icon { background: #f472b6; box-shadow: 0 0 20px rgba(244, 114, 182, 0.9); }
+        body.theme-light-orange .sun-icon { background: #fb923c; box-shadow: 0 0 20px rgba(251, 146, 60, 0.9); }
+        body.theme-light-blue .sun-icon { background: #38bdf8; box-shadow: 0 0 20px rgba(56, 189, 248, 0.9); }
+        body.theme-light-black .sun-icon { 
+            background: transparent; 
+            box-shadow: -6px 2px 0 0 #f8fafc; 
+            width: 22px;
+            height: 22px;
+        }
+
+        /* Dark theme styling updates */
+        body.theme-light-black .brand-badge, 
+        body.theme-light-black .tap-badge, 
+        body.theme-light-black .sun-control-box { 
+            background: rgba(30, 41, 59, 0.9); 
+            border-color: rgba(255,255,255,0.1); 
+        }
+        body.theme-light-black .brand-text strong, body.theme-light-black .tap-badge { color: #ffffff; }
+        body.theme-light-black .hero-card { background: rgba(15, 23, 42, 0.85); border-color: rgba(255,255,255,0.1); }
+        body.theme-light-black .hero-card h1 { color: #ffffff; }
+        body.theme-light-black .hero-card p { color: #94a3b8; }
+
+        /* Center Glassmorphism Hero Card */
+        .hero-card {
+            position: absolute;
+            top: 150px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(16px);
+            padding: 40px 50px;
+            border-radius: 24px;
+            text-align: center;
+            max-width: 620px;
+            width: 90%;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.12);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            z-index: 30;
+        }
+
+        .hero-card h1 {
+            color: #1b3818;
+            font-size: 2.2rem;
+            font-weight: 800;
+            line-height: 1.25;
+            margin-bottom: 15px;
+        }
+
+        .highlight-title {
+            color: #386641;
+        }
+
+        .hero-card p {
+            color: #4f6f52;
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .btn-container {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 12px 35px;
+            border-radius: 14px;
+            font-weight: 700;
+            text-decoration: none;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: transform 0.2s ease;
+        }
+
+        .btn-login { 
+            background: rgba(74, 124, 54, 0.12); 
+            color: #386641; 
+            border: 1px solid rgba(74, 124, 54, 0.3);
+        }
+
+        .btn-signup { 
+            background: linear-gradient(135deg, #386641 0%, #588157 100%); 
+            color: #ffffff; 
+            box-shadow: 0 8px 25px rgba(56, 102, 65, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px) scale(1.02);
+        }
+
+        /* Top-Layer Floating Clouds */
+        .clouds-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 35;
+        }
+
+        .cloud {
+            fill: rgba(255, 255, 255, 0.75);
+            animation: driftCloud 25s linear infinite alternate;
+        }
+
+        @keyframes driftCloud {
+            from { transform: translateX(0); }
+            to { transform: translateX(35px); }
+        }
+
+        /* Bottom Ghibli Landscape with Fences & Sunflowers */
+        .landscape-svg-container {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 320px;
+            pointer-events: none;
+            z-index: 20;
+        }
+
+        .landscape-svg-container svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+    </style>
+    <style>
+        @media (max-width: 600px) {
+            body, html { min-height: 100%; height: auto; overflow-x: hidden; overflow-y: auto; }
+            .page-container { display: flow-root; min-height: 100vh; height: auto; }
+            .top-nav { top: 15px; left: 15px; right: 15px; }
+            .tap-badge { display: none; }
+            .hero-card { top: auto; left: auto; position: relative; transform: none; width: calc(100% - 30px); margin: 105px auto 220px; padding: 28px 22px; }
+            .hero-card h1 { font-size: 2rem; }
+            .landscape-svg-container { min-height: 180px; }
+        }
+
+        @media (max-height: 620px) and (min-width: 601px) {
+            body, html { height: auto; min-height: 100%; overflow-y: auto; }
+            .page-container { min-height: 620px; }
+            .hero-card { top: 115px; padding: 28px 36px; }
+            .landscape-svg-container { height: 230px; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                scroll-behavior: auto !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="css/landing-polish.css">
+</head>
+<body class="theme-light-yellow" id="appBody">
+
+    <div class="page-container">
+        <!-- Top-Layer Floating Clouds (Strictly on Top) -->
+        <svg class="clouds-layer" viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+            <g class="cloud">
+                <path d="M 120 180 Q 145 155 180 175 Q 215 150 250 180 Q 275 195 260 215 L 105 215 Q 90 195 120 180 Z" />
+                <path d="M 1150 130 Q 1175 105 1210 125 Q 1245 100 1280 130 Q 1305 145 1290 165 L 1135 165 Q 1120 145 1150 130 Z" />
+            </g>
+        </svg>
+
+        <!-- Top Navigation Bar -->
+        <header class="top-nav">
+            <div class="brand-badge">
+                <span style="font-size: 1.3rem;">🌱</span>
+                <div class="brand-text">
+                    <strong>KisaanSaathi</strong>
+                    <small>SMART AGRICULTURE PORTAL</small>
+                </div>
+            </div>
+
+            <!-- Sun/Moon Theme Switcher with Tap Badge -->
+            <div class="theme-switcher-group">
+                <div class="tap-badge">✨ Tap to Change Theme</div>
+                <button type="button" class="sun-control-box" onclick="switchThemeCycle()" title="Tap to switch theme" aria-label="Change color theme">
+                    <span class="sun-icon" aria-hidden="true"></span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Center Glassmorphism Hero Card -->
+        <main class="hero-card">
+            <h1>Aapki Kheti, <br><span class="highlight-title">Aapka Digital Saathi</span></h1>
+            <p>Empowering farmers with instant AI crop disease scanning, live mandi rates, soil health predictions, and natural organic remedies.</p>
+
+            <div class="btn-container">
+                <a href="login.html" class="btn btn-login">Login</a>
+                <a href="signup.html" class="btn btn-signup">Sign Up</a>
+            </div>
+        </main>
+
+        <!-- Bottom Landscape (Fences & Cute Sunflowers from Reference) -->
+        <div class="landscape-svg-container">
+            <svg viewBox="0 0 1440 320" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+                <!-- Distant Hill -->
+                <path d="M0,160 C320,100 640,110 960,150 C1280,190 1380,140 1440,130 L1440,320 L0,320 Z" fill="#86efac" opacity="0.5"></path>
+                
+                <!-- Mid Hill -->
+                <path d="M0,200 C360,150 720,170 1080,190 C1260,200 1380,180 1440,170 L1440,320 L0,320 Z" fill="#4ade80" opacity="0.8"></path>
+                
+                <!-- Foreground Rich Green Hill -->
+                <path d="M0,240 C400,190 800,210 1440,220 L1440,320 L0,320 Z" fill="#16a34a"></path>
+
+                <!-- Wooden Fences (Ghibli Reference Style) -->
+                <g fill="#854d0e">
+                    <rect x="150" y="210" width="8" height="45" rx="2" />
+                    <rect x="175" y="215" width="8" height="45" rx="2" />
+                    <rect x="145" y="222" width="40" height="5" />
+                    <rect x="145" y="240" width="40" height="5" />
+
+                    <rect x="1220" y="200" width="8" height="45" rx="2" />
+                    <rect x="1245" y="205" width="8" height="45" rx="2" />
+                    <rect x="1215" y="212" width="40" height="5" />
+                    <rect x="1215" y="230" width="40" height="5" />
+                </g>
+
+                <!-- Sunflowers / Little Flowers at Bottom -->
+                <g>
+                    <!-- Sunflower 1 -->
+                    <circle cx="280" cy="275" r="7" fill="#facc15" />
+                    <circle cx="280" cy="275" r="3" fill="#78350f" />
+                    <!-- Sunflower 2 -->
+                    <circle cx="310" cy="290" r="8" fill="#facc15" />
+                    <circle cx="310" cy="290" r="3" fill="#78350f" />
+                    <!-- Sunflower 3 -->
+                    <circle cx="720" cy="280" r="8" fill="#facc15" />
+                    <circle cx="720" cy="280" r="3" fill="#78350f" />
+                    <!-- Sunflower 4 -->
+                    <circle cx="1120" cy="275" r="7" fill="#facc15" />
+                    <circle cx="1120" cy="275" r="3" fill="#78350f" />
+                </g>
+            </svg>
+        </div>
+    </div>
+
+    <script>
+        const themes = [
+            'theme-light-yellow',
+            'theme-light-pink',
+            'theme-light-orange',
+            'theme-light-blue',
+            'theme-light-black'
+        ];
+        
+        let currentThemeIndex = Math.max(themes.indexOf(localStorage.getItem('kisaanSaathiTheme')), 0);
+        document.getElementById('appBody').className = themes[currentThemeIndex];
+
+        function switchThemeCycle() {
+            currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+            const bodyElement = document.getElementById('appBody');
+            bodyElement.className = themes[currentThemeIndex];
+            localStorage.setItem('kisaanSaathiTheme', themes[currentThemeIndex]);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/mobile-polish.css">
+    <script src="js/portal-language.js" defer></script>
+    <title>Profile Settings - KisaanSaathi Smart Agriculture Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Theme Palettes */
+        body.theme-light-yellow {
+            background: linear-gradient(to bottom, #fef08a 0%, #fef9c3 50%, #e2e8f0 100%);
+            --panel-bg: rgba(255, 255, 255, 0.88); --text-primary: #1b3818; --text-muted: #4b6b48; --accent: #386641; --input-bg: #ffffff; --border-color: #fde047;
+        }
+        body.theme-light-pink {
+            background: linear-gradient(to bottom, #fbcfe8 0%, #fce7f3 50%, #e2e8f0 100%);
+            --panel-bg: rgba(255, 255, 255, 0.88); --text-primary: #500724; --text-muted: #831843; --accent: #be185d; --input-bg: #ffffff; --border-color: #f472b6;
+        }
+        body.theme-light-orange {
+            background: linear-gradient(to bottom, #fed7aa 0%, #ffedd5 50%, #e2e8f0 100%);
+            --panel-bg: rgba(255, 255, 255, 0.88); --text-primary: #431407; --text-muted: #7c2d12; --accent: #c2410c; --input-bg: #ffffff; --border-color: #fb923c;
+        }
+        body.theme-light-blue {
+            background: linear-gradient(to bottom, #bae6fd 0%, #e0f2fe 50%, #cbd5e1 100%);
+            --panel-bg: rgba(255, 255, 255, 0.88); --text-primary: #082f49; --text-muted: #0369a1; --accent: #0369a1; --input-bg: #ffffff; --border-color: #38bdf8;
+        }
+        body.theme-light-black {
+            background: linear-gradient(to bottom, #1e293b 0%, #0f172a 50%, #020617 100%);
+            --panel-bg: rgba(15, 23, 42, 0.88); --text-primary: #f8fafc; --text-muted: #94a3b8; --accent: #38bdf8; --input-bg: #0f172a; --border-color: #334155;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+        body { color: var(--text-primary); min-height: 100vh; display: flex; transition: background 0.3s, color 0.3s; justify-content: center; }
+
+        .main-content { width: 100%; max-width: 900px; padding: 30px; display: flex; flex-direction: column; min-height: 100vh; }
+        .top-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 15px; }
+        .top-header h1 { font-size: 22px; font-weight: 700; color: var(--text-primary); }
+
+        .profile-card {
+            background: var(--panel-bg);
+            backdrop-filter: blur(12px);
+            border-radius: 24px;
+            border: 1px solid var(--border-color);
+            width: 100%;
+            padding: 35px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.06);
+        }
+
+        .btn {
+            padding: 10px 18px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: all 0.2s;
+        }
+        .btn-primary { background: var(--accent); color: #ffffff; }
+        .btn-secondary { background: var(--input-bg); color: var(--text-primary); border-color: var(--border-color); }
+        .btn-danger { background: #ef4444; color: #fff; }
+
+        @media (max-width: 768px) {
+            .main-content { padding: 15px; }
+        }
+    </style>
+</head>
+<body id="appBody" class="theme-light-yellow">
+
+    <div class="main-content">
+        <header class="top-header">
+            <h1 id="pageHeading">Farmer Profile & Settings</h1>
+        </header>
+
+        <section class="profile-card">
+            <div style="display:flex; align-items:center; gap:20px; margin-bottom:20px;">
+                <div style="width:80px; height:80px; border-radius:50%; background:#dcfce7; display:flex; align-items:center; justify-content:center; font-size:36px; border:2px solid var(--accent);">
+                    👨‍🌾
+                </div>
+                <div>
+                    <h2 id="farmerNameDisplay" style="font-size:20px; font-weight:700;">Farmer Profile</h2>
+                    <p id="farmerPhoneDisplay" style="font-size:13px; color:var(--text-muted);">Registered KisaanSaathi User</p>
+                </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:24px;">
+                <div>
+                    <label style="font-size:12px; font-weight:600; color:var(--text-muted);">State / Region</label>
+                    <input type="text" id="profileState" value="Punjab" style="width:100%; padding:10px; border-radius:10px; border:1px solid var(--border-color); outline:none;">
+                </div>
+                <div>
+                    <label style="font-size:12px; font-weight:600; color:var(--text-muted);">District</label>
+                    <input type="text" id="profileDistrict" value="Ludhiana" style="width:100%; padding:10px; border-radius:10px; border:1px solid var(--border-color); outline:none;">
+                </div>
+            </div>
+
+            <div style="display:flex; gap:12px;">
+                <button class="btn btn-primary" onclick="saveProfileChanges()">Save Profile</button>
+                <button class="btn btn-danger" onclick="logoutUser()">Log Out</button>
+            </div>
+        </section>
+    </div>
+
+    <script type="module">
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js";
+        import { getUserProfile, updateUserProfile } from "./firebase/firestore-db.js";
+        import { getApps, initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
+        import { firebaseConfig } from "./firebase/firebase-config.js";
+
+        const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                window.currentUserUid = user.uid;
+                document.getElementById('farmerNameDisplay').innerText = user.displayName || user.email || "Farmer";
+                document.getElementById('farmerPhoneDisplay').innerText = user.phoneNumber || user.email || "";
+
+                try {
+                    const profile = await getUserProfile(user.uid);
+                    if (profile) {
+                        if (profile.name) document.getElementById('farmerNameDisplay').innerText = profile.name;
+                        if (profile.state) document.getElementById('profileState').value = profile.state;
+                        if (profile.district) document.getElementById('profileDistrict').value = profile.district;
+                    }
+                } catch (e) {
+                    console.warn("Could not fetch profile:", e);
+                }
+            }
+        });
+
+        window.saveProfileChanges = async function() {
+            const state = document.getElementById('profileState').value;
+            const district = document.getElementById('profileDistrict').value;
+            if (window.currentUserUid) {
+                try {
+                    await updateUserProfile(window.currentUserUid, { state, district });
+                    alert("Profile updated in Firestore!");
+                } catch (e) {
+                    alert("Profile updated locally.");
+                }
+            }
+        };
+
+        window.logoutUser = async function() {
+            await signOut(auth);
+            localStorage.removeItem('kisaanSaathiLoggedIn');
+            window.top.location.href = 'login.html';
+        };
+    </script>
+    <script>
+        const themes = ['theme-light-yellow', 'theme-light-pink', 'theme-light-orange', 'theme-light-blue', 'theme-light-black'];
+        let currentThemeIndex = parseInt(localStorage.getItem('kisaan-portal-theme-index') || '0');
+        document.getElementById('appBody').className = themes[currentThemeIndex];
+    </script>
+</body>
+</html>

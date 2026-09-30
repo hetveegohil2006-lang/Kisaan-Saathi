@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/mobile-polish.css">
+    <script src="js/portal-language.js" defer></script>
+    <title>KisaanSaathi - AI Guide Greeting</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body, html {
+            width: 100%;
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: background 0.8s ease-in-out;
+        }
+
+        /* 5 Themes Color Palettes */
+        body.theme-light-yellow { background: linear-gradient(to bottom, #fef08a 0%, #fef9c3 50%, #e2e8f0 100%); }
+        body.theme-light-pink { background: linear-gradient(to bottom, #fbcfe8 0%, #fce7f3 50%, #e2e8f0 100%); }
+        body.theme-light-orange { background: linear-gradient(to bottom, #fed7aa 0%, #ffedd5 50%, #e2e8f0 100%); }
+        body.theme-light-blue { background: linear-gradient(to bottom, #bae6fd 0%, #e0f2fe 50%, #cbd5e1 100%); }
+        body.theme-light-black { background: linear-gradient(to bottom, #1e293b 0%, #0f172a 50%, #020617 100%); }
+
+        .page-container {
+            position: relative;
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 20px 100px 20px;
+        }
+
+        /* Top Navigation Bar */
+        .top-nav {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 40;
+            margin-bottom: 20px;
+        }
+
+        .brand-badge {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(74, 124, 54, 0.3);
+            padding: 8px 16px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            text-decoration: none;
+        }
+
+        .brand-text strong { display: block; color: #1f3818; font-size: 0.95rem; }
+        .brand-text small { display: block; color: #4a7c36; font-size: 0.62rem; font-weight: 700; letter-spacing: 1px; }
+
+        .theme-switcher-group { display: flex; align-items: center; gap: 10px; }
+
+        .tap-badge {
+            background: rgba(255, 255, 255, 0.85);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #386641;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(8px);
+        }
+
+        .sun-control-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.85);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            transition: transform 0.2s ease;
+        }
+
+        .sun-control-box:hover { transform: scale(1.1); }
+
+        .sun-icon {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #facc15;
+            box-shadow: 0 0 15px rgba(250, 204, 21, 0.9);
+            transition: all 0.5s ease;
+        }
+
+        body.theme-light-yellow .sun-icon { background: #facc15; box-shadow: 0 0 15px rgba(250, 204, 21, 0.9); }
+        body.theme-light-pink .sun-icon { background: #f472b6; box-shadow: 0 0 15px rgba(244, 114, 182, 0.9); }
+        body.theme-light-orange .sun-icon { background: #fb923c; box-shadow: 0 0 15px rgba(251, 146, 60, 0.9); }
+        body.theme-light-blue .sun-icon { background: #38bdf8; box-shadow: 0 0 15px rgba(56, 189, 248, 0.9); }
+        body.theme-light-black .sun-icon { background: transparent; box-shadow: -5px 2px 0 0 #f8fafc; width: 18px; height: 18px; }
+
+        body.theme-light-black .brand-badge,
+        body.theme-light-black .tap-badge,
+        body.theme-light-black .sun-control-box,
+        body.theme-light-black .greeting-card {
+            background: rgba(30, 41, 59, 0.9);
+            border-color: rgba(255,255,255,0.1);
+        }
+        body.theme-light-black .brand-text strong,
+        body.theme-light-black .tap-badge,
+        body.theme-light-black .greeting-card h2 { color: #ffffff; }
+        body.theme-light-black .greeting-card p { color: #cbd5e1; }
+
+        .greeting-card {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(16px);
+            padding: 30px 40px;
+            border-radius: 24px;
+            width: 100%;
+            max-width: 520px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.12);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            z-index: 30;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .guide-stage {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+
+        .avatar-container {
+            width: 90px;
+            height: 90px;
+            padding: 6px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.9);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+            border: 3px solid #386641;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .avatar-container:hover { transform: scale(1.05); }
+
+        .avatar-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .avatar-container.is-speaking {
+            animation: guideBounce 0.7s ease-in-out infinite alternate;
+        }
+
+        @keyframes guideBounce {
+            from { transform: translateY(0) rotate(-2deg); }
+            to { transform: translateY(-6px) rotate(2deg); }
+        }
+
+        .speech-bubble {
+            position: relative;
+            max-width: 260px;
+            padding: 10px 14px;
+            border-radius: 14px;
+            background: #ffffff;
+            color: #386641;
+            font-size: 0.75rem;
+            line-height: 1.35;
+            text-align: left;
+            box-shadow: 0 8px 18px rgba(0,0,0,0.12);
+            border: 1px solid rgba(56, 102, 65, 0.2);
+        }
+
+        .speech-bubble::before {
+            content: "";
+            position: absolute;
+            left: -7px;
+            top: 50%;
+            transform: translateY(-50%) rotate(45deg);
+            width: 12px;
+            height: 12px;
+            background: #ffffff;
+            border-left: 1px solid rgba(56, 102, 65, 0.2);
+            border-bottom: 1px solid rgba(56, 102, 65, 0.2);
+        }
+
+        .quick-prompts {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 7px;
+            margin-bottom: 20px;
+        }
+
+        .quick-prompt {
+            border: 1px solid rgba(56, 102, 65, 0.25);
+            background: rgba(220, 235, 222, 0.55);
+            color: #386641;
+            border-radius: 999px;
+            padding: 6px 12px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+
+        .quick-prompt:hover {
+            background: rgba(220, 235, 222, 0.95);
+            transform: translateY(-2px);
+        }
+
+        body.theme-light-black .speech-bubble,
+        body.theme-light-black .speech-bubble::before {
+            background: #1e293b;
+            color: #e2e8f0;
+        }
+
+        body.theme-light-black .quick-prompt {
+            background: rgba(56, 189, 248, 0.14);
+            color: #bae6fd;
+            border-color: rgba(56, 189, 248, 0.35);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-speak {
+            flex: 1;
+            padding: 12px;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            border: 1px solid rgba(56, 102, 65, 0.3);
+            cursor: pointer;
+            background: rgba(220, 235, 222, 0.8);
+            color: #386641;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn-speak:hover { background: rgba(220, 235, 222, 1); transform: translateY(-2px); }
+
+        .btn-dashboard {
+            flex: 2;
+            padding: 12px;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            border: none;
+            cursor: pointer;
+            background: linear-gradient(135deg, #386641 0%, #588157 100%);
+            color: #ffffff;
+            box-shadow: 0 8px 20px rgba(56, 102, 65, 0.3);
+            transition: transform 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn-dashboard:hover { transform: translateY(-2px); }
+
+        /* Floating Clouds & Landscape */
+        .clouds-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; }
+        .cloud { fill: rgba(255, 255, 255, 0.75); animation: driftCloud 25s linear infinite alternate; }
+        @keyframes driftCloud { from { transform: translateX(0); } to { transform: translateX(35px); } }
+
+        .landscape-svg-container { position: fixed; bottom: 0; left: 0; width: 100%; height: 180px; pointer-events: none; z-index: 5; }
+        .landscape-svg-container svg { width: 100%; height: 100%; display: block; }
+
+        /* Responsive Breakpoints for Mobile */
+        @media (max-width: 600px) {
+            .page-container { padding: 15px 15px 90px 15px; }
+            .top-nav { margin-bottom: 10px; }
+            .tap-badge { display: none; }
+            .greeting-card { padding: 20px 16px; margin-top: 10px; width: 100%; }
+            .guide-stage { flex-direction: column; gap: 10px; width: 100%; }
+            .speech-bubble { text-align: center; width: 100%; max-width: 100%; }
+            .speech-bubble::before { left: 50%; top: -6px; transform: translateX(-50%) rotate(45deg); }
+            .button-group { flex-direction: column; }
+            .landscape-svg-container { height: 100px; }
+        }
+    </style>
+</head>
+<body class="theme-light-yellow" id="appBody">
+
+    <div class="page-container">
+        <!-- Clouds -->
+        <svg class="clouds-layer" viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+            <g class="cloud">
+                <path d="M 120 180 Q 145 155 180 175 Q 215 150 250 180 Q 275 195 260 215 L 105 215 Q 90 195 120 180 Z" />
+                <path d="M 1150 130 Q 1175 105 1210 125 Q 1245 100 1280 130 Q 1305 145 1290 165 L 1135 165 Q 1120 145 1150 130 Z" />
+            </g>
+        </svg>
+
+        <!-- Top Navigation -->
+        <header class="top-nav">
+            <a href="character.html" class="brand-badge">
+                <span style="font-size: 1.2rem;">🌱</span>
+                <div class="brand-text">
+                    <strong>KisaanSaathi</strong>
+                    <small>SMART AGRICULTURE PORTAL</small>
+                </div>
+            </a>
+
+            <div class="theme-switcher-group">
+                <div class="tap-badge">✨ Change Theme</div>
+                <div class="sun-control-box" onclick="switchThemeCycle()" title="Tap to switch theme">
+                    <div class="sun-icon"></div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Greeting Card -->
+        <main class="greeting-card">
+            <div class="guide-stage">
+                <div class="avatar-container" id="avatarButton" onclick="speakGreeting()" role="button" tabindex="0" aria-label="Ask your guide to speak">
+                    <img id="avatarImg" src="assets/images/malechild.png" alt="Guide Avatar" onerror="this.src='../images/malechild.png'">
+                </div>
+                <div class="speech-bubble" id="speechBubble" aria-live="polite">Tap me and I’ll guide you around the portal.</div>
+            </div>
+
+            <h2 id="greetingTitle">Namaste!</h2>
+            <p id="greetingText">Loading greeting...</p>
+
+            <div class="quick-prompts" aria-label="Quick guide topics">
+                <button class="quick-prompt" type="button" onclick="showGuideTip('soil')">🧪 Soil health</button>
+                <button class="quick-prompt" type="button" onclick="showGuideTip('weather')">🌤️ Weather</button>
+                <button class="quick-prompt" type="button" onclick="showGuideTip('market')">💰 Market prices</button>
+            </div>
+
+            <div class="button-group">
+                <button class="btn-speak" onclick="speakGreeting()">🔊 <span id="speakText">Speak</span></button>
+                <button class="btn-dashboard" onclick="goToDashboard()">🚀 <span id="dashText">Go to Dashboard</span></button>
+            </div>
+        </main>
+
+        <!-- Bottom Landscape -->
+        <div class="landscape-svg-container">
+            <svg viewBox="0 0 1440 320" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+                <path d="M0,160 C320,100 640,110 960,150 C1280,190 1380,140 1440,130 L1440,320 L0,320 Z" fill="#86efac" opacity="0.5"></path>
+                <path d="M0,200 C360,150 720,170 1080,190 C1260,200 1380,180 1440,170 L1440,320 L0,320 Z" fill="#4ade80" opacity="0.8"></path>
+                <path d="M0,240 C400,190 800,210 1440,220 L1440,320 L0,320 Z" fill="#16a34a"></path>
+            </svg>
+        </div>
+    </div>
+
+    <script>
+        // Theme switcher logic
+        const themes = ['theme-light-yellow', 'theme-light-pink', 'theme-light-orange', 'theme-light-blue', 'theme-light-black'];
+        let currentThemeIndex = 0;
+
+        function switchThemeCycle() {
+            currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+            document.getElementById('appBody').className = themes[currentThemeIndex];
+        }
+
+        // Load data from localStorage
+        const companionType = localStorage.getItem('aiCompanion') || 'boy';
+        const companionName = localStorage.getItem('aiCompanionName') || 'Guide';
+        const language = localStorage.getItem('aiLanguage') || 'en';
+
+        // Set Avatar Image
+        const avatarImg = document.getElementById('avatarImg');
+        if (companionType === 'girl') {
+            avatarImg.src = 'assets/images/femalechild.png';
+        } else {
+            avatarImg.src = 'assets/images/malechild.png';
+        }
+
+        // Multi-language Greeting Translations
+        const greetingData = {
+            en: {
+                title: `Namaste ${companionName}! 🙏✨`,
+                text: `Ready to achieve great success in agriculture today? Your AI companion ${companionName} is fully prepared so you can farm smartly. Let's grow crops! 🌱🔥`,
+                speak: "Speak",
+                dashboard: "Go to Dashboard"
+            },
+            hi: {
+                title: `नमस्ते ${companionName}! 🙏✨`,
+                text: `आज कृषि में बड़ी सफलता हासिल करने के लिए तैयार हैं? आपका AI साथी ${companionName} पूरी तरह तैयार है ताकि आप स्मार्ट तरीके से खेती कर सकें। आइए फसल उगाएं! 🌱🔥`,
+                speak: "बोलें",
+                dashboard: "डैशबोर्ड पर जाएं"
+            },
+            mr: {
+                title: `नमस्कार ${companionName}! 🙏✨`,
+                text: `आज शेतीत मोठे यश मिळवण्यासाठी तयार आहात का? तुमचा AI सोबती ${companionName} पूर्णपणे तयार आहे जेणेकरून तुम्ही स्मार्ट पद्धतीने शेती करू शकाल. चला पिके उगवूया! 🌱🔥`,
+                speak: "ऐकवा",
+                dashboard: "डॅशबोर्डवर जा"
+            },
+            pa: {
+                title: `ਸਤਿ ਸ੍ਰੀ ਅਕਾਲ ${companionName}! 🙏✨`,
+                text: `ਅੱਜ ਖੇਤੀ ਵਿੱਚ ਵੱਡੀ ਸਫਲਤਾ ਪ੍ਰਾਪਤ ਕਰਨ ਲਈ ਤਿਆਰ ਹੋ? ਤੁਹਾਡਾ AI ਸਾਥੀ ${companionName} ਪੂਰੀ ਤਰ੍ਹਾਂ ਤਿਆਰ ਹੈ ਤਾਂ ਜੋ ਤੁਸੀਂ ਸਮਾਰਟ ਤਰੀਕੇ ਨਾਲ ਖੇਤੀ ਕਰ ਸਕੋ। ਆਓ ਫਸਲਾਂ ਉਗਾਓ! 🌱🔥`,
+                speak: "ਬੋਲੋ",
+                dashboard: "ਡੈਸ਼ਬੋਰਡ 'ਤੇ ਜਾਓ"
+            },
+            gu: {
+                title: `નમસ્તે ${companionName}! 🙏✨`,
+                text: `આજે કૃષિમાં મોટી સફળતા મેળવવા માટે તૈયાર છો? તમારો AI સાથી ${companionName} પૂરી રીતે તૈયાર છે જેથી તમે સ્માર્ટ રીતે ખેતી કરી શકો. ચાલો પાક ઉગાડીએ! 🌱🔥`,
+                speak: "બોલો",
+                dashboard: "ડેશબોર્ડ પર જાઓ"
+            },
+            bn: {
+                title: `নমস্কার ${companionName}! 🙏✨`,
+                text: `আজ কৃষিতে বড় সাফল্য অর্জনের জন্য প্রস্তুত তো? আপনার এআই সঙ্গী ${companionName} পুরোপুরি প্রস্তুত যাতে আপনি স্মার্ট উপায়ে চাষাবাদ করতে পারেন। চলুন ফসল ফলাই! 🌱🔥`,
+                speak: "বলুন",
+                dashboard: "ড্যাশবোর্ডে যান"
+            },
+            te: {
+                title: `నమస్తే ${companionName}! 🙏✨`,
+                text: `ఈరోజు వ్యవసాయంలో గొప్ప విజయం సాధించడానికి సిద్ధంగా ఉన్నారా? మీ AI సహచరుడు ${companionName} పూర్తిగా సిద్ధంగా ఉన్నాడు. పంటలను పండిద్దాం! 🌱🔥`,
+                speak: "మాట్లాడు",
+                dashboard: "డాష్‌బోర్డ్‌కి వెళ్లండి"
+            },
+            ta: {
+                title: `வணக்கம் ${companionName}! 🙏✨`,
+                text: `இன்று விவசாயத்தில் பெரும் வெற்றி பெற தயாராக இருக்கிறீர்களா? உங்கள் AI துணை ${companionName} முழுமையாக தயாராக உள்ளது. பயிர்களை வளர்ப்போம்! 🌱🔥`,
+                speak: "பேசு",
+                dashboard: "டாஷ்போர்டுக்கு செல்லவும்"
+            },
+            kn: {
+                title: `ನಮಸ್ತೆ ${companionName}! 🙏✨`,
+                text: `ಇಂದು ಕೃಷಿಯಲ್ಲಿ ದೊಡ್ಡ ಯಶಸ್ಸು ಸಾಧಿಸಲು ಸಿದ್ಧರಿದ್ದೀರಾ? ನಿಮ್ಮ AI ಸಹಚರ ${companionName} ಸಂಪೂರ್ಣ ಸಿದ್ಧನಾಗಿದ್ದಾನೆ. ಬೆಳೆಗಳನ್ನು ಬೆಳೆಯೋಣ! 🌱🔥`,
+                speak: "ಮಾತನಾಡು",
+                dashboard: "ಡ್ಯಾಶ್‌ಬೋರ್ಡ್‌ಗೆ ಹೋಗಿ"
+            },
+            ml: {
+                title: `നമസ്കാരം ${companionName}! 🙏✨`,
+                text: `ഇന്ന് കൃഷിയിൽ വലിയ വിജയം നേടാൻ തയ്യാറാണോ? നിങ്ങളുടെ AI കൂട്ടാളി ${companionName} പൂർണ്ണമായി സജ്ജമാണ്. നമുക്ക് വിളകൾ വളർത്താം! 🌱🔥`,
+                speak: "സംസാരിക്കുക",
+                dashboard: "ഡാഷ്‌ബോർഡിലേക്ക് പോവുക"
+            },
+            or: {
+                title: `ନମସ୍କାର ${companionName}! 🙏✨`,
+                text: `ଆଜି କୃଷିରେ ବଡ଼ ସଫଳତା ହାସଲ କରିବାକୁ ପ୍ରସ୍ତୁତ କି? ଆପଣଙ୍କର AI ସାଥୀ ${companionName} ସମ୍ପୂର୍ଣ୍ଣ ପ୍ରସ୍ତୁତ ଅଛି। ଆସନ୍ତୁ ଫସଲ ଉଗାଇବା! 🌱🔥`,
+                speak: "କହନ୍ତୁ",
+                dashboard: "ଡ୍ୟାସବୋର୍ଡକୁ ଯାଆନ୍ତୁ"
+            },
+            as: {
+                title: `নমস্কাৰ ${companionName}! 🙏✨`,
+                text: `আজি কৃষিত ডাঙৰ সফলতা লাভ কৰিবলৈ সাজু নেকি? আপোনাৰ AI সংগী ${companionName} সম্পূৰ্ণৰূপে সাজু আছে। বলক শস্য উগাওঁ! 🌱🔥`,
+                speak: "কওক",
+                dashboard: "ডেছবৰ্ডলৈ যাওক"
+            },
+            ur: {
+                title: `नमस्ते ${companionName}! 🙏✨`,
+                text: `آج زراعت میں بڑی کامیابی حاصل کرنے کے لیے تیار ہیں؟ آپ کا AI ساتھی ${companionName} مکمل طور پر تیار ہے تاکہ آپ سمارٹ طریقے سے کاشتکاری ਕਰ سکیں۔ آئیے فصلیں اگائیں! 🌱🔥`,
+                speak: "بولیں",
+                dashboard: "ڈیش بورڈ پر جائیں"
+            }
+        };
+
+        const currentLangContent = greetingData[language] || greetingData['en'];
+        document.getElementById('greetingTitle').innerText = currentLangContent.title;
+        document.getElementById('greetingText').innerText = currentLangContent.text;
+        document.getElementById('speakText').innerText = currentLangContent.speak;
+        document.getElementById('dashText').innerText = currentLangContent.dashboard;
+
+        const guideTips = {
+            en: {
+                soil: `I can help you understand soil health and suggest the right crop nutrients. Open Soil & Crop Predictions to begin.`,
+                weather: `I can help you check weather conditions and plan irrigation. Open Weather & Alerts for a quick view.`,
+                market: `I can help you compare mandi prices and track expenses. Open Market & Expense to plan a better sale.`
+            },
+            hi: {
+                soil: `मैं मिट्टी की सेहत समझने और सही पोषक तत्व सुझाने में मदद कर सकता हूँ। शुरू करने के लिए Soil & Crop Predictions खोलें।`,
+                weather: `मैं मौसम देखकर सिंचाई की योजना बनाने में मदद कर सकता हूँ। Weather & Alerts खोलें।`,
+                market: `मैं मंडी भाव और खर्चों की तुलना करने में मदद कर सकता हूँ। Market & Expense खोलें।`
+            }
+        };
+
+        function showGuideTip(topic) {
+            const tips = guideTips[language] || guideTips.en;
+            const tip = tips[topic] || tips.soil;
+            document.getElementById('speechBubble').innerText = tip;
+            speakText(tip);
+        }
+
+        function speakText(text) {
+            if (!('speechSynthesis' in window)) return;
+            window.speechSynthesis.cancel();
+            const avatarButton = document.getElementById('avatarButton');
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = language === 'hi' ? 'hi-IN' : (language === 'en' ? 'en-US' : language);
+            avatarButton.classList.add('is-speaking');
+            utterance.onend = () => avatarButton.classList.remove('is-speaking');
+            utterance.onerror = () => avatarButton.classList.remove('is-speaking');
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function speakGreeting() {
+            if ('speechSynthesis' in window) {
+                const textToSpeak = document.getElementById('greetingText').innerText;
+                document.getElementById('speechBubble').innerText = textToSpeak;
+                speakText(textToSpeak);
+            } else {
+                alert("Speech synthesis is not supported in this browser.");
+            }
+        }
+
+        function goToDashboard() {
+            if (localStorage.getItem('kisaanSaathiLoggedIn') !== 'true') {
+                window.location.replace('login.html');
+                return;
+            }
+            window.location.href = 'dashboard.html';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/mobile-polish.css">
+    <script src="js/portal-language.js" defer></script>
+    <title>🎥 Plant Tutorials & AI Video - KisaanSaathi Smart Agriculture Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* 5 Themes Color Palettes */
+        body.theme-light-yellow { background: linear-gradient(to bottom, #fef08a 0%, #fef9c3 50%, #e2e8f0 100%); --panel-bg: rgba(255, 255, 255, 0.88); --text-primary: #1b3818; --text-muted: #4b6b48; --accent: #386641; --input-bg: #ffffff; --border-color: #fde047; }
+        body.theme-light-pink { background: linear-gradient(to bottom, #fbcfe8 0%, #fce7f3 50%, #e2e8f0 100%); --panel-bg: rgba(255, 255, 255, 0.88); --text-primary: #500724; --text-muted: #831843; --accent: #be185d; --input-bg: #ffffff; --border-color: #f472b6; }
+        body.theme-light-orange { background: linear-gradient(to bottom, #fed7aa 0%, #ffedd5 50%, #e2e8f0 100%); --panel-bg: rgba(255, 255, 255, 0.88); --text-primary: #431407; --text-muted: #7c2d12; --accent: #c2410c; --input-bg: #ffffff; --border-color: #fb923c; }
+        body.theme-light-blue { background: linear-gradient(to bottom, #bae6fd 0%, #e0f2fe 50%, #cbd5e1 100%); --panel-bg: rgba(255, 255, 255, 0.88); --text-primary: #082f49; --text-muted: #0369a1; --accent: #0369a1; --input-bg: #ffffff; --border-color: #38bdf8; }
+        body.theme-light-black { background: linear-gradient(to bottom, #1e293b 0%, #0f172a 50%, #020617 100%); --panel-bg: rgba(15, 23, 42, 0.88); --text-primary: #f8fafc; --text-muted: #94a3b8; --accent: #38bdf8; --input-bg: #0f172a; --border-color: #334155; }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+        body { color: var(--text-primary); min-height: 100vh; display: flex; flex-direction: column; transition: background 0.3s, color 0.3s; padding: 25px; }
+
+        .standalone-container { width: 100%; max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px; flex: 1; }
+
+        .top-header { display: flex; justify-content: space-between; align-items: center; background: var(--panel-bg); backdrop-filter: blur(12px); border-radius: 24px; border: 1px solid var(--border-color); padding: 20px 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.04); }
+        .header-title-box h1 { font-size: 24px; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 10px; }
+        .header-title-box p { font-size: 13px; color: var(--text-muted); font-weight: 500; margin-top: 2px; }
+
+        .card { background: var(--panel-bg); backdrop-filter: blur(12px); border-radius: 24px; border: 1px solid var(--border-color); padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.04); }
+        .card h3 { font-size: 17px; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 8px; margin-bottom: 15px; }
+
+        .form-grid { display: grid; grid-template-columns: 2fr 2fr 1fr; gap: 15px; align-items: flex-end; }
+        @media(max-width: 900px) { .form-grid { grid-template-columns: 1fr; } }
+        .input-group { display: flex; flex-direction: column; gap: 6px; }
+        .input-group label { font-size: 12px; font-weight: 600; color: var(--text-muted); }
+        .text-input { background: var(--input-bg); border: 1px solid var(--border-color); padding: 10px 14px; border-radius: 12px; font-size: 13px; color: var(--text-primary); outline: none; width: 100%; }
+        
+        .btn { padding: 11px 20px; border-radius: 12px; font-weight: 700; font-size: 13px; cursor: pointer; border: none; display: flex; align-items: center; justify-content: center; gap: 8px; transition: transform 0.2s; }
+        .btn:hover { transform: translateY(-2px); }
+        .btn-primary { background: var(--accent); color: #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .btn-secondary { background: var(--input-bg); color: var(--text-primary); border: 1px solid var(--border-color); }
+
+        .results-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 20px; margin-top: 15px; }
+        @media(max-width: 900px) { .results-grid { grid-template-columns: 1fr; } }
+
+        .video-result-box { background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+        .video-thumbnail-container { width: 100%; height: 160px; background: #cbd5e1; border-radius: 10px; overflow: hidden; position: relative; display: flex; align-items: center; justify-content: center; }
+        .video-thumbnail-container img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .library-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 18px; margin-top: 15px; }
+        .library-card { background: var(--input-bg); border-radius: 16px; border: 1px solid var(--border-color); overflow: hidden; display: flex; flex-direction: column; }
+        .library-card-body { padding: 14px; display: flex; flex-direction: column; gap: 6px; }
+
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 999; display: none; align-items: center; justify-content: center; padding: 20px; }
+        .modal-content { background: var(--panel-bg); border-radius: 20px; width: 100%; max-width: 720px; padding: 20px; position: relative; border: 1px solid var(--border-color); }
+        .close-btn { position: absolute; top: 12px; right: 16px; font-size: 20px; cursor: pointer; background: transparent; border: none; color: var(--text-primary); }
+
+        @media (max-width: 768px) {
+            body { padding: 15px; }
+            .top-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+        }
+    </style>
+</head>
+<body id="appBody" class="theme-light-yellow">
+
+    <div class="standalone-container">
+        <header class="top-header">
+            <div class="header-title-box">
+                <h1>🎥 Plant Video Tutorials & AI Learning</h1>
+                <p>Curated Farming Guides & Video Demonstrations</p>
+            </div>
+        </header>
+
+        <div class="card">
+            <h3>🔍 Search Agriculture Tutorials</h3>
+            <div class="form-grid">
+                <div class="input-group">
+                    <label>Crop / Topic Title</label>
+                    <input type="text" id="searchTitleInput" class="text-input" placeholder="e.g. Organic Pest Control, Drip Irrigation">
+                </div>
+                <div class="input-group">
+                    <label>Video URL (Optional YouTube link)</label>
+                    <input type="url" id="videoUrlInput" class="text-input" placeholder="https://www.youtube.com/watch?v=...">
+                </div>
+                <button class="btn btn-primary" onclick="searchTutorial()">Search Tutorials</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>📚 Agriculture Video Library</h3>
+            <div class="library-grid">
+                <div class="library-card" data-category="organic">
+                    <div class="video-thumbnail-container">
+                        <img src="https://images.unsplash.com/photo-1592417817098-8f3d6eb16428?auto=format&fit=crop&w=400&q=80" alt="Organic Fertilizer Preparation">
+                    </div>
+                    <div class="library-card-body">
+                        <h4 style="font-size:14px; font-weight:700;">Organic Neem Fertilizer Prep</h4>
+                        <p style="font-size:12px; color:var(--text-muted);">Step-by-step organic bio-pesticide recipe.</p>
+                        <button class="btn btn-secondary" onclick="watchVideo('https://www.youtube.com/embed/dQw4w9WgXcQ')" style="margin-top:6px;">▶ Watch Video</button>
+                    </div>
+                </div>
+
+                <div class="library-card" data-category="machinery">
+                    <div class="video-thumbnail-container">
+                        <img src="https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=400&q=80" alt="Modern Drip Irrigation">
+                    </div>
+                    <div class="library-card-body">
+                        <h4 style="font-size:14px; font-weight:700;">Smart Drip Irrigation Setup</h4>
+                        <p style="font-size:12px; color:var(--text-muted);">Water-saving drip system installation guide.</p>
+                        <button class="btn btn-secondary" onclick="watchVideo('https://www.youtube.com/embed/dQw4w9WgXcQ')" style="margin-top:6px;">▶ Watch Video</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Video Modal Player -->
+    <div class="modal-overlay" id="videoModal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal()">✕</button>
+            <div style="position:relative; padding-bottom:56.25%; height:0; overflow:hidden; border-radius:12px;">
+                <iframe id="youtubeIframe" style="position:absolute; top:0; left:0; width:100%; height:100%; border:none;" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const themes = ['theme-light-yellow', 'theme-light-pink', 'theme-light-orange', 'theme-light-blue', 'theme-light-black'];
+        let currentThemeIndex = parseInt(localStorage.getItem('kisaan-portal-theme-index') || '0');
+        document.getElementById('appBody').className = themes[currentThemeIndex];
+
+        function searchTutorial() {
+            const title = document.getElementById('searchTitleInput').value;
+            if(title) {
+                alert(`Searching agriculture tutorial index for: "${title}"`);
+            }
+        }
+
+        function watchVideo(url) {
+            const modal = document.getElementById('videoModal');
+            const iframe = document.getElementById('youtubeIframe');
+            iframe.src = url;
+            modal.style.display = 'flex';
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('videoModal');
+            const iframe = document.getElementById('youtubeIframe');
+            iframe.src = '';
+            modal.style.display = 'none';
+        }
+    </script>
+</body>
+</html>

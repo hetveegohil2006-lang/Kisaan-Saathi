@@ -1,16 +1,16 @@
 {
   "functions": {
-    "source": "functions"
+    "source": "backend/functions"
   },
   "hosting": {
-    "public": ".",
+    "public": "frontend",
     "ignore": [
       "firebase.json",
       ".firebaserc",
       "**/.*",
       "**/node_modules/**",
-      "functions/**",
-      "AUTH_SETUP.md"
+      "backend/**",
+      "docs/**"
     ]
   },
   "firestore": {

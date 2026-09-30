@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/mobile-polish.css">
+    <script src="js/portal-language.js" defer></script>
+    <title>Dashboard - KisaanSaathi Smart Agriculture Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Ionicons for Navigation Icons -->
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+    <style>
+        :root {
+            --primary-bg: #1b3818;
+            --active-bg: #386641;
+            --active-glow: rgba(56, 102, 65, 0.7);
+            --body-bg: #f0f4f8;
+            --transition-speed: 0.4s;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+        body { display: flex; height: 100vh; height: 100dvh; overflow: hidden; background: var(--body-bg); animation: fadeInBody 0.8s ease-in-out; }
+
+        @keyframes fadeInBody {
+            from { opacity: 0; transform: scale(0.99); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Navigation Sidebar */
+        .navigation {
+            width: 90px;
+            height: 100%;
+            background: var(--primary-bg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 20px;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.15);
+            z-index: 100;
+            transition: background var(--transition-speed) ease;
+        }
+
+        .navigation ul {
+            list-style: none;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .navigation ul li {
+            position: relative;
+            width: 70px;
+            height: 70px;
+            border-radius: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.3s ease;
+        }
+
+        .navigation ul li a {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            color: #ffffff;
+            font-size: 26px;
+            text-decoration: none;
+            z-index: 2;
+        }
+
+        /* Active State with Soft Glow */
+        .navigation ul li.active {
+            background: var(--active-bg);
+            box-shadow: 0 0 25px var(--active-glow);
+            transform: scale(1.08);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .navigation ul li.active::before {
+            content: '';
+            position: absolute;
+            inset: 3px;
+            border-radius: 13px;
+            border: 2px solid rgba(255, 255, 255, 0.35);
+            animation: softPulse 2s infinite ease-in-out;
+        }
+
+        @keyframes softPulse {
+            0% { transform: scale(0.95); opacity: 0.8; }
+            50% { transform: scale(1.03); opacity: 0.3; }
+            100% { transform: scale(0.95); opacity: 0.8; }
+        }
+
+        .navigation ul li:hover:not(.active) {
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 16px;
+            transform: scale(1.05);
+        }
+
+        /* Click Ripple Effect */
+        .navigation ul li::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(0);
+            opacity: 0;
+            transition: transform 0.5s, opacity 0.5s;
+        }
+
+        .navigation ul li:active::after {
+            transform: scale(1.4);
+            opacity: 1;
+            transition: 0s;
+        }
+
+        /* Main Content Area */
+        main {
+            flex: 1;
+            height: 100vh;
+            background: #ffffff;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #pageFrame {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: #f8fafc;
+            opacity: 1;
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+        }
+
+        .fade-out {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body { flex-direction: column-reverse; }
+            .navigation {
+                width: 100%;
+                height: calc(116px + env(safe-area-inset-bottom));
+                flex-direction: row;
+                padding-top: 0;
+                overflow-y: hidden;
+            }
+            .navigation ul {
+                display: grid;
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+                grid-template-rows: repeat(2, 50px);
+                gap: 4px;
+                width: 100%;
+                min-width: 100%;
+                padding: 4px 8px env(safe-area-inset-bottom);
+            }
+            .navigation ul li { width: 100%; height: 50px; min-width: 0; }
+            .navigation ul li a { font-size: 20px; }
+            main { height: calc(100vh - 116px - env(safe-area-inset-bottom)); height: calc(100dvh - 116px - env(safe-area-inset-bottom)); min-height: 0; }
+        }
+
+        @media (max-width: 768px) and (max-height: 500px) {
+            .navigation { height: calc(100px + env(safe-area-inset-bottom)); }
+            .navigation ul { grid-template-rows: repeat(2, 42px); padding-top: 4px; }
+            .navigation ul li { height: 42px; }
+            main { height: calc(100vh - 100px - env(safe-area-inset-bottom)); height: calc(100dvh - 100px - env(safe-area-inset-bottom)); }
+        }
+    </style>
+    <script>
+        if (localStorage.getItem('kisaanSaathiLoggedIn') !== 'true') {
+            window.location.replace('login.html');
+        }
+    </script>
+</head>
+<body>
+
+    <!-- Navigation Sidebar -->
+    <div class="navigation">
+        <ul>
+            <li class="list active" onclick="loadPage('overview.html', event)">
+                <a href="#" aria-label="Overview"><ion-icon name="home-outline"></ion-icon><span>Overview</span></a>
+            </li>
+            <li class="list" onclick="loadPage('chatbotai.html', event)">
+                <a href="#" aria-label="AI Chatbot"><ion-icon name="chatbubble-outline"></ion-icon><span>Chat</span></a>
+            </li>
+            <li class="list" onclick="loadPage('soil&crop.html', event)">
+                <a href="#" aria-label="Soil and Crop"><ion-icon name="leaf-outline"></ion-icon><span>Soil</span></a>
+            </li>
+            <li class="list" onclick="loadPage('weather&alerts.html', event)">
+                <a href="#" aria-label="Weather and Alerts"><ion-icon name="cloud-outline"></ion-icon><span>Weather</span></a>
+            </li>
+            <li class="list" onclick="loadPage('tutorial.html', event)">
+                <a href="#" aria-label="Tutorials"><ion-icon name="videocam-outline"></ion-icon><span>Videos</span></a>
+            </li>
+            <li class="list" onclick="loadPage('market&expense.html', event)">
+                <a href="#" aria-label="Market and Expenses"><ion-icon name="cash-outline"></ion-icon><span>Market</span></a>
+            </li>
+            <li class="list" onclick="loadPage('govtschemes.html', event)">
+                <a href="#" aria-label="Government Schemes"><ion-icon name="business-outline"></ion-icon><span>Schemes</span></a>
+            </li>
+            <li class="list" onclick="loadPage('profile.html', event)">
+                <a href="#" aria-label="Profile Settings"><ion-icon name="person-outline"></ion-icon><span>Profile</span></a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Main Content Area -->
+    <main id="content">
+        <iframe id="pageFrame" src="overview.html" frameborder="0"></iframe>
+    </main>
+
+    <script>
+        function loadPage(page, event) {
+            const iframe = document.getElementById('pageFrame');
+            event?.preventDefault();
+            
+            // Smooth fade-out transition
+            iframe.classList.add('fade-out');
+
+            setTimeout(() => {
+                iframe.src = page;
+                iframe.onload = () => {
+                    iframe.classList.remove('fade-out');
+                    syncLanguageToIframe(); // Automatically pass selected language to sub-page
+                };
+            }, 250);
+            
+            // Update active state in nav bar
+            document.querySelectorAll('.navigation ul li').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            if(event && event.currentTarget) {
+                event.currentTarget.classList.add('active');
+            }
+        }
+
+        // Sync stored language to the iframe content window
+        function syncLanguageToIframe() {
+            try {
+                const iframeWindow = document.getElementById('pageFrame').contentWindow;
+                const savedLang = localStorage.getItem('kisaanLang') || localStorage.getItem('aiLanguage') || 'en';
+                if (iframeWindow) {
+                    iframeWindow.setPortalLanguage?.(savedLang);
+                    const langToggle = iframeWindow.document.getElementById('langToggle');
+                    if (langToggle && typeof iframeWindow.toggleLanguage === 'function') {
+                        langToggle.value = savedLang;
+                        iframeWindow.toggleLanguage();
+                    } else if (typeof iframeWindow.changeLanguage === 'function') {
+                        iframeWindow.changeLanguage(savedLang);
+                    }
+                }
+            } catch (e) {
+                console.log("Language synchronization info: iframe cross-origin restriction or handler missing.");
+            }
+        }
+
+        function updateNavigationLanguage(lang) {
+            document.querySelectorAll('.navigation a span').forEach((label) => {
+                const source = label.dataset.english || label.textContent;
+                label.dataset.english = source;
+                label.textContent = window.portalTranslateText?.(source, lang) || source;
+            });
+            document.querySelectorAll('.navigation a[aria-label]').forEach((link) => {
+                const source = link.dataset.englishLabel || link.getAttribute('aria-label');
+                link.dataset.englishLabel = source;
+                link.setAttribute('aria-label', window.portalTranslateText?.(source, lang) || source);
+            });
+        }
+
+        window.addEventListener('message', (event) => {
+            if (event.origin !== location.origin || event.data?.type !== 'kisaan-language-changed') return;
+            updateNavigationLanguage(event.data.lang);
+        });
+
+        window.addEventListener('storage', (event) => {
+            if (event.key === 'kisaanLang' || event.key === 'aiLanguage') {
+                updateNavigationLanguage(event.newValue || 'en');
+                syncLanguageToIframe();
+            }
+        });
+
+        window.addEventListener('DOMContentLoaded', () => {
+            updateNavigationLanguage(localStorage.getItem('kisaanLang') || localStorage.getItem('aiLanguage') || 'en');
+        }, { once: true });
+
+        // Global Theme Customizer
+        function setThemePalette(primaryColor, activeColor, glowColor) {
+            const root = document.documentElement;
+            root.style.setProperty('--primary-bg', primaryColor);
+            root.style.setProperty('--active-bg', activeColor);
+            root.style.setProperty('--active-glow', glowColor);
+            localStorage.setItem('kisaanTheme', JSON.stringify({primaryColor, activeColor, glowColor}));
+        }
+
+        // Restore saved settings on load
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('kisaanTheme');
+            if (savedTheme) {
+                const {primaryColor, activeColor, glowColor} = JSON.parse(savedTheme);
+                setThemePalette(primaryColor, activeColor, glowColor);
+            }
+            const savedLang = localStorage.getItem('kisaanLang') || localStorage.getItem('aiLanguage') || 'en';
+            updateNavigationLanguage(savedLang);
+        });
+    </script>
+    <script type="module" src="firebase/auth.js"></script>
+</body>
+</html>

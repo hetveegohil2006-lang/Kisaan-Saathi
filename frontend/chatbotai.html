@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/mobile-polish.css">
+    <script src="js/portal-language.js" defer></script>
+    <title>AI Chatbot - KisaanSaathi Smart Agriculture Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* 5 Themes Color Palettes & Gradients */
+        body.theme-light-yellow {
+            background: linear-gradient(to bottom, #fef08a 0%, #fef9c3 50%, #e2e8f0 100%);
+            --text-primary: #1e293b; --text-muted: #64748b; --panel-bg: rgba(255, 255, 255, 0.85); --input-bg: #ffffff; --border-color: #fde047; --accent: #ca8a04; --ai-bubble-bg: #fef08a;
+        }
+        body.theme-light-pink {
+            background: linear-gradient(to bottom, #fbcfe8 0%, #fce7f3 50%, #e2e8f0 100%);
+            --text-primary: #1e293b; --text-muted: #64748b; --panel-bg: rgba(255, 255, 255, 0.85); --input-bg: #ffffff; --border-color: #f472b6; --accent: #db2777; --ai-bubble-bg: #fce7f3;
+        }
+        body.theme-light-orange {
+            background: linear-gradient(to bottom, #fed7aa 0%, #ffedd5 50%, #e2e8f0 100%);
+            --text-primary: #1e293b; --text-muted: #64748b; --panel-bg: rgba(255, 255, 255, 0.85); --input-bg: #ffffff; --border-color: #fb923c; --accent: #ea580c; --ai-bubble-bg: #ffedd5;
+        }
+        body.theme-light-blue {
+            background: linear-gradient(to bottom, #bae6fd 0%, #e0f2fe 50%, #cbd5e1 100%);
+            --text-primary: #1e293b; --text-muted: #64748b; --panel-bg: rgba(255, 255, 255, 0.85); --input-bg: #ffffff; --border-color: #38bdf8; --accent: #0284c7; --ai-bubble-bg: #e0f2fe;
+        }
+        body.theme-light-black {
+            background: linear-gradient(to bottom, #1e293b 0%, #0f172a 50%, #020617 100%);
+            --text-primary: #ffffff; --text-muted: #94a3b8; --panel-bg: rgba(30, 41, 59, 0.85); --input-bg: #0f172a; --border-color: #334155; --accent: #38bdf8; --ai-bubble-bg: #1e293b;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+        body { color: var(--text-primary); min-height: 100vh; display: flex; transition: background 0.3s, color 0.3s; }
+
+        .page-container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .top-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .top-header h1 {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .chat-wrapper {
+            flex: 1;
+            background: var(--panel-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        .status-banner {
+            background: rgba(234, 179, 8, 0.15);
+            color: var(--text-primary);
+            font-size: 0.78rem;
+            padding: 8px 16px;
+            border-bottom: 1px solid var(--border-color);
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .chat-bubble {
+            max-width: 80%;
+            padding: 12px 18px;
+            border-radius: 18px;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .chat-bubble.ai {
+            background: var(--ai-bubble-bg);
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+            border: 1px solid var(--border-color);
+        }
+
+        .chat-bubble.user {
+            background: var(--accent);
+            color: #ffffff;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+
+        .chat-input-area {
+            display: flex;
+            gap: 8px;
+            padding: 16px;
+            border-top: 1px solid var(--border-color);
+            background: var(--input-bg);
+            align-items: center;
+        }
+
+        .tool-icon-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 1px solid var(--border-color);
+            background: transparent;
+            font-size: 1.1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chat-input-area input[type="text"] {
+            flex: 1;
+            padding: 10px 16px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            background: var(--panel-bg);
+            color: var(--text-primary);
+            outline: none;
+            font-size: 0.9rem;
+        }
+
+        .send-btn {
+            padding: 10px 20px;
+            border-radius: 20px;
+            border: none;
+            background: var(--accent);
+            color: #ffffff;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .main-content { padding: 15px; }
+            .top-header h1 { font-size: clamp(18px, 5vw, 22px); }
+            .chat-input-area { display: grid; grid-template-columns: repeat(3, 40px) minmax(0, 1fr); gap: 8px; padding: 12px; }
+            .chat-input-area input { grid-column: 1 / -1; min-width: 0; width: 100%; }
+            .chat-input-area .send-btn { grid-column: 1 / -1; width: 100%; }
+            .send-btn { padding: 10px 16px; }
+            .chat-messages { padding: 14px; }
+            .chat-bubble { max-width: 90%; }
+        }
+    </style>
+</head>
+<body id="appBody" class="theme-light-yellow">
+
+    <div class="page-container">
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <header class="top-header">
+                <h1>
+                    Kisaansaathi AI🌱 <span id="headerTitleText" style="font-size: 0.8em; font-weight: 500;"></span>
+                </h1>
+            </header>
+
+            <!-- Chat Wrapper Container -->
+            <div class="chat-wrapper">
+                <div class="status-banner">
+                    <span>💡 Ask any farming question or upload a crop leaf image for instant advisory.</span>
+                </div>
+                
+                <div class="chat-messages" id="chatMessages">
+                    <div class="chat-bubble ai" id="initialGreeting">Namaste! I'm your KisaanSaathi AI assistant. Ask me about crop health, soil, irrigation, pests, or market planning.</div>
+                </div>
+
+                <div class="chat-input-area">
+                    <button class="tool-icon-btn" onclick="triggerCamera()" title="Take Photo">📷</button>
+                    <button class="tool-icon-btn" onclick="triggerUpload()" title="Attach File">📎</button>
+                    <input type="file" id="fileInput" style="display:none" accept="image/*" onchange="handleImageUpload(event)">
+                    <button class="tool-icon-btn" onclick="triggerVoice()" title="Voice Input">🎤</button>
+                    <input type="text" id="userInput" placeholder="Type your question here...">
+                    <button class="send-btn" onclick="sendMessage()">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const companionName = localStorage.getItem('aiCompanionName') || 'Guide';
+        document.getElementById('headerTitleText').innerText = `(${companionName})`;
+
+        const themes = ['theme-light-yellow', 'theme-light-pink', 'theme-light-orange', 'theme-light-blue', 'theme-light-black'];
+        const savedThemeIndex = localStorage.getItem('kisaan-portal-theme-index');
+        if (savedThemeIndex !== null) {
+            document.getElementById('appBody').className = themes[parseInt(savedThemeIndex)];
+        }
+
+        function triggerCamera() {
+            document.getElementById('fileInput').click();
+        }
+
+        function triggerUpload() {
+            document.getElementById('fileInput').click();
+        }
+
+        function triggerVoice() {
+            if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
+                alert("Voice input is not supported in your browser.");
+                return;
+            }
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            const recognition = new SpeechRecognition();
+            recognition.lang = 'hi-IN';
+            recognition.start();
+
+            recognition.onresult = function(event) {
+                const transcript = event.results[0][0].transcript;
+                document.getElementById('userInput').value = transcript;
+                sendMessage();
+            };
+        }
+
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const container = document.getElementById('chatMessages');
+                const userMsg = document.createElement('div');
+                userMsg.className = 'chat-bubble user';
+                userMsg.innerText = `[Image Uploaded: ${file.name}]`;
+                container.appendChild(userMsg);
+                container.scrollTop = container.scrollHeight;
+
+                setTimeout(() => {
+                    const botMsg = document.createElement('div');
+                    botMsg.className = 'chat-bubble ai';
+                    botMsg.innerText = `${companionName}: Image analyzed successfully. Leaf condition appears healthy with slight nitrogen deficiency. Recommended action: apply organic compost or bio-fertilizer.`;
+                    container.appendChild(botMsg);
+                    container.scrollTop = container.scrollHeight;
+                }, 1000);
+            }
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('userInput');
+            const container = document.getElementById('chatMessages');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const userMsg = document.createElement('div');
+            userMsg.className = 'chat-bubble user';
+            userMsg.innerText = text;
+            container.appendChild(userMsg);
+            input.value = '';
+            container.scrollTop = container.scrollHeight;
+
+            setTimeout(() => {
+                const botMsg = document.createElement('div');
+                botMsg.className = 'chat-bubble ai';
+                botMsg.innerText = `${companionName}: Regarding "${text}", for optimal crop health make sure to balance irrigation and inspect soil moisture regularly.`;
+                container.appendChild(botMsg);
+                container.scrollTop = container.scrollHeight;
+            }, 800);
+        }
+
+        document.getElementById('userInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') sendMessage();
+        });
+    </script>
+</body>
+</html>

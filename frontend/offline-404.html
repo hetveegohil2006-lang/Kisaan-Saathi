@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/mobile-polish.css">
+    <script src="js/portal-language.js" defer></script>
+    <title>404 Offline - KisaanSaathi Smart Agriculture Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Theme Palettes */
+        body.theme-light-yellow {
+            background: linear-gradient(to bottom, #fef08a 0%, #fef9c3 50%, #e2e8f0 100%);
+            --panel-bg: rgba(255, 255, 255, 0.88); --text-primary: #1b3818; --text-muted: #4b6b48; --accent: #386641; --input-bg: #ffffff; --border-color: #fde047;
+        }
+        body.theme-light-pink {
+            background: linear-gradient(to bottom, #fbcfe8 0%, #fce7f3 50%, #e2e8f0 100%);
+            --panel-bg: rgba(255, 255, 255, 0.88); --text-primary: #500724; --text-muted: #831843; --accent: #be185d; --input-bg: #ffffff; --border-color: #f472b6;
+        }
+        body.theme-light-orange {
+            background: linear-gradient(to bottom, #fed7aa 0%, #ffedd5 50%, #e2e8f0 100%);
+            --panel-bg: rgba(255, 255, 255, 0.88); --text-primary: #431407; --text-muted: #7c2d12; --accent: #c2410c; --input-bg: #ffffff; --border-color: #fb923c;
+        }
+        body.theme-light-blue {
+            background: linear-gradient(to bottom, #bae6fd 0%, #e0f2fe 50%, #cbd5e1 100%);
+            --panel-bg: rgba(255, 255, 255, 0.88); --text-primary: #082f49; --text-muted: #0369a1; --accent: #0369a1; --input-bg: #ffffff; --border-color: #38bdf8;
+        }
+        body.theme-light-black {
+            background: linear-gradient(to bottom, #1e293b 0%, #0f172a 50%, #020617 100%);
+            --panel-bg: rgba(15, 23, 42, 0.88); --text-primary: #f8fafc; --text-muted: #94a3b8; --accent: #38bdf8; --input-bg: #0f172a; --border-color: #334155;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+        body { color: var(--text-primary); min-height: 100vh; display: flex; flex-direction: column; transition: background 0.3s, color 0.3s; justify-content: center; align-items: center; text-align: center; padding: 20px; }
+
+        .error-card {
+            background: var(--panel-bg);
+            backdrop-filter: blur(16px);
+            border-radius: 24px;
+            border: 1px solid var(--border-color);
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+        }
+
+        .error-card h1 { font-size: 64px; margin-bottom: 10px; color: var(--accent); }
+        .error-card h2 { font-size: 20px; margin-bottom: 12px; }
+        .error-card p { font-size: 13px; color: var(--text-muted); margin-bottom: 24px; }
+
+        .btn-home {
+            background: var(--accent);
+            color: #ffffff;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 14px;
+            text-decoration: none;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body id="appBody" class="theme-light-yellow">
+
+    <div class="error-card">
+        <h1>🌾 404</h1>
+        <h2>Page Offline or Not Found</h2>
+        <p>The requested page could not be reached. Please check your network connection or return to the KisaanSaathi Dashboard.</p>
+        <a href="dashboard.html" class="btn-home">Return to Dashboard</a>
+    </div>
+
+    <script>
+        const themes = ['theme-light-yellow', 'theme-light-pink', 'theme-light-orange', 'theme-light-blue', 'theme-light-black'];
+        let currentThemeIndex = parseInt(localStorage.getItem('kisaan-portal-theme-index') || '0');
+        document.getElementById('appBody').className = themes[currentThemeIndex];
+    </script>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/mobile-polish.css">
+    <script src="js/portal-language.js" defer></script>
+    <title>Government Schemes - KisaanSaathi Smart Agriculture Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* 5 Themes Color Palettes */
+        body.theme-light-yellow { background: linear-gradient(to bottom, #fef08a 0%, #fef9c3 50%, #e2e8f0 100%); --panel-bg: rgba(255, 255, 255, 0.88); --text-primary: #1b3818; --text-muted: #4b6b48; --accent: #386641; --input-bg: #ffffff; --border-color: #fde047; }
+        body.theme-light-pink { background: linear-gradient(to bottom, #fbcfe8 0%, #fce7f3 50%, #e2e8f0 100%); --panel-bg: rgba(255, 255, 255, 0.88); --text-primary: #500724; --text-muted: #831843; --accent: #be185d; --input-bg: #ffffff; --border-color: #f472b6; }
+        body.theme-light-orange { background: linear-gradient(to bottom, #fed7aa 0%, #ffedd5 50%, #e2e8f0 100%); --panel-bg: rgba(255, 255, 255, 0.88); --text-primary: #431407; --text-muted: #7c2d12; --accent: #c2410c; --input-bg: #ffffff; --border-color: #fb923c; }
+        body.theme-light-blue { background: linear-gradient(to bottom, #bae6fd 0%, #e0f2fe 50%, #cbd5e1 100%); --panel-bg: rgba(255, 255, 255, 0.88); --text-primary: #082f49; --text-muted: #0369a1; --accent: #0369a1; --input-bg: #ffffff; --border-color: #38bdf8; }
+        body.theme-light-black { background: linear-gradient(to bottom, #1e293b 0%, #0f172a 50%, #020617 100%); --panel-bg: rgba(15, 23, 42, 0.88); --text-primary: #f8fafc; --text-muted: #94a3b8; --accent: #38bdf8; --input-bg: #0f172a; --border-color: #334155; }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+        body { color: var(--text-primary); min-height: 100vh; display: flex; flex-direction: column; transition: background 0.3s, color 0.3s; }
+
+        .main-content { flex: 1; padding: 30px; display: flex; flex-direction: column; width: 100%; max-width: 1400px; margin: 0 auto; }
+
+        .top-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 15px; }
+        .header-title-box h1 { font-size: 24px; font-weight: 700; color: var(--text-primary); }
+        .header-title-box p { font-size: 13px; color: var(--text-muted); font-weight: 500; margin-top: 2px; }
+
+        .search-filter-bar { background: var(--panel-bg); backdrop-filter: blur(12px); border-radius: 20px; border: 1px solid var(--border-color); padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; gap: 15px; margin-bottom: 24px; box-shadow: 0 8px 25px rgba(0,0,0,0.03); flex-wrap: wrap; }
+        .search-input-wrapper { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 250px; }
+        .search-input { border: none; background: transparent; outline: none; font-size: 14px; font-weight: 500; color: var(--text-primary); width: 100%; }
+
+        .card { background: var(--panel-bg); backdrop-filter: blur(12px); border-radius: 24px; border: 1px solid var(--border-color); padding: 22px; box-shadow: 0 10px 30px rgba(0,0,0,0.04); display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px; }
+        .card h3 { font-size: 16px; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 8px; }
+
+        .btn-apply { background: #166534; color: #fff; border: none; padding: 10px 18px; border-radius: 12px; font-weight: 700; font-size: 12px; cursor: pointer; text-decoration: none; display: inline-block; }
+
+        @media (max-width: 768px) {
+            .main-content { padding: 15px; }
+        }
+    </style>
+</head>
+<body id="appBody" class="theme-light-yellow">
+
+    <div class="main-content">
+        <header class="top-header">
+            <div class="header-title-box">
+                <h1>🏛 Government Agricultural Subsidies & Schemes</h1>
+                <p>Official Central & State Farming Welfare Portals</p>
+            </div>
+        </header>
+
+        <div class="search-filter-bar">
+            <div class="search-input-wrapper">
+                <span>🔍</span>
+                <input type="text" id="schemeSearch" class="search-input" placeholder="Search PM-KISAN, Subsidies, Crop Insurance..." onkeyup="filterSchemes()">
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>🌱 PM-KISAN Samman Nidhi</h3>
+            <p style="font-size: 13px; color: var(--text-muted);">Direct income support of ₹6,000 per year in 3 equal installments to eligible farmer families.</p>
+            <a href="https://pmkisan.gov.in" target="_blank" class="btn-apply" style="width: fit-content;">Official Application Portal ↗</a>
+        </div>
+
+        <div class="card">
+            <h3>🛡 Pradhan Mantri Fasal Bima Yojana (PMFBY)</h3>
+            <p style="font-size: 13px; color: var(--text-muted);">Comprehensive crop insurance coverage against non-preventable natural risks from pre-sowing to post-harvest.</p>
+            <a href="https://pmfby.gov.in" target="_blank" class="btn-apply" style="width: fit-content;">Official Portal ↗</a>
+        </div>
+
+        <div class="card">
+            <h3>💧 Sub-Mission on Agriculture Mechanization (SMAM)</h3>
+            <p style="font-size: 13px; color: var(--text-muted);">Subsidies up to 40%-50% for purchasing tractors, tillers, rotavators, and modern farm machinery.</p>
+            <a href="https://agrimachinery.nic.in" target="_blank" class="btn-apply" style="width: fit-content;">Official Portal ↗</a>
+        </div>
+    </div>
+
+    <script>
+        const themes = ['theme-light-yellow', 'theme-light-pink', 'theme-light-orange', 'theme-light-blue', 'theme-light-black'];
+        let currentThemeIndex = parseInt(localStorage.getItem('kisaan-portal-theme-index') || '0');
+        document.getElementById('appBody').className = themes[currentThemeIndex];
+
+        function filterSchemes() {
+            const query = document.getElementById('schemeSearch').value.toLowerCase();
+            document.querySelectorAll('.card').forEach(card => {
+                const text = card.innerText.toLowerCase();
+                card.style.display = text.includes(query) ? 'flex' : 'none';
+            });
+        }
+    </script>
+</body>
+</html>
