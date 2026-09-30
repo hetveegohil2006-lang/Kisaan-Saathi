@@ -489,21 +489,25 @@
                     <label><input type="radio" name="contactMethod" value="phone"> Mobile number</label>
                 </fieldset>
 
-                <div class="form-group">
+                <!-- Email Input Group -->
+                <div class="form-group" id="emailGroup">
                     <label for="email">Email Address</label>
                     <input type="email" id="email" placeholder="Enter your registered email" autocomplete="email">
                 </div>
 
+                <!-- Phone Input Group (Hidden by default) -->
                 <div class="form-group" id="phoneGroup" hidden>
                     <label for="phone">Mobile Number</label>
                     <input type="tel" id="phone" placeholder="Enter your registered 10-digit mobile number" autocomplete="tel" inputmode="numeric">
                 </div>
 
+                <!-- Password Group (For Email) -->
                 <div class="form-group" id="emailPasswordGroup">
                     <label for="password">Password</label>
                     <input type="password" id="password" placeholder="Enter your password" autocomplete="current-password">
                 </div>
 
+                <!-- OTP Group (For Phone, Hidden by default) -->
                 <div class="form-group" id="otpGroup" hidden>
                     <label for="verificationCode">SMS Verification Code</label>
                     <input type="text" id="verificationCode" placeholder="Enter the 6-digit SMS code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}">
@@ -572,6 +576,29 @@
             bodyElement.className = themes[currentThemeIndex];
             localStorage.setItem('kisaanSaathiTheme', themes[currentThemeIndex]);
         }
+
+        // --- NEW: Toggle Logic for Email / Mobile Switching ---
+        const contactMethodRadios = document.querySelectorAll('input[name="contactMethod"]');
+        const emailGroup = document.getElementById('emailGroup');
+        const phoneGroup = document.getElementById('phoneGroup');
+        const emailPasswordGroup = document.getElementById('emailPasswordGroup');
+        const otpGroup = document.getElementById('otpGroup');
+
+        contactMethodRadios.forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                if (e.target.value === 'phone') {
+                    emailGroup.hidden = true;
+                    emailPasswordGroup.hidden = true;
+                    phoneGroup.hidden = false;
+                    otpGroup.hidden = false;
+                } else {
+                    emailGroup.hidden = false;
+                    emailPasswordGroup.hidden = false;
+                    phoneGroup.hidden = true;
+                    otpGroup.hidden = true;
+                }
+            });
+        });
     </script>
     <script type="module" src="auth.js?v=20260930"></script>
 </body>
