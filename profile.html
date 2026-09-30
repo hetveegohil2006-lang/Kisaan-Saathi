@@ -48,10 +48,10 @@
         .main-content { margin-left: 260px; flex: 1; padding: 30px; display: flex; flex-direction: column; height: 100vh; overflow-y: auto; }
 
         /* Top Header & Controls */
-        .top-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .top-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 15px; }
         .top-header h1 { font-size: 22px; font-weight: 700; color: var(--text-primary); }
         
-        .header-controls { display: flex; gap: 12px; align-items: center; }
+        .header-controls { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
         .control-select { background: var(--input-bg); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 20px; cursor: pointer; font-weight: 500; font-size: 13px; color: var(--text-primary); outline: none; }
         
         /* Sun/Moon Control */
@@ -61,8 +61,8 @@
             justify-content: center;
             cursor: pointer;
             background: var(--panel-bg);
-            width: 45px;
-            height: 45px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             backdrop-filter: blur(10px);
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
@@ -71,14 +71,14 @@
         }
         .sun-control-box:hover { transform: scale(1.1); }
         .sun-icon {
-            width: 22px;
-            height: 22px;
+            width: 18px;
+            height: 18px;
             border-radius: 50%;
             background: #facc15;
             box-shadow: 0 0 15px rgba(250, 204, 21, 0.9);
             transition: all 0.5s ease;
         }
-        body.theme-light-black .sun-icon { background: transparent; box-shadow: -5px 2px 0 0 #f8fafc; width: 18px; height: 18px; }
+        body.theme-light-black .sun-icon { background: transparent; box-shadow: -5px 2px 0 0 #f8fafc; width: 15px; height: 15px; }
 
         /* Profile Settings Container */
         .profile-settings {
@@ -89,7 +89,6 @@
             padding: 20px;
         }
 
-        /* Profile Card Matching Reference */
         .profile-card {
             background: var(--panel-bg);
             backdrop-filter: blur(12px);
@@ -100,6 +99,12 @@
             padding: 35px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.06);
             position: relative;
+            animation: pulseCard 4s ease-in-out infinite;
+        }
+
+        @keyframes pulseCard {
+            0%, 100% { box-shadow: 0 15px 35px rgba(0,0,0,0.06); }
+            50% { box-shadow: 0 20px 45px rgba(56, 102, 65, 0.12); }
         }
 
         .profile-header-layout {
@@ -119,27 +124,22 @@
             border: 3px solid var(--accent);
             flex-shrink: 0;
             background: #e2e8f0;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .avatar-container:hover { transform: scale(1.05); }
+        .avatar-container img { width: 100%; height: 100%; object-fit: cover; }
+        .avatar-placeholder-fallback { font-size: 40px; color: var(--text-muted); display: none; }
+        .avatar-overlay {
+            position: absolute; bottom: 0; width: 100%; background: rgba(0,0,0,0.6); color: #fff;
+            font-size: 10px; text-align: center; padding: 4px 0; font-weight: 600;
         }
 
-        .avatar-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .profile-title-info h2 {
-            font-size: 26px;
-            font-weight: 700;
-            color: var(--text-primary);
-            line-height: 1.2;
-        }
-
-        .profile-title-info p {
-            font-size: 15px;
-            color: var(--text-muted);
-            font-weight: 500;
-            margin-top: 4px;
-        }
+        .profile-title-info h2 { font-size: 26px; font-weight: 700; color: var(--text-primary); line-height: 1.2; }
+        .profile-title-info p { font-size: 15px; color: var(--text-muted); font-weight: 500; margin-top: 4px; }
 
         /* Profile Details List */
         .profile-details-list {
@@ -168,36 +168,44 @@
         /* Action Buttons */
         .profile-actions {
             display: flex;
-            justify-content: flex-end;
-            gap: 12px;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
             margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .action-group-left, .action-group-right {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
         }
 
         .btn {
-            padding: 12px 24px;
-            border-radius: 14px;
+            padding: 10px 18px;
+            border-radius: 12px;
             font-weight: 600;
-            font-size: 14px;
+            font-size: 13px;
             cursor: pointer;
             transition: all 0.2s;
             border: 1px solid transparent;
         }
 
-        .btn-primary {
-            background: var(--accent);
-            color: #ffffff;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
+        .btn-primary { background: var(--accent); color: #ffffff; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
         .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
 
-        .btn-secondary {
-            background: var(--input-bg);
-            color: var(--text-primary);
-            border-color: var(--border-color);
-        }
+        .btn-secondary { background: var(--input-bg); color: var(--text-primary); border-color: var(--border-color); }
         .btn-secondary:hover { background: rgba(0,0,0,0.05); }
 
-        /* Extended Details Section (Hidden by default) */
+        .btn-danger { background: #ef4444; color: #fff; }
+        .btn-danger:hover { background: #dc2626; }
+
+        .btn-warning { background: #f59e0b; color: #fff; }
+        .btn-warning:hover { background: #d97706; }
+
+        /* Extended Details Section */
         .extended-info {
             display: none;
             margin-top: 20px;
@@ -214,73 +222,47 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Modal / Edit Form Styles */
+        /* Modal Overlays */
         .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(5px);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); backdrop-filter: blur(5px);
+            display: none; justify-content: center; align-items: center; z-index: 100;
         }
         .modal-overlay.active { display: flex; }
 
         .modal-card {
-            background: var(--panel-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            width: 100%;
-            max-width: 500px;
-            padding: 30px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-            max-height: 90vh;
-            overflow-y: auto;
+            background: var(--panel-bg); border: 1px solid var(--border-color);
+            border-radius: 20px; width: 100%; max-width: 480px; padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto;
         }
 
-        .modal-card h3 {
-            font-size: 20px;
-            margin-bottom: 20px;
-            color: var(--text-primary);
-        }
+        .modal-card h3 { font-size: 20px; margin-bottom: 20px; color: var(--text-primary); }
 
-        .form-group {
-            margin-bottom: 16px;
-        }
-
-        .form-group label {
-            display: block;
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--text-muted);
-            margin-bottom: 6px;
-        }
-
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; }
         .form-group input {
-            width: 100%;
-            background: var(--input-bg);
-            border: 1px solid var(--border-color);
-            padding: 10px 14px;
-            border-radius: 10px;
-            color: var(--text-primary);
-            font-size: 14px;
-            outline: none;
+            width: 100%; background: var(--input-bg); border: 1px solid var(--border-color);
+            padding: 10px 14px; border-radius: 10px; color: var(--text-primary); font-size: 14px; outline: none;
         }
+        .error-msg { color: #dc2626; font-size: 11px; margin-top: 4px; display: none; }
+        .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
 
-        .error-msg {
-            color: #dc2626;
-            font-size: 11px;
-            margin-top: 4px;
-            display: none;
+        /* Photo Choice Modal Options */
+        .photo-options-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 20px 0;
         }
+        .photo-option-btn {
+            background: var(--input-bg); border: 1px solid var(--border-color); padding: 16px;
+            border-radius: 16px; text-align: center; cursor: pointer; font-weight: 600; color: var(--text-primary);
+            display: flex; flex-direction: column; align-items: center; gap: 8px; transition: 0.2s;
+        }
+        .photo-option-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+        .photo-option-btn span { font-size: 24px; }
+        .photo-option-btn.remove-btn:hover { background: #ef4444; border-color: #ef4444; }
 
-        .modal-actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-            margin-top: 20px;
-        }
+        /* Camera Live View Container */
+        #cameraContainer { display: none; text-align: center; margin-bottom: 15px; }
+        #cameraStream { width: 100%; max-height: 250px; border-radius: 12px; background: #000; object-fit: cover; }
 
         @media (max-width: 768px) {
             .sidebar { display: none; }
@@ -345,9 +327,10 @@
         <section class="profile-settings">
             <div class="profile-card">
                 <div class="profile-header-layout">
-                    <div class="avatar-container" id="avatarBox" title="Click to change photo" onclick="document.getElementById('photoInput').click()" style="cursor: pointer;">
+                    <div class="avatar-container" id="avatarBox" title="Click to change photo" onclick="openPhotoModal()">
                         <img id="profileAvatar" src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=300&q=80" alt="Farmer Photo">
-                        <input type="file" id="photoInput" style="display: none;" accept="image/*" onchange="handlePhotoUpload(event)">
+                        <div class="avatar-placeholder-fallback" id="avatarFallback">👤</div>
+                        <div class="avatar-overlay">Change</div>
                     </div>
                     <div class="profile-title-info">
                         <h2 id="displayName">Ramesh Kumar</h2>
@@ -371,12 +354,56 @@
                 </div>
 
                 <div class="profile-actions">
-                    <button class="btn btn-secondary" onclick="toggleExtendedDetails()" id="viewDetailsBtn">View Details</button>
-                    <button class="btn btn-primary" onclick="openEditModal()">Edit Profile</button>
-                    <button class="btn btn-secondary" onclick="removePhoto()" style="font-size: 12px; padding: 12px 14px;" title="Reset Avatar">🗑️</button>
+                    <div class="action-group-left">
+                        <button class="btn btn-secondary" onclick="toggleExtendedDetails()" id="viewDetailsBtn">View Details</button>
+                        <button class="btn btn-primary" onclick="openEditModal()">Edit Profile</button>
+                    </div>
+                    <div class="action-group-right">
+                        <button class="btn btn-warning" onclick="logoutAccount()" title="Log out of session">🔓 Log Out</button>
+                        <button class="btn btn-danger" onclick="deleteAccount()" title="Permanently delete account">🗑️ Delete</button>
+                    </div>
                 </div>
             </div>
         </section>
+    </div>
+
+    <!-- Gallery / Camera / Remove Choice Modal -->
+    <div class="modal-overlay" id="photoModal">
+        <div class="modal-card">
+            <h3>Update Profile Photo</h3>
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px;">Choose an option below:</p>
+            
+            <div class="photo-options-grid" id="photoOptionButtons">
+                <div class="photo-option-btn" onclick="document.getElementById('galleryFileInput').click()">
+                    <span>🖼️</span>
+                    <span>Gallery</span>
+                </div>
+                <div class="photo-option-btn" onclick="startCamera()">
+                    <span>📷</span>
+                    <span>Camera</span>
+                </div>
+                <div class="photo-option-btn remove-btn" onclick="removeProfilePhoto()" style="grid-column: span 2;">
+                    <span>🗑️</span>
+                    <span>Remove Current Photo</span>
+                </div>
+            </div>
+
+            <!-- Hidden file input for gallery selection -->
+            <input type="file" id="galleryFileInput" style="display: none;" accept="image/*" onchange="handleGalleryUpload(event)">
+
+            <!-- Live Camera Stream UI -->
+            <div id="cameraContainer">
+                <video id="cameraStream" autoplay playsinline></video>
+                <div style="margin-top: 10px; display: flex; gap: 10px; justify-content: center;">
+                    <button type="button" class="btn btn-primary" onclick="captureCameraPhoto()">Capture Photo</button>
+                    <button type="button" class="btn btn-secondary" onclick="stopCamera()">Cancel</button>
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" onclick="closePhotoModal()">Close</button>
+            </div>
+        </div>
     </div>
 
     <!-- Edit Profile Modal / Form -->
@@ -422,6 +449,9 @@
         </div>
     </div>
 
+    <!-- Canvas for snapshot capture -->
+    <canvas id="snapshotCanvas" style="display:none;"></canvas>
+
     <script>
         // Theme Cycling Logic (5 Themes)
         const themes = ['theme-light-yellow', 'theme-light-pink', 'theme-light-orange', 'theme-light-blue', 'theme-light-black'];
@@ -460,12 +490,33 @@
             document.getElementById('displayArea').innerText = profileData.area;
             document.getElementById('displayCrops').innerText = profileData.crops;
             document.getElementById('displaySoil').innerText = profileData.soil;
-            document.getElementById('profileAvatar').src = profileData.avatar;
+            
+            const imgElement = document.getElementById('profileAvatar');
+            const fallbackElement = document.getElementById('avatarFallback');
+
+            if (profileData.avatar && profileData.avatar.trim() !== "") {
+                imgElement.src = profileData.avatar;
+                imgElement.style.display = 'block';
+                fallbackElement.style.display = 'none';
+            } else {
+                imgElement.style.display = 'none';
+                fallbackElement.style.display = 'block';
+            }
         }
         renderProfile();
 
-        // Photo Upload & Removal
-        function handlePhotoUpload(event) {
+        // Photo Modal Controls
+        function openPhotoModal() {
+            document.getElementById('photoModal').classList.add('active');
+        }
+
+        function closePhotoModal() {
+            stopCamera();
+            document.getElementById('photoModal').classList.remove('active');
+        }
+
+        // Gallery Upload Handler
+        function handleGalleryUpload(event) {
             const file = event.target.files[0];
             if (file) {
                 const reader = new FileReader();
@@ -473,18 +524,75 @@
                     profileData.avatar = e.target.result;
                     localStorage.setItem('kisaanFarmerProfile', JSON.stringify(profileData));
                     renderProfile();
+                    closePhotoModal();
                 }
                 reader.readAsDataURL(file);
             }
         }
 
-        function removePhoto() {
-            profileData.avatar = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80"; // Default avatar fallback
+        // Remove Profile Photo Handler
+        function removeProfilePhoto() {
+            profileData.avatar = "";
             localStorage.setItem('kisaanFarmerProfile', JSON.stringify(profileData));
             renderProfile();
+            closePhotoModal();
         }
 
-        // Modal Controls
+        // Camera Stream Logic
+        let mediaStream = null;
+        async function startCamera() {
+            document.getElementById('photoOptionButtons').style.display = 'none';
+            document.getElementById('cameraContainer').style.display = 'block';
+            try {
+                mediaStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false });
+                const videoElement = document.getElementById('cameraStream');
+                videoElement.srcObject = mediaStream;
+            } catch (err) {
+                alert("Unable to access camera. Please check camera permissions.");
+                stopCamera();
+            }
+        }
+
+        function stopCamera() {
+            if (mediaStream) {
+                mediaStream.getTracks().forEach(track => track.stop());
+                mediaStream = null;
+            }
+            document.getElementById('cameraContainer').style.display = 'none';
+            document.getElementById('photoOptionButtons').style.display = 'grid';
+        }
+
+        function captureCameraPhoto() {
+            const video = document.getElementById('cameraStream');
+            const canvas = document.getElementById('snapshotCanvas');
+            canvas.width = video.videoWidth || 300;
+            canvas.height = video.videoHeight || 300;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            
+            profileData.avatar = canvas.toDataURL('image/png');
+            localStorage.setItem('kisaanFarmerProfile', JSON.stringify(profileData));
+            renderProfile();
+            closePhotoModal();
+        }
+
+        // Log Out & Delete Account Handlers
+        function logoutAccount() {
+            if (confirm("Are you sure you want to log out of KisaanSaathi?")) {
+                alert("Logged out successfully.");
+                window.location.href = "dashboard.html";
+            }
+        }
+
+        function deleteAccount() {
+            if (confirm("⚠️ WARNING: This will permanently delete your profile and saved portal data. Proceed?")) {
+                localStorage.removeItem('kisaanFarmerProfile');
+                alert("Account deleted successfully.");
+                window.location.href = "dashboard.html";
+            }
+        }
+
+        // Modal Controls for Editing Profile Details
         function openEditModal() {
             document.getElementById('inputName').value = profileData.name;
             document.getElementById('inputRole').value = profileData.role;

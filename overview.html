@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Overview & Guide - KisaanSaathi Smart Agriculture Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* 5 Themes Color Palettes */
+        body.theme-light-yellow { background: linear-gradient(to bottom, #fef08a 0%, #fef9c3 50%, #e2e8f0 100%); --panel-bg: rgba(255, 255, 255, 0.88); --text-primary: #1b3818; --text-muted: #4b6b48; --accent: #386641; --input-bg: #ffffff; --border-color: #fde047; }
+        body.theme-light-pink { background: linear-gradient(to bottom, #fbcfe8 0%, #fce7f3 50%, #e2e8f0 100%); --panel-bg: rgba(255, 255, 255, 0.88); --text-primary: #500724; --text-muted: #831843; --accent: #be185d; --input-bg: #ffffff; --border-color: #f472b6; }
+        body.theme-light-orange { background: linear-gradient(to bottom, #fed7aa 0%, #ffedd5 50%, #e2e8f0 100%); --panel-bg: rgba(255, 255, 255, 0.88); --text-primary: #431407; --text-muted: #7c2d12; --accent: #c2410c; --input-bg: #ffffff; --border-color: #fb923c; }
+        body.theme-light-blue { background: linear-gradient(to bottom, #bae6fd 0%, #e0f2fe 50%, #cbd5e1 100%); --panel-bg: rgba(255, 255, 255, 0.88); --text-primary: #082f49; --text-muted: #0369a1; --accent: #0369a1; --input-bg: #ffffff; --border-color: #38bdf8; }
+        body.theme-light-black { background: linear-gradient(to bottom, #1e293b 0%, #0f172a 50%, #020617 100%); --panel-bg: rgba(15, 23, 42, 0.88); --text-primary: #f8fafc; --text-muted: #94a3b8; --accent: #38bdf8; --input-bg: #0f172a; --border-color: #334155; }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+        body { color: var(--text-primary); min-height: 100vh; display: flex; transition: background 0.3s, color 0.3s; overflow-x: hidden; }
+
+        /* Sidebar Structure with Smooth Transition */
+        .sidebar { width: 260px; background: var(--panel-bg); backdrop-filter: blur(10px); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; padding: 20px; height: 100vh; position: fixed; top: 0; left: 0; z-index: 40; transition: transform 0.4s ease-in-out; }
+        .sidebar.hidden-sidebar { transform: translateX(-100%); }
+        
+        .brand-badge { display: flex; align-items: center; gap: 12px; margin-bottom: 25px; background: #ffffff; padding: 10px 14px; border-radius: 20px; border: 1px solid #fde047; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
+        .brand-logo-icon { font-size: 24px; line-height: 1; }
+        .brand-text strong { font-size: 15px; font-weight: 700; color: #1b3818; display: block; line-height: 1.2; letter-spacing: -0.2px; }
+        .brand-text small { font-size: 8.5px; color: #386641; font-weight: 700; letter-spacing: 0.4px; display: block; margin-top: 1px; }
+
+        .nav-links { display: flex; flex-direction: column; gap: 5px; flex: 1; overflow-y: auto; }
+        .nav-item { display: flex; align-items: center; gap: 12px; padding: 11px 14px; border-radius: 12px; font-size: 13px; font-weight: 500; color: var(--text-primary); text-decoration: none; transition: 0.2s; }
+        .nav-item:hover { background: rgba(0, 0, 0, 0.05); color: var(--accent); }
+        .nav-item.active { background: var(--accent); color: #fff; font-weight: 600; }
+
+        /* Main Content Transition */
+        .main-content { margin-left: 260px; flex: 1; padding: 30px; display: flex; flex-direction: column; min-height: 100vh; transition: margin-left 0.4s ease-in-out; position: relative; }
+        .main-content.full-screen { margin-left: 0; }
+
+        /* Top Header & Controls */
+        .top-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; z-index: 10; }
+        .header-title-box h1 { font-size: 24px; font-weight: 700; color: var(--text-primary); }
+        .header-title-box p { font-size: 13px; color: var(--text-muted); font-weight: 500; margin-top: 2px; }
+        
+        .header-controls { display: flex; gap: 12px; align-items: center; }
+        .control-select { background: var(--input-bg); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 20px; cursor: pointer; font-weight: 500; font-size: 13px; color: var(--text-primary); outline: none; }
+        
+        /* Manual Sidebar Toggle Button */
+        .btn-toggle-sidebar { background: var(--panel-bg); border: 1px solid var(--border-color); padding: 8px 14px; border-radius: 20px; cursor: pointer; font-weight: 600; font-size: 13px; color: var(--text-primary); display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition: transform 0.2s; }
+        .btn-toggle-sidebar:hover { transform: scale(1.05); background: var(--accent); color: #fff; }
+
+        .sun-control-box { display: flex; align-items: center; justify-content: center; cursor: pointer; background: var(--panel-bg); width: 42px; height: 42px; border-radius: 50%; backdrop-filter: blur(10px); box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 1px solid var(--border-color); transition: transform 0.2s; }
+        .sun-control-box:hover { transform: scale(1.1); }
+        .sun-icon { width: 20px; height: 20px; border-radius: 50%; background: #facc15; box-shadow: 0 0 12px rgba(250, 204, 21, 0.9); transition: all 0.5s; }
+        body.theme-light-black .sun-icon { background: transparent; box-shadow: -4px 2px 0 0 #f8fafc; width: 16px; height: 16px; }
+
+        /* Welcome Banner Card with Dynamic Cartoon Avatar */
+        .welcome-banner-card { background: var(--panel-bg); backdrop-filter: blur(12px); border-radius: 24px; border: 1px solid var(--border-color); padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.04); margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; position: relative; overflow: hidden; }
+        .character-speech-box { display: flex; align-items: center; gap: 15px; max-width: 420px; margin: 0 auto; }
+        .speech-bubble { background: #ffffff; padding: 14px 20px; border-radius: 18px; border: 1px solid var(--border-color); font-size: 13px; font-weight: 600; color: var(--text-primary); box-shadow: 0 4px 15px rgba(0,0,0,0.05); position: relative; }
+        .avatar-img { width: 75px; height: 75px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent); background: #fff; flex-shrink: 0; }
+
+        .banner-center-text { text-align: center; }
+        .banner-center-text h2 { font-size: 22px; font-weight: 700; color: var(--text-primary); }
+        .banner-center-text p { font-size: 13px; color: var(--text-muted); font-weight: 500; margin-top: 4px; }
+        
+        .tour-action-buttons { display: flex; gap: 10px; margin-top: 12px; justify-content: center; }
+        .btn-tour-start { background: #386641; color: #fff; padding: 10px 20px; border-radius: 12px; font-size: 13px; font-weight: 700; border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(56,102,65,0.3); transition: transform 0.2s; }
+        .btn-tour-skip { background: #facc15; color: #1b3818; padding: 10px 20px; border-radius: 12px; font-size: 13px; font-weight: 700; border: none; cursor: pointer; transition: transform 0.2s; }
+        .btn-tour-start:hover, .btn-tour-skip:hover { transform: translateY(-2px); }
+
+        /* Interactive Guide Cards Grid */
+        .guide-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-bottom: 30px; }
+        .guide-card { background: var(--panel-bg); backdrop-filter: blur(12px); border-radius: 20px; border: 1px solid var(--border-color); padding: 18px; display: flex; flex-direction: column; gap: 10px; transition: transform 0.2s, box-shadow 0.2s; cursor: pointer; position: relative; }
+        .guide-card:hover { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(0,0,0,0.08); border-color: var(--accent); }
+        
+        .guide-card-icon { width: 44px; height: 44px; border-radius: 12px; background: rgba(56, 102, 65, 0.1); display: flex; align-items: center; justify-content: center; font-size: 22px; }
+        .guide-card h4 { font-size: 14px; font-weight: 700; color: var(--text-primary); }
+        .guide-card p { font-size: 12px; color: var(--text-muted); line-height: 1.4; font-weight: 500; }
+
+        /* Floating Character Avatar (Bottom-Right during Tour) */
+        .floating-avatar-container { position: fixed; bottom: 20px; right: 20px; z-index: 50; display: none; align-items: center; gap: 12px; animation: bounceIn 0.4s ease; }
+        .floating-avatar-container.active { display: flex; }
+        .floating-speech { background: #ffffff; padding: 10px 16px; border-radius: 16px; border: 1px solid #386641; font-size: 12px; font-weight: 600; color: #1b3818; box-shadow: 0 6px 20px rgba(0,0,0,0.15); max-width: 240px; }
+
+        @keyframes bounceIn {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 1200px) {
+            .guide-grid { grid-template-columns: repeat(2, 1fr); }
+            .welcome-banner-card { flex-direction: column; gap: 20px; text-align: center; }
+        }
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); }
+            .main-content { margin-left: 0; padding: 15px; }
+            .guide-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body id="appBody" class="theme-light-yellow">
+
+    <!-- Sidebar Structure with All 13 Language Attributes -->
+    <aside class="sidebar" id="appSidebar">
+        <div class="brand-badge">
+            <div class="brand-logo-icon">🌱</div>
+            <div class="brand-text">
+                <strong>KisaanSaathi</strong>
+                <small>SMART AGRICULTURE PORTAL</small>
+            </div>
+        </div>
+        <div class="nav-links">
+            <a href="overview.html" class="nav-item active" data-en="Overview & Guide" data-hi="अवलोकन और मार्गदर्शिका" data-mr="विहंगावलोकन आणि मार्गदर्शक" data-pa="ခြုံငုံသုံးသပ်ချက်နှင့် လမ်းညွှန်" data-gu="ઝાંખી અને માર્ગદર્શિકາ" data-bn="ওভারভিউ এবং গাইড" data-te="అవलोकन & గైడ్" data-ta="கண்ணோட்டம் & வழிகாட்டி" data-kn="अवलोकन & ಮಾರ್ಗದರ್ಶಿ" data-ml="അവലോകനം & ഗൈഡ്" data-or="ସମୀକ୍ଷା ଏବଂ ଗାଇଡ୍" data-as="অলোক আৰু গাইড" data-ur="جائزہ اور گائیড">🏠 Overview & Guide</a>
+            
+            <a href="chatbotai.html" class="nav-item" data-en="AI Chatbot (Gemini)" data-hi="एआई चैटबॉट (जेमिनी)" data-mr="एआय चॅटबॉट (जेमिनी)" data-pa="AI Chatbot" data-gu="AI ચેટબોટ" data-bn="AI চ্যাটবট" data-te="AI చాట్‌బాట్" data-ta="AI அரட்டைப்பொறி" data-kn="AI ಚಾಟ್‌ಬಾಟ್" data-ml="AI ചാറ്റ്‌ബോട്ട്" data-or="AI ଚାଟ୍ ବଟ୍" data-as="AI চাটবট" data-ur="AI چیٹ بوٹ">🤖 AI Chatbot (Gemini)</a>
+            
+            <a href="soil.html" class="nav-item" data-en="Soil & Crop Predictions" data-hi="मिट्टी और फसल अनुमान" data-mr="माती आणि पीक अंदाज" data-pa="ਮਿੱਟੀ ਅਤੇ ਫਸਲ" data-gu="માટી અને પાક અનુમાન" data-bn="মাটি এবং ফসল পূর্বাভাস" data-te="నేల & పంట అంచనాలు" data-ta="மண் & பயிர் கணிப்புகள்" data-kn="ಮಣ್ಣು ಮತ್ತು ಬೆಳೆ ಭವಿಷ್ಯ" data-ml="മണ്ണും വിള പ്രവചനങ്ങളും" data-or="ମାଟି ଏବଂ ଫସଲ ଆକଳନ" data-as="মাটি আৰু শস্যৰ ভৱিষ্যদ্বাণী" data-ur="مٹی اور فصل کی پیشگوئی">🧪 Soil & Crop Predictions</a>
+            
+            <a href="weather.html" class="nav-item" data-en="Weather & Alerts" data-hi="मौसम और चेतावनियां" data-mr="हवामान आणि सतर्कता" data-pa="मौसम" data-gu="હવામાન અને ચેતવણીઓ" data-bn="আবহাওয়া এবং সতর্কতা" data-te="వాతావరణం & హెచ్చరికలు" data-ta="வானிலை & எச்சரிக்கைகள்" data-kn="ಹವಾಮಾನ ಮತ್ತು ಎಚ್ಚರಿಕೆಗಳು" data-ml="കാലാവസ്ഥയും മുന്നറിയിപ്പുകളും" data-or="ପାଣିପାଗ ଏବଂ ସତର୍କତା" data-as="বতৰ আৰু সতৰ্কবাণী" data-ur="موسم اور انتباہات">🌦 Weather & Alerts</a>
+            
+            <a href="tutorials.html" class="nav-item" data-en="Plant Tutorials & AI Video" data-hi="पौधों के ट्यूटोरियल और एआई वीडियो" data-mr="वनस्पती ट्यूटोरियल आणि AI व्हिडिओ" data-pa="ਟியੂਟੋਰਿਅਲ" data-gu="પ્લાન્ટ ટ્યુટોરીયલ" data-bn="উদ্ভিদ টিউটোরিয়াল" data-te="ప్లాంట్ ట్యుటోరియల్స్" data-ta="தாவர பயிற்சிகள்" data-kn="ಸಸ್ಯ ಟ್ಯುಟೋರಿಯಲ್ಗಳು" data-ml="പ്ലാന്റ് ട്യൂട്ടോറിയലുകൾ" data-or="ଉଦ୍ଭିଦ ଟ୍ୟୁଟୋରିଆଲ୍" data-as="উদ্ভিদ টিউটোরিয়েল" data-ur="پلانٹ سبق اور AI ویڈیو">🎥 Plant Tutorials & AI Video</a>
+            
+            <a href="market.html" class="nav-item" data-en="Market & Expense" data-hi="बाजार और खर्च" data-mr="बाजार आणि खर्च" data-pa="ਮਾਰਕੀਟ" data-gu="બજાર અને ખર્ચ" data-bn="বাজার এবং খরচ" data-te="మార్కెట్ & ఖర్చు" data-ta="சந்தை & செலவு" data-kn="ಮಾರುಕಟ್ಟೆ ಮತ್ತು ವೆಚ್ಚ" data-ml="വിപണിയും ചെലവും" data-or="ବଜାର ଏବଂ ଖର୍ଚ୍ଚ" data-as="বজাৰ আৰু খৰচ" data-ur="مارکیٹ اور اخراجات">💰 Market & Expense</a>
+            
+            <a href="schemes.html" class="nav-item" data-en="Government Schemes" data-hi="सरकारी योजनाएं" data-mr="सरकारी योजना" data-pa="ਸਕੀਮਾਂ" data-gu="સરકારી યોજનાઓ" data-bn="সরকারি স্কিম" data-te="ప్రభుత్వ పథకాలు" data-ta="அரசு திட்டங்கள்" data-kn="सरकारी योजनाಗಳು" data-ml="സർക്കാർ പദ്ധതികൾ" data-or="ସରକାରୀ ଯୋଜନା" data-as="চৰকাৰী আঁচনি" data-ur="सरकारी سکیمیں">🏛️ Government Schemes</a>
+            
+            <a href="profile.html" class="nav-item" data-en="Profile Settings" data-hi="प्रोफ़ाइल सेटिंग्स" data-mr="प्रोफाइल सेटिंग्ज" data-pa="ਪ੍ਰੋਫਾਈਲ" data-gu="પ્રોફાઇલ સેટિંગ્સ" data-bn="প্রোফাইল সেটিংস" data-te="ప్రొఫైల్ సెట్టింగ్‌లు" data-ta="சுயவிவர அமைப்புகள்" data-kn="ಪ್ರೊಫೈಲ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳು" data-ml="പ്രൊഫൈൽ ക്രമീകരണങ്ങൾ" data-or="ପ୍ରୋଫାଇଲ୍ ସେଟିଂସ୍" data-as="প্ৰ’ফাইল ছেটিংছ" data-ur="پروفائل کی ترتیبات">👤 Profile Settings</a>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="main-content" id="mainContentArea">
+        
+        <!-- Top Header & Controls -->
+        <header class="top-header">
+            <div class="header-title-box">
+                <h1 id="pageHeading">Overview & Guide</h1>
+                <p id="subBannerText">Learn how everything works across the KisaanSaathi portal</p>
+            </div>
+            <div class="header-controls">
+                <button class="btn-toggle-sidebar" id="sidebarToggleBtn" onclick="toggleSidebarManual()">
+                    ✕ Close Sidebar
+                </button>
+
+                <select class="control-select" id="langToggle" onchange="toggleLanguage()">
+                    <option value="en" selected>English</option>
+                    <option value="hi">हिंदी (Hindi)</option>
+                    <option value="mr">मराठी (Marathi)</option>
+                    <option value="pa">ਪੰਜਾਬੀ (Punjabi)</option>
+                    <option value="gu">ગુજરાતી (Gujarati)</option>
+                    <option value="bn">বাংলা (Bengali)</option>
+                    <option value="te">తెలుగు (Telugu)</option>
+                    <option value="ta">தமிழ் (Tamil)</option>
+                    <option value="kn">ಕನ್ನಡ (Kannada)</option>
+                    <option value="ml">മലയാളം (Malayalam)</option>
+                    <option value="or">ଓଡ଼ିଆ (Odia)</option>
+                    <option value="as">অসমীয়া (Assamese)</option>
+                    <option value="ur">اردو (Urdu)</option>
+                </select>
+
+                <div class="sun-control-box" onclick="switchThemeCycle()" title="Toggle Theme Palette">
+                    <div class="sun-icon"></div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Welcome Section with Dynamic Cartoon Character (Boy/Girl) -->
+        <div class="welcome-banner-card">
+            <div class="banner-center-text" style="flex: 1;">
+                <h2 id="bannerTitle">Interactive Guided Walkthrough</h2>
+                <p id="bannerDesc">Click any card below to hear your selected guide explain the module out loud.</p>
+                <div class="tour-action-buttons">
+                    <button class="btn-tour-start" id="startTourBtn" onclick="startGuidedTour()">▶ Start Tour</button>
+                    <button class="btn-tour-skip" id="skipTourBtn" onclick="skipTour()">✕ Skip Tour</button>
+                </div>
+            </div>
+
+            <div class="character-speech-box">
+                <div class="speech-bubble" id="characterSpeechText">
+                    "Hello! Let’s explore all the features to help you succeed in farming!"
+                </div>
+                <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=150&q=80" alt="Character Avatar" class="avatar-img" id="activeAvatarImg">
+            </div>
+        </div>
+
+        <!-- Interactive Guide Cards Section (With multi-language data attributes) -->
+        <h3 id="sectionTitle" style="font-size: 16px; font-weight: 700; margin-bottom: 15px; color: var(--text-primary);">Explore Portal Modules</h3>
+        <div class="guide-grid" id="guideGridContainer">
+            
+            <div class="guide-card" 
+                 data-mod-en="Overview & Guide" data-mod-hi="अवलोकन और मार्गदर्शिका" data-mod-mr="विहंगावलोकन आणि मार्गदर्शक" data-mod-pa="ਸਮੀਖਿਆ ਅਤੇ ਗਾਈਡ" data-mod-gu="ઝાંખી અને માર્ગદર્શિકা" data-mod-bn="ওভারভিউ এবং গাইড" data-mod-te="అవलोकन & గైడ్" data-mod-ta="கண்ணோட்டம் & வழிகாட்டி" data-mod-kn="अवलोकन & ಮಾರ್ಗದರ್ಶಿ" data-mod-ml="അവലോകനം & ഗൈഡ്" data-mod-or="ସମୀକ୍ଷା ଏବଂ ଗାଇଡ୍" data-mod-as="অলোক আৰু গাইড" data-mod-ur="جائزہ اور گائیড"
+                 data-desc-en="Learn how everything works and navigate easily across modules." data-desc-hi="जानें कि सब कुछ कैसे काम करता है और आसानी से नेविगेट करें।" data-desc-mr="सर्वकाही कसे कार्य करते ते शिका आणि सहज नेव्हिगेट करा." data-desc-pa="ਸਿੱਖੋ ਕਿ ਕਿਵੇਂ ਸਭ ਕੁਝ ਕੰਮ ਕਰਦਾ ਹੈ." data-desc-gu="બધું કેવી રીતે કામ કરે છે તે જાણો." data-desc-bn="কীভাবে সবকিছু কাজ করে তা জানুন।" data-desc-te="అన్నీ ఎలా పనిచేస్తాయో తెలుసుకోండి." data-desc-ta="எது எப்படி வேலை செய்கிறது என்பதை அறிக." data-desc-kn="ಎಲ್ಲವೂ ಹೇಗೆ ಕೆಲಸ ಮಾಡುತ್ತದೆ ಎಂಬುದನ್ನು ತಿಳಿಯಿರಿ." data-desc-ml="എല്ലാം എങ്ങനെ പ്രവർത്തിക്കുന്നു എന്ന് പഠിക്കുക." data-desc-or="ସବୁକିଛି କିପରି କାମ କରେ ଜାଣନ୍ତୁ।" data-desc-as="সকলোকিছু কেনেকৈ কাম কৰে শিকক।" data-desc-ur="جانیں کہ ہر چیز کیسے کام کرتی ہے۔"
+                 onclick="explainModule(this)">
+                <div class="guide-card-icon">🏠</div>
+                <h4 class="card-title">Overview & Guide</h4>
+                <p class="card-desc">Learn how everything works and navigate easily across modules.</p>
+            </div>
+
+            <div class="guide-card" 
+                 data-mod-en="AI Chatbot" data-mod-hi="एआई चैटबॉट" data-mod-mr="एआय चॅटबॉट" data-mod-pa="AI ਚੈਟਬੋਟ" data-mod-gu="AI ચેટબોટ" data-mod-bn="AI চ্যাটবট" data-mod-te="AI చాట్‌బాట్" data-mod-ta="AI அரட்டைப்பொறி" data-mod-kn="AI ಚಾಟ್‌ಬಾಟ್" data-mod-ml="AI ചാറ്റ്‌ബോട്ട്" data-mod-or="AI ଚାଟ୍ ବଟ୍" data-mod-as="AI চাটবট" data-mod-ur="AI چیٹ بوট"
+                 data-desc-en="Ask questions to Gemini AI instantly in your local language." data-desc-hi="अपनी स्थानीय भाषा में तुरंत जेमिनी एआई से प्रश्न पूछें।" data-desc-mr="तुमच्या स्थानिक भाषेत जेमिनी एआयला त्वरित प्रश्न विचार." data-desc-pa="ਆਪਣੀ ਸਥਾਨਕ ਭਾਸ਼ਾ ਵਿੱਚ ਸਵਾਲ ਪੁੱਛੋ।" data-desc-gu="તમારી સ્થાનિક ભાષામાં પ્રશ્નો પૂછੋ." data-desc-bn="আপনার স্থানীয় ভাষায় প্রশ্ন করুন।" data-desc-te="మీ స్థానిక భాషలో ప్రశ్నలు అడగండి." data-desc-ta="உங்கள் சொந்த மொழியில் கேள்விகளைக் கேளுங்கள்." data-desc-kn="ನಿಮ್ಮ ಸ್ಥಳೀಯ ಭಾಷೆಯಲ್ಲಿ ಪ್ರಶ್ನೆಗಳನ್ನು ಕೇಳಿ." data-desc-ml="നിങ്ങളുടെ പ്രാദേശിക ഭാഷയിൽ ചോദ്യങ്ങൾ ചോദിക്കുക." data-desc-or="ଆପଣଙ୍କ ସ୍ଥାନୀୟ ଭାଷାରେ ପ୍ରଶ୍ନ ପଚାରନ୍ତୁ।" data-desc-as="আপোনাৰ স্থানীয় ভাষাত প্ৰশ্ন কৰক।" data-desc-ur="اپنی مقامی زبان میں سوالات پوچھیں۔"
+                 onclick="explainModule(this)">
+                <div class="guide-card-icon">🤖</div>
+                <h4 class="card-title">AI Chatbot (Gemini)</h4>
+                <p class="card-desc">Ask questions to Gemini AI instantly in your local language.</p>
+            </div>
+
+            <div class="guide-card" 
+                 data-mod-en="Soil & Crop Predictions" data-mod-hi="मिट्टी और फसल अनुमान" data-mod-mr="माती आणि पीक अंदाज" data-mod-pa="ਮਿੱਟੀ ਅਤੇ ਫਸਲ" data-mod-gu="માટી અને પાક અનુમાન" data-mod-bn="মাটি এবং ফসল পূর্বাভাস" data-mod-te="నేల & పంట అంచనాలు" data-mod-ta="மண் & பயிர் கணிப்புகள்" data-mod-kn="ಮಣ್ಣು ಮತ್ತು ಬೆಳೆ ಭವಿಷ್ಯ" data-mod-ml="മണ്ണും വിള പ്രവചനങ്ങളും" data-mod-or="ମାଟି ଏବଂ ଫସଲ ଆକଳନ" data-mod-as="মাটি আৰু শস্যৰ ভৱিষ্যদ্বাণী" data-mod-ur="مٹی اور فصل کی پیشگوئی"
+                 data-desc-en="Input soil metrics and view tailored crop suitability scores." data-desc-hi="मिट्टी के आंकड़े दर्ज करें और अनुकूल फसल स्कोर देखें।" data-desc-mr="मातीचे मेट्रिक्स इनपुट करा आणि योग्य पीक स्कोअर पहा." data-desc-pa="ਮਿੱਟੀ ਦੇ ਮਾਪ ਦਰਜ ਕਰੋ।" data-desc-gu="માટીના મેટ્રિક્સ ઇનપુટ કરો." data-desc-bn="মাটি ইনপুট দিন।" data-desc-te="నేల కొలతలను నమోదు చేయండి." data-desc-ta="மண் அளவீடுகளை உள்ளிடவும்." data-desc-kn="ಮಣ್ಣಿನ ಅಳತೆಗಳನ್ನು ನಮೂದಿಸಿ." data-desc-ml="മണ്ണിലെ ഘടകങ്ങൾ നൽകുക." data-desc-or="ମାଟି ମେଟ୍ରିକ୍ସ ଇନପୁଟ୍ କରନ୍ତୁ।" data-desc-as="মাটিৰ জোখ-মাখ দিয়ক।" data-desc-ur="مٹی کی پیمائش درج کریں۔"
+                 onclick="explainModule(this)">
+                <div class="guide-card-icon">🧪</div>
+                <h4 class="card-title">Soil & Crop Predictions</h4>
+                <p class="card-desc">Input soil metrics and view tailored crop suitability scores.</p>
+            </div>
+
+            <div class="guide-card" 
+                 data-mod-en="Weather & Alerts" data-mod-hi="मौसम और चेतावनियां" data-mod-mr="हवामान आणि सतर्कता" data-mod-pa="ਮੌਸਮ ਅਤੇ ਚੇਤਾਵਨੀਆਂ" data-mod-gu="હવામાન અને ચેતવણીઓ" data-mod-bn="আবহাওয়া এবং সতর্কতা" data-mod-te="వాతావరణం & హెచ్చరికలు" data-mod-ta="வானிலை & எச்சரிக்கைகள்" data-mod-kn="ಹವಾಮಾನ ಮತ್ತು ಎಚ್ಚರಿಕೆಗಳು" data-mod-ml="കാലാവസ്ഥയും മുന്നറിയിപ്പുകളും" data-mod-or="ପାଣିପାଗ ଏବଂ ସତର୍କତା" data-mod-as="বতৰ আৰু সতৰ্কবাণী" data-mod-ur="موسم اور انتباہات"
+                 data-desc-en="Receive real-time rain and heatwave early warnings." data-desc-hi="वास्तविक समय में बारिश और लू की शुरुआती चेतावनियां प्राप्त करें।" data-desc-mr="रिअल-टाइम पाऊस आणि उष्णतेच्या लाटेच्या पूर्वसूचना मिळवा." data-desc-pa="ਮੀਂਹ ਅਤੇ ਗਰਮੀ ਦੀਆਂ ਚੇਤਾਵਨੀਆਂ ਪ੍ਰਾਪਤ ਕਰੋ।" data-desc-gu." data-desc-gu="વરસાદની ચેતવણીઓ મેળવો." data-desc-bn="বৃষ্টি এবং তাপপ্রবাহের সতর্কতা পান।" data-desc-te="వర్షపు హెచ్చరికలను పొందండి." data-desc-ta="மழை எச்சரிக்கைகளைப் பெறுங்கள்." data-desc-kn="ಮಳೆ ಎಚ್ಚರಿಕೆಗಳನ್ನು ಸ್ವೀಕರಿಸಿ." data-desc-ml="മഴ മുന്നറിയിപ്പുകൾ സ്വീകരിക്കുക." data-desc-or="ବର୍ଷା ଏବଂ ତାପରଙ୍ଗ ସତର୍କତା ପାଆନ୍ତୁ।" data-desc-as="বৰষুণৰ সতৰ্কবাণী লাভ কৰক।" data-desc-ur="بارش اور ہیٹ ویو کی ابتدائی وارننگ حاصل کریں۔"
+                 onclick="explainModule(this)">
+                <div class="guide-card-icon">🌤</div>
+                <h4 class="card-title">Weather & Alerts</h4>
+                <p class="card-desc">Receive real-time rain and heatwave early warnings for your farm.</p>
+            </div>
+
+            <div class="guide-card" 
+                 data-mod-en="Plant Tutorials" data-mod-hi="पौधों के ट्यूटोरियल" data-mod-mr="वनस्पती ट्यूटोरियल" data-mod-pa="ਪਲਾਂਟ ਟਿਊਟੋਰਿਅਲ" data-mod-gu="પ્લાન્ટ ટ્યુટોરીયલ" data-mod-bn="উদ্ভিদ টিউটোরিয়াল" data-mod-te="ప్లాంట్ ట్యుటోరియల్స్" data-mod-ta="தாவர பயிற்சிகள்" data-mod-kn="ಸಸ್ಯ ಟ್ಯುಟೋರಿಯಲ್ಗಳು" data-mod-ml="പ്ലാന്റ് ട്യൂട്ടോറിയലുകൾ" data-mod-or="ଉଦ୍ଭିଦ ଟ୍ୟୁଟୋରିଆଲ୍" data-mod-as="উদ্ভিদ টিউটোরিয়েল" data-mod-ur="پلانٹ ٹیوٹوریلز"
+                 data-desc-en="Watch step-by-step farming tutorials and AI guidance videos." data-desc-hi="चरण-दर-चरण खेती के ट्यूटोरियल और एआई वीडियो देखें।" data-desc-mr="चरण-दर-चरण शेती ट्यूटोरियल आणि AI मार्गदर्शन व्हिडिओ पहा." data-desc-pa="ਖੇਤੀ ਟਿਊਟੋਰਿਅਲ ਦੇਖੋ।" data-desc-gu="ખેતીના ટ્યુટોરીયલ જુઓ." data-desc-bn="কৃষি টিউটোরিয়াল দেখুন।" data-desc-te="వ్యవసాయ ట్యుటోరియల్స్ చూడండి." data-desc-ta="விவசாய பயிற்சிகளைப் பார்க்கவும்." data-desc-kn="ಕೃಷಿ ಟ್ಯುಟೋರಿಯಲ್ಗಳನ್ನು ವೀಕ್ಷಿಸಿ." data-desc-ml="കൃഷി ട്യൂട്ടോറിയലുകൾ കാണുക." data-desc-or="ଚାଷ ଟ୍ୟୁଟୋରିଆଲ୍ ଦେଖନ୍ତୁ।" data-desc-as="কৃষি টিউটোরিয়েল চাওক।" data-desc-ur="زراعت کے سبق اور ویڈیوز دیکھیں۔"
+                 onclick="explainModule(this)">
+                <div class="guide-card-icon">🎥</div>
+                <h4 class="card-title">Plant Tutorials & AI Video</h4>
+                <p class="card-desc">Watch step-by-step farming tutorials and AI guidance videos.</p>
+            </div>
+
+            <div class="guide-card" 
+                 data-mod-en="Market & Expenses" data-mod-hi="बाजार और खर्च" data-mod-mr="बाजार आणि खर्च" data-mod-pa="ਮਾਰਕੀਟ ਅਤੇ ਖਰਚੇ" data-mod-gu="બજાર અને ખર્ચ" data-mod-bn="বাজার এবং খরচ" data-mod-te="మార్కెట్ & ఖర్చు" data-mod-ta="சந்தை & செலவு" data-mod-kn="ಮಾರುಕಟ್ಟೆ ಮತ್ತು ವೆಚ್ಚ" data-mod-ml="വിപണിയും ചെലവും" data-mod-or="ବଜାର ଏବଂ ଖର୍ଚ୍ଚ" data-mod-as="বজাৰ আৰু খৰচ" data-mod-ur="مارکیٹ اور اخراجات"
+                 data-desc-en="Track mandi prices, crop selling rates, and daily expenses." data-desc-hi="मंडी भाव, फसल बिक्री दर और दैनिक खर्च ट्रैक करें।" data-desc-mr="मंडीचे भाव, पीक विक्री दर आणि दैनंदिन खर्च ट्रॅक करा." data-desc-pa="ਮੰਡੀ ਭਾਵ ਟਰੈਕ ਕਰੋ।" data-desc-gu="બજાર ભાવ ટ્રેક કરો." data-desc-bn="বাজারের দর ট্র্যাক করুন।" data-desc-te="మార్కెట్ ధరలను ట్రాక్ చేయండి." data-desc-ta="சந்தை விலைகளைக் கண்காணிக்கவும்." data-desc-kn="ಮಾರುಕಟ್ಟೆ ಬೆಲೆಗಳನ್ನು ಟ್ರ್ಯಾಕ್ ಮಾಡಿ." data-desc-ml="വിപണി വിലകൾ ട്രാക്ക് ചെയ്യുക." data-desc-or="ବଜାର ଦର ଟ୍ରାକ୍ କରନ୍ତୁ।" data-desc-as="বজাৰৰ দাম ট্ৰেক কৰক।" data-desc-ur="منڈی کے نرخ اور اخراجات ٹریک کریں۔"
+                 onclick="explainModule(this)">
+                <div class="guide-card-icon">💰</div>
+                <h4 class="card-title">Market & Expenses</h4>
+                <p class="card-desc">Track mandi prices, crop selling rates, and daily expenses.</p>
+            </div>
+
+            <div class="guide-card" 
+                 data-mod-en="Government Schemes" data-mod-hi="सरकारी योजनाएं" data-mod-mr="सरकारी योजना" data-mod-pa="ਸਰਕਾਰੀ ਸਕੀਮਾਂ" data-mod-gu="સરકારી યોજનાઓ" data-mod-bn="সরকারি স্কিম" data-mod-te="ప్రభుత్వ పథకాలు" data-mod-ta="அரசு திட்டங்கள்" data-mod-kn="सरकारी योजनाಗಳು" data-mod-ml="സർക്കാർ പദ്ധതികൾ" data-mod-or="ସରକାରୀ ଯୋଜନା" data-mod-as="চৰকাৰী আঁচনি" data-mod-ur="सरकारी سکیمیں"
+                 data-desc-en="Find and apply for agricultural subsidies and government grants." data-desc-hi="कृषि सब्सिडी और सरकारी अनुदान खोजें और आवेदन करें।" data-desc-mr="कृषी अनुदाने आणि सरकारी अनुदान शोधा आणि अर्ज करा." data-desc-pa="ਸਰਕਾਰੀ ਸਕੀਮਾਂ ਲੱਭੋ।" data-desc-gu="સરકારી સહાય શોધો." data-desc-bn="সরকারি ভর্তুকি খুঁজুন।" data-desc-te="ప్రభుత్వ రాయితీలను కనుగొనండి." data-desc-ta="அரசு மானியங்களைக் கண்டறியவும்." data-desc-kn="सरकारी ಸಹಾಯಧನಗಳನ್ನು ಹುಡುಕಿ." data-desc-ml="സർക്കാർ സബ്‌സിഡികൾ കണ്ടെത്തുക." data-desc-or="ସରକାରୀ ସବ୍ସିଡି ଖୋଜନ୍ତୁ।" data-desc-as="চৰকাৰী ৰেহাই বিচাৰক।" data-desc-ur="سرکاری سبسڈیز تلاش کریں اور اپلائی کریں۔"
+                 onclick="explainModule(this)">
+                <div class="guide-card-icon">🏛</div>
+                <h4 class="card-title">Government Schemes</h4>
+                <p class="card-desc">Find and apply for agricultural subsidies and government grants.</p>
+            </div>
+
+            <div class="guide-card" 
+                 data-mod-en="Profile Settings" data-mod-hi="प्रोफ़ाइल सेटिंग्स" data-mod-mr="प्रोफाइल सेटिंग्ज" data-mod-pa="ਪ੍ਰੋਫਾਈਲ ਸੈਟਿੰਗਾਂ" data-mod-gu="પ્રોફાઇલ સેટિંગ્સ" data-mod-bn="প্রোফাইল সেটিংস" data-mod-te="ప్రొఫైల్ సెట్టింగ్‌లు" data-mod-ta="சுயவிவர அமைப்புகள்" data-mod-kn="ಪ್ರೊಫೈಲ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳು" data-mod-ml="പ്രൊഫൈൽ ക്രമീകരണങ്ങൾ" data-mod-or="ପ୍ରୋଫାଇଲ୍ ସେଟିଂସ୍" data-mod-as="প্ৰ’ফাইল ছেটিংছ" data-mod-ur="پروفائل کی ترتیبات"
+                 data-desc-en="Update your personal details, preferred language, and avatar style." data-desc-hi="अपने व्यक्तिगत विवरण और पसंदीदा भाषा को अपडेट करें।" data-desc-mr="तुमचे वैयक्तिक तपशील आणि पसंतीची भाषा अपडेट करा." data-desc-pa="ਆਪਣੀ ਪ੍ਰੋਫਾਈਲ ਅੱਪਡੇਟ ਕਰੋ।" data-desc-gu="તમારી પ્રોફાઇલ અપડેટ કરો." data-desc-bn="আপনার প্রোফাইল আপডেট করুন।" data-desc-te="మీ ప్రొఫైల్‌ను నవీకరించండి." data-desc-ta="சுயவிவரத்தைப் புதுப்பிக்கவும்." data-desc-kn="ನಿಮ್ಮ ಪ್ರೊಫೈಲ್ ಅನ್ನು ನವೀಕರಿಸಿ." data-desc-ml="നിങ്ങളുടെ പ്രൊഫൈൽ അപ്ഡേറ്റ് ചെയ്യുക." data-desc-or="ଆପଣଙ୍କ ପ୍ରୋଫାଇଲ୍ ଅପଡେଟ୍ କରନ୍ତୁ।" data-desc-as="আপোনাৰ প্ৰ’ফাইল আপডেট কৰক।" data-desc-ur="اپنی پروفائل کی تفصیلات اپ ڈیٹ کریں۔"
+                 onclick="explainModule(this)">
+                <div class="guide-card-icon">👤</div>
+                <h4 class="card-title">Profile Settings</h4>
+                <p class="card-desc">Update your personal details, preferred language, and avatar style.</p>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Floating Avatar Container (Bottom-Right during Tour) -->
+    <div class="floating-avatar-container" id="floatingAvatar">
+        <div class="floating-speech" id="floatingSpeechText">
+            Click any module card to hear me explain it!
+        </div>
+        <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=150&q=80" alt="Guide Avatar" class="avatar-img" id="floatingAvatarImg" style="width: 50px; height: 50px;">
+    </div>
+
+    <script>
+        // Check Selected Character Profile from LocalStorage (Defaults to Girl 'aanya')
+        const selectedCharacter = localStorage.getItem('kisaan-portal-character') || 'aanya'; // 'aanya' (girl) or 'aarav' (boy)
+
+        const characterData = {
+            'aanya': {
+                name: 'Aanya',
+                img: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=150&q=80',
+                pitch: 1.2, // Higher friendly female pitch
+                greeting: "Hello! I’m Aanya. Let’s explore all the features to help you succeed in farming!"
+            },
+            'aarav': {
+                name: 'Aarav',
+                img: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=150&q=80',
+                pitch: 0.8, // Deeper warm male pitch
+                greeting: "Hello! I’m Aarav. Let’s explore all the features to help you succeed in farming!"
+            }
+        };
+
+        // Apply active character style on load
+        window.addEventListener('DOMContentLoaded', () => {
+            const char = characterData[selectedCharacter] || characterData['aanya'];
+            document.getElementById('activeAvatarImg').src = char.img;
+            document.getElementById('floatingAvatarImg').src = char.img;
+            document.getElementById('characterSpeechText').innerText = `"${char.greeting}"`;
+        });
+
+        // Theme Cycling Logic (5 Themes)
+        const themes = ['theme-light-yellow', 'theme-light-pink', 'theme-light-orange', 'theme-light-blue', 'theme-light-black'];
+        let currentThemeIndex = 0;
+
+        function switchThemeCycle() {
+            currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+            document.getElementById('appBody').className = themes[currentThemeIndex];
+            localStorage.setItem('kisaan-portal-theme-index', currentThemeIndex);
+        }
+
+        const savedThemeIndex = localStorage.getItem('kisaan-portal-theme-index');
+        if (savedThemeIndex !== null) {
+            currentThemeIndex = parseInt(savedThemeIndex);
+            document.getElementById('appBody').className = themes[currentThemeIndex];
+        }
+
+        // Manual Sidebar Toggle Function
+        let sidebarVisible = true;
+        function toggleSidebarManual() {
+            const sidebar = document.getElementById('appSidebar');
+            const mainContent = document.getElementById('mainContentArea');
+            const toggleBtn = document.getElementById('sidebarToggleBtn');
+
+            sidebarVisible = !sidebarVisible;
+            if (sidebarVisible) {
+                sidebar.classList.remove('hidden-sidebar');
+                mainContent.classList.remove('full-screen');
+                toggleBtn.innerHTML = "✕ Close Sidebar";
+            } else {
+                sidebar.classList.add('hidden-sidebar');
+                mainContent.classList.add('full-screen');
+                toggleBtn.innerHTML = "☰ Open Sidebar";
+            }
+        }
+
+        // Language Code Mapping for All 13 Languages
+        const langCodeMap = {
+            'en': 'en-IN',
+            'hi': 'hi-IN',
+            'mr': 'mr-IN',
+            'pa': 'pa-IN',
+            'gu': 'gu-IN',
+            'bn': 'bn-IN',
+            'te': 'te-IN',
+            'ta': 'ta-IN',
+            'kn': 'kn-IN',
+            'ml': 'ml-IN',
+            'or': 'or-IN',
+            'as': 'as-IN',
+            'ur': 'ur-IN'
+        };
+
+        // Text-to-Speech Engine using Active Character Pitch & Language
+        function speakText(text) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel(); // Stop prior speech
+                const selectedLangKey = document.getElementById('langToggle').value;
+                const speechLangCode = langCodeMap[selectedLangKey] || 'en-IN';
+                const char = characterData[selectedCharacter] || characterData['aanya'];
+
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = speechLangCode;
+                utterance.rate = 1.0; 
+                utterance.pitch = char.pitch; // Automatically set to girl or boy voice pitch profile
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        // Guided Tour Logic
+        let tourActive = false;
+
+        function startGuidedTour() {
+            tourActive = true;
+            document.getElementById('appSidebar').classList.add('hidden-sidebar');
+            document.getElementById('mainContentArea').classList.add('full-screen');
+            document.getElementById('floatingAvatar').classList.add('active');
+            document.getElementById('sidebarToggleBtn').innerHTML = "☰ Open Sidebar";
+            sidebarVisible = false;
+            
+            const char = characterData[selectedCharacter] || characterData['aanya'];
+            const introText = `Tour started! Click on any feature card below and ${char.name} will explain it for you.`;
+            
+            document.getElementById('floatingSpeechText').innerText = introText;
+            document.getElementById('characterSpeechText').innerText = `"${introText}"`;
+            speakText(introText);
+        }
+
+        function skipTour() {
+            tourActive = false;
+            document.getElementById('appSidebar').classList.remove('hidden-sidebar');
+            document.getElementById('mainContentArea').classList.remove('full-screen');
+            document.getElementById('floatingAvatar').classList.remove('active');
+            document.getElementById('sidebarToggleBtn').innerHTML = "✕ Close Sidebar";
+            sidebarVisible = true;
+            
+            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+            alert("Tour skipped. You can explore freely!");
+        }
+
+        // Click Module Feature: Speaks in the selected 13-language with correct character voice
+        function explainModule(cardElement) {
+            const currentLang = document.getElementById('langToggle').value;
+            
+            const moduleName = cardElement.getAttribute(`data-mod-${currentLang}`) || cardElement.getAttribute('data-mod-en');
+            const description = cardElement.getAttribute(`data-desc-${currentLang}`) || cardElement.getAttribute('data-desc-en');
+            
+            const fullMessage = `${moduleName}: ${description}`;
+            
+            document.getElementById('characterSpeechText').innerText = `"${fullMessage}"`;
+            if (tourActive) {
+                document.getElementById('floatingSpeechText').innerText = fullMessage;
+            }
+
+            speakText(fullMessage);
+        }
+
+        // Multi-language Support Dictionaries for UI Text
+        const translations = {
+            'en': { heading: 'Overview & Guide', banner: 'Learn how everything works across the KisaanSaathi portal', bannerTitle: 'Interactive Guided Walkthrough', bannerDesc: 'Click any card below to hear your guide explain the module out loud.', startBtn: '▶ Start Tour', skipBtn: '✕ Skip Tour', secTitle: 'Explore Portal Modules' },
+            'hi': { heading: 'अवलोकन और मार्गदर्शिका', banner: 'जानें कि किसानसाथी पोर्टल पर सब कुछ कैसे काम करता है', bannerTitle: 'इंटरैक्टिव गाइडेड वॉकथ्रू', bannerDesc: 'मॉड्यूल सुनने के लिए नीचे दिए गए किसी भी कार्ड पर क्लिक करें।', startBtn: '▶ टूर शुरू करें', skipBtn: '✕ टूर छोड़ें', secTitle: 'पोर्टल मॉड्यूल देखें' },
+            'mr': { heading: 'विहंगावलोकन आणि मार्गदर्शक', banner: 'किसानसाथी पोर्टलवर सर्वकाही कसे कार्य करते ते शिका', bannerTitle: 'परस्परसंवादी मार्गदर्शित वॉकथ्रू', bannerDesc: 'मॉड्यूल ऐकण्यासाठी खालील कोणत्याही कार्डवर क्लिक करा.', startBtn: '▶ टूर सुरू करा', skipBtn: '✕ टूर वगळा', secTitle: 'पोर्टल मॉड्यूल एक्सप्लोर करा' },
+            'pa': { heading: 'ਸਮੀਖਿਆ ਅਤੇ ਗਾਈਡ', banner: 'ਪੋਰਟਲ ਤੇ ਸਭ ਕੁਝ ਕਿਵੇਂ ਕੰਮ ਕਰਦਾ ਹੈ', bannerTitle: 'ਗਾਈਡਡ ਟ্যੂਰ', bannerDesc: 'ਕਿਸੇ ਵੀ ਕਾਰਡ ਤੇ ਕਲਿੱਕ ਕਰੋ।', startBtn: '▶ ਸ਼ੁਰੂ ਕਰੋ', skipBtn: '✕ ਛੱਡੋ', secTitle: 'ਮੋਡੀਊਲ ਦੇਖੋ' },
+            'gu': { heading: 'ઝાંખી અને માર્ગદર્શિકા', banner: 'પોર્ટલ પર બધું કેવી રીતે કામ કરે છે તે જાણો', bannerTitle: 'માર્ગદર્શિત વૉકથ્રુ', bannerDesc: 'મોડ્યુલ સાંભળવા માટે કોઈપણ કાર્ડ પર ક્લિક કરો.', startBtn: '▶ ટૂર શરૂ કરો', skipBtn: '✕ છોડો', secTitle: 'પોર્ટલ મોડ્યુલ્સ જુઓ' },
+            'bn': { heading: 'ওভারভিউ এবং গাইড', banner: 'পোর্টালে সবকিছু কীভাবে কাজ করে তা জানুন', bannerTitle: 'ইন্টরাক্টিভ গাইডটেড ওয়াকথ্রু', bannerDesc: 'মডিউল শুনতে যেকোনো কার্ডে ক্লিক করুন।', startBtn: '▶ ট্যুর শুরু করুন', skipBtn: '✕ স্কিপ করুন', secTitle: 'পোর্টাল মডিউলগুলি অন্বেষণ করুন' },
+            'te': { heading: 'అవलोकन & గైడ్', banner: 'పోర్టల్‌లో అన్నీ ఎలా పనిచేస్తాయో తెలుసుకోండి', bannerTitle: 'ఇంటరాక్టివ్ గైడెడ్ వాక్‌త్రూ', bannerDesc: 'వివరణ వినడానికి ఏదైనా కార్డ్ పై క్లిక్ చేయండి.', startBtn: '▶ టూర్ ప్రారంభించండి', skipBtn: '✕ దాటవేయి', secTitle: 'పోర్టల్ మోడ్యూల్స్' },
+            'ta': { heading: 'கண்ணோட்டம் & வழிகாட்டி', banner: 'போர்ட்டலில் எல்லாம் எப்படி வேலை செய்கிறது', bannerTitle: 'வழிகாட்டப்பட்ட நடைபயிற்சி', bannerDesc: 'விளக்கத்தைக் கேட்க ஏதேனும் அட்டையைக் கிளிக் செய்யவும்.', startBtn: '▶ சுற்றுப்பயணம் தொடங்கு', skipBtn: '✕ தவிர்', secTitle: 'போர்ட்டல் தொகுதிகள்' },
+            'kn': { heading: 'अवलोकन & ಮಾರ್ಗದರ್ಶಿ', banner: 'ಪೋರ್ಟಲ್‌ನಲ್ಲಿ ಎಲ್ಲವೂ ಹೇಗೆ ಕೆಲಸ ಮಾಡುತ್ತದೆ', bannerTitle: 'ಮಾರ್ಗದರ್ಶಿ ವೀಕ್ಷಣೆ', bannerDesc: 'ಮಾಡ್ಯೂಲ್ ಕೇಳಲು ಯಾವುದೇ ಕಾರ್ಡ್ ಕ್ಲಿಕ್ ಮಾಡಿ.', startBtn: '▶ ಪ್ರವಾಸ ಆರಂಭಿಸಿ', skipBtn: '✕ ಬಿಟ್ಟುಬಿಡಿ', secTitle: 'ಪೋರ್ಟಲ್ ಮಾಡ್ಯೂಲ್‌ಗಳು' },
+            'ml': { heading: 'അവലോകനം & ഗൈഡ്', banner: 'പോർട്ടലിൽ എല്ലാം എങ്ങനെ പ്രവർത്തിക്കുന്നു', bannerTitle: 'സംവേദാത്മക ഗൈഡ്', bannerDesc: 'വിവരണം കേൾക്കാൻ ഏതെങ്കിലും കാർഡിൽ ക്ലിക്ക് ചെയ്യുക.', startBtn: '▶ ടൂർ ആരംഭിക്കുക', skipBtn: '✕ ഒഴിവാക്കുക', secTitle: 'പോർട്ടൽ മോഡ്യൂളുകൾ' },
+            'or': { heading: 'ସମୀକ୍ଷା ଏବଂ ଗାଇଡ୍', banner: 'ପୋର୍ଟାଲରେ ସବୁକିଛି କିପରି କାମ କରେ ଜାଣନ୍ତୁ', bannerTitle: 'ଗାଇଡେଡ୍ ୱାକ୍ଥ୍ରୁ', bannerDesc: 'ଶୁଣିବା ପାଇଁ କାର୍ଡରେ କ୍ଲିକ୍ କରନ୍ତୁ।', startBtn: '▶ ଟୁର୍ ଆରମ୍ଭ କରନ୍ତୁ', skipBtn: '✕ ବାତିଲ୍', secTitle: 'ପୋର୍ଟାଲ୍ ମଡ୍ୟୁଲ୍' },
+            'as': { heading: 'অলোক আৰু গাইড', banner: 'প’ৰ্টেলত সকলোকিছু কেনেকৈ কাম কৰে শিকক', bannerTitle: 'নিৰ্দেশিত ভ্ৰমণ', bannerDesc: 'মডিউলসমূহ শুনিবলৈ যিকোনো কাৰ্ডত ক্লিক কৰক।', startBtn: '▶ ভ্ৰমণ আৰম্ভ কৰক', skipBtn: '✕ বাদ দিয়ক', secTitle: 'প’ৰ্টেল মডিউলসমূহ' },
+            'ur': { heading: 'جائزہ اور گائیڈ', banner: 'جانیں کہ پورٹل پر ہر چیز کیسے کام کرتی ہے', bannerTitle: 'انٹرایکٹو گائیڈڈ واک تھرو', bannerDesc: 'ماڈیول سننے کے لیے نیچے کسی بھی کارڈ پر کلک کریں۔', startBtn: '▶ ٹور شروع کریں', skipBtn: '✕ چھوڑیں', secTitle: 'پورٹل ماڈیولز دریافت کریں' }
+        };
+
+        function toggleLanguage() {
+            const lang = document.getElementById('langToggle').value;
+            const t = translations[lang] || translations['en'];
+
+            document.getElementById('pageHeading').innerText = t.heading;
+            document.getElementById('subBannerText').innerText = t.banner;
+            document.getElementById('bannerTitle').innerText = t.bannerTitle;
+            document.getElementById('bannerDesc').innerText = t.bannerDesc;
+            document.getElementById('startTourBtn').innerText = t.startBtn;
+            document.getElementById('skipTourBtn').innerText = t.skipBtn;
+            document.getElementById('sectionTitle').innerText = t.secTitle;
+
+            // Update Sidebar Navigation Text Elements dynamically for all 13 languages
+            document.querySelectorAll('.nav-item').forEach(item => {
+                const localizedText = item.getAttribute(`data-${lang}`) || item.getAttribute('data-en');
+                if (localizedText) {
+                    item.childNodes[item.childNodes.length - 1].nodeValue = " " + localizedText;
+                }
+            });
+        }
+    </script>
+</body>
+</html>

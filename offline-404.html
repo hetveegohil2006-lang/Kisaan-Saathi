@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 Offline - KisaanSaathi Smart Agriculture Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Theme Palettes */
+        body.theme-light-yellow {
+            background: linear-gradient(to bottom, #fef08a 0%, #fef9c3 50%, #e2e8f0 100%);
+            --panel-bg: rgba(255, 255, 255, 0.88); --text-primary: #1b3818; --text-muted: #4b6b48; --accent: #386641; --input-bg: #ffffff; --border-color: #fde047;
+        }
+        body.theme-light-pink {
+            background: linear-gradient(to bottom, #fbcfe8 0%, #fce7f3 50%, #e2e8f0 100%);
+            --panel-bg: rgba(255, 255, 255, 0.88); --text-primary: #500724; --text-muted: #831843; --accent: #be185d; --input-bg: #ffffff; --border-color: #f472b6;
+        }
+        body.theme-light-orange {
+            background: linear-gradient(to bottom, #fed7aa 0%, #ffedd5 50%, #e2e8f0 100%);
+            --panel-bg: rgba(255, 255, 255, 0.88); --text-primary: #431407; --text-muted: #7c2d12; --accent: #c2410c; --input-bg: #ffffff; --border-color: #fb923c;
+        }
+        body.theme-light-blue {
+            background: linear-gradient(to bottom, #bae6fd 0%, #e0f2fe 50%, #cbd5e1 100%);
+            --panel-bg: rgba(255, 255, 255, 0.88); --text-primary: #082f49; --text-muted: #0369a1; --accent: #0369a1; --input-bg: #ffffff; --border-color: #38bdf8;
+        }
+        body.theme-light-black {
+            background: linear-gradient(to bottom, #1e293b 0%, #0f172a 50%, #020617 100%);
+            --panel-bg: rgba(15, 23, 42, 0.88); --text-primary: #f8fafc; --text-muted: #94a3b8; --accent: #38bdf8; --input-bg: #0f172a; --border-color: #334155;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+        body { color: var(--text-primary); min-height: 100vh; display: flex; flex-direction: column; transition: background 0.3s, color 0.3s; }
+
+        /* Top Bar Header controls */
+        .top-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 30px; width: 100%; }
+        .brand-badge { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .brand-text { display: flex; flex-direction: column; }
+        .brand-text strong { font-size: 16px; font-weight: 700; color: var(--text-primary); line-height: 1.2; }
+        .brand-text small { font-size: 10px; color: var(--text-muted); font-weight: 500; display: block; }
+
+        .header-controls { display: flex; gap: 10px; align-items: center; }
+        .control-select { background: var(--panel-bg); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 20px; cursor: pointer; font-weight: 500; font-size: 13px; color: var(--text-primary); outline: none; }
+        
+        .sun-control-box {
+            display: flex; align-items: center; justify-content: center; cursor: pointer;
+            background: var(--panel-bg); width: 40px; height: 40px; border-radius: 50%;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 1px solid var(--border-color); transition: transform 0.2s ease;
+        }
+        .sun-control-box:hover { transform: scale(1.1); }
+        .sun-icon {
+            width: 18px; height: 18px; border-radius: 50%; background: #facc15;
+            box-shadow: 0 0 15px rgba(250, 204, 21, 0.9); transition: all 0.5s ease;
+        }
+        body.theme-light-black .sun-icon { background: transparent; box-shadow: -5px 2px 0 0 #f8fafc; width: 15px; height: 15px; }
+
+        /* Main Error Wrapper */
+        .error-container {
+            flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 20px; text-align: center; max-width: 700px; margin: 0 auto; width: 100%;
+        }
+
+        .error-card {
+            background: var(--panel-bg); backdrop-filter: blur(12px); border-radius: 24px;
+            border: 1px solid var(--border-color); width: 100%; padding: 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.06); position: relative;
+        }
+
+        .status-pill {
+            display: inline-flex; align-items: center; gap: 6px; background: rgba(239, 68, 68, 0.12);
+            color: #ef4444; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; margin-bottom: 12px;
+        }
+        .status-pill.online { background: rgba(34, 197, 94, 0.12); color: #22c55e; }
+
+        .error-card h1 { font-size: 26px; font-weight: 700; color: var(--text-primary); margin-bottom: 6px; }
+        .error-card p { font-size: 14px; color: var(--text-muted); font-weight: 500; margin-bottom: 20px; }
+
+        /* Mini Game Playground */
+        .game-field {
+            position: relative; width: 100%; height: 260px; background: rgba(0,0,0,0.03);
+            border-radius: 16px; border: 1px dashed var(--border-color); overflow: hidden;
+            display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+            padding-bottom: 15px; cursor: pointer; user-select: none;
+        }
+
+        /* Goal Post Graphic */
+        .goal-post {
+            position: absolute; top: 15px; width: 280px; height: 110px;
+            border: 6px solid #4a3559; border-bottom: none; border-radius: 8px 8px 0 0;
+            background-image: linear-gradient(0deg, transparent 90%, rgba(74, 53, 89, 0.15) 90%),
+                              linear-gradient(90deg, transparent 90%, rgba(74, 53, 89, 0.15) 90%);
+            background-size: 15px 15px; display: flex; align-items: center; justify-content: center;
+        }
+        .goal-text-404 { font-size: 36px; font-weight: 700; color: #4a3559; letter-spacing: 4px; opacity: 0.85; }
+
+        /* Football */
+        .football {
+            width: 45px; height: 45px; background: radial-gradient(circle at 30% 30%, #ffedd5, #f97316);
+            border-radius: 50%; box-shadow: 0 6px 12px rgba(0,0,0,0.2); position: relative;
+            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            bottom: 10px; z-index: 5;
+        }
+        .football::after {
+            content: '⚽'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 24px;
+        }
+
+        .game-score-board {
+            display: flex; justify-content: space-between; width: 100%; padding: 0 10px;
+            margin-top: 12px; font-size: 13px; font-weight: 600; color: var(--text-muted);
+        }
+
+        .action-buttons {
+            display: flex; gap: 10px; justify-content: center; margin-top: 20px; flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 20px; border-radius: 12px; font-weight: 600; font-size: 13px;
+            cursor: pointer; transition: all 0.2s; border: 1px solid transparent; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;
+        }
+        .btn-primary { background: var(--accent); color: #ffffff; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+        .btn-secondary { background: var(--input-bg); color: var(--text-primary); border-color: var(--border-color); }
+        .btn-secondary:hover { background: rgba(0,0,0,0.05); }
+
+        @media (max-width: 600px) {
+            .goal-post { width: 220px; height: 90px; }
+            .goal-text-404 { font-size: 28px; }
+            .game-field { height: 230px; }
+        }
+    </style>
+</head>
+<body id="appBody" class="theme-light-yellow">
+
+    <!-- Top Header -->
+    <header class="top-header">
+        <a href="dashboard.html" class="brand-badge">
+            <span style="font-size: 1.3rem;">🌱</span>
+            <div class="brand-text">
+                <strong>KisaanSaathi</strong>
+                <small>AGRICULTURE PORTAL</small>
+            </div>
+        </a>
+        <div class="header-controls">
+            <select class="control-select" id="langToggle" onchange="toggleLanguage()">
+                <option value="en">English</option>
+                <option value="hi" selected>हिंदी (Hindi)</option>
+                <option value="mr">मराठी (Marathi)</option>
+                <option value="pa">ਪੰਜਾਬੀ (Punjabi)</option>
+                <option value="gu">ગુજરાતી (Gujarati)</option>
+                <option value="bn">বাংলা (Bengali)</option>
+                <option value="te">తెలుగు (Telugu)</option>
+                <option value="ta">தமிழ் (Tamil)</option>
+                <option value="kn">ಕನ್ನಡ (Kannada)</option>
+                <option value="ml">മലയാളം (Malayalam)</option>
+                <option value="or">ଓଡ଼ିଆ (Odia)</option>
+                <option value="as">অসমীয়া (Assamese)</option>
+                <option value="ur">اردو (Urdu)</option>
+            </select>
+            <div class="sun-control-box" onclick="switchThemeCycle()" title="Tap to switch theme">
+                <div class="sun-icon"></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Error Content Container -->
+    <main class="error-container">
+        <div class="error-card">
+            <div class="status-pill" id="networkStatusPill">
+                <span id="statusDot">🔴</span> <span id="statusText">You are currently offline</span>
+            </div>
+            
+            <h1 id="errorHeading">Oops! Page Not Found</h1>
+            <p id="errorSubtext">The page you are looking for doesn't exist or your network connection was lost. Click left or right of the ball to aim your shot!</p>
+
+            <!-- Mini Football Game Field -->
+            <div class="game-field" id="gameField" onclick="kickBall(event)">
+                <div class="goal-post">
+                    <span class="goal-text-404">404</span>
+                </div>
+                <div class="football" id="football"></div>
+            </div>
+
+            <div class="game-score-board">
+                <span id="gameHint">👉 Click left/right of the ball to aim!</span>
+                <span>Goals Scored: <strong id="scoreCount">0</strong></span>
+            </div>
+
+            <div class="action-buttons">
+                <a href="dashboard.html" class="btn btn-primary" id="homeBtn">🏠 Back to Dashboard</a>
+                <button type="button" class="btn btn-secondary" onclick="checkConnection()" id="retryBtn">🔄 Retry Connection</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Theme Cycling Logic (5 Themes)
+        const themes = ['theme-light-yellow', 'theme-light-pink', 'theme-light-orange', 'theme-light-blue', 'theme-light-black'];
+        let currentThemeIndex = 0;
+
+        function switchThemeCycle() {
+            currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+            const body = document.getElementById('appBody');
+            body.className = themes[currentThemeIndex];
+            localStorage.setItem('kisaan-portal-theme-index', currentThemeIndex);
+        }
+
+        const savedThemeIndex = localStorage.getItem('kisaan-portal-theme-index');
+        if (savedThemeIndex !== null) {
+            currentThemeIndex = parseInt(savedThemeIndex);
+            document.getElementById('appBody').className = themes[currentThemeIndex];
+        }
+
+        // Live Network Status Checker
+        function updateNetworkStatus() {
+            const pill = document.getElementById('networkStatusPill');
+            const statusDot = document.getElementById('statusDot');
+            const statusTxt = document.getElementById('statusText');
+
+            if (navigator.onLine) {
+                pill.classList.add('online');
+                statusDot.innerText = '🟢';
+                statusTxt.innerText = 'Connection restored! You are online.';
+            } else {
+                pill.classList.remove('online');
+                statusDot.innerText = '🔴';
+                statusTxt.innerText = 'You are currently offline';
+            }
+        }
+        window.addEventListener('online', updateNetworkStatus);
+        window.addEventListener('offline', updateNetworkStatus);
+        updateNetworkStatus();
+
+        function checkConnection() {
+            updateNetworkStatus();
+            if (navigator.onLine) {
+                alert("You are back online! Redirecting to dashboard...");
+                window.location.href = "dashboard.html";
+            } else {
+                alert("Still offline. Keep trying or score another goal while you wait!");
+            }
+        }
+
+        // Mini Game Directional Shootout Logic
+        let score = 0;
+        let isAnimating = false;
+
+        function kickBall(e) {
+            if (isAnimating) return;
+            isAnimating = true;
+
+            const ball = document.getElementById('football');
+            const hint = document.getElementById('gameHint');
+            
+            // Get ball and click coordinates to compute directional curve
+            const ballRect = ball.getBoundingClientRect();
+            const ballCenterX = ballRect.left + ballRect.width / 2;
+            
+            const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+            const offsetX = clientX ? clientX - ballCenterX : 0;
+            
+            // Calculate dynamic horizontal deflection based on click position relative to the ball
+            let targetX = -offsetX * 0.8; 
+            targetX = Math.max(Math.min(targetX, 90), -90); // Keep trajectory within net bounds
+
+            // Apply directional transform
+            ball.style.transform = `translate(${targetX}px, -145px) scale(0.6) rotate(${targetX * 2}deg)`;
+
+            setTimeout(() => {
+                score++;
+                document.getElementById('scoreCount').innerText = score;
+                hint.innerText = '🎉 Goal! Great shot direction!';
+                
+                setTimeout(() => {
+                    // Reset ball position instantly
+                    ball.style.transition = 'none';
+                    ball.style.transform = 'translate(0px, 0px) scale(1) rotate(0deg)';
+                    
+                    // Re-enable transition smoothly
+                    setTimeout(() => {
+                        ball.style.transition = 'transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+                        hint.innerText = '👉 Click left/right of the ball to aim!';
+                        isAnimating = false;
+                    }, 50);
+                }, 800);
+            }, 550);
+        }
+
+        // Multilingual Support for 404 Page
+        const translations = {
+            'en': { heading: 'Oops! Page Not Found', subtext: 'The page you are looking for doesn\'t exist or your network connection was lost. Click left or right of the ball to aim your shot!', hint: '👉 Click left/right of the ball to aim!', home: '🏠 Back to Dashboard', retry: '🔄 Retry Connection' },
+            'hi': { heading: 'उफ़! पेज नहीं मिला', subtext: 'आप जो पेज ढूंढ रहे हैं वह मौजूद नहीं है या नेटवर्क कनेक्शन टूट गया था। निशाना लगाने के लिए गेंद के बाएं या दाएं क्लिक करें!', hint: '👉 शूट करने के लिए गेंद के आस-पास क्लिक करें!', home: '🏠 डैशबोर्ड पर वापस जाएं', retry: '🔄 कनेक्शन पुनः प्रयास करें' },
+            'mr': { heading: 'ओप्स! पृष्ठ सापडले नाही', subtext: 'तुम्ही शोधत असलेला पृष्ठ अस्तित्वात नाही किंवा नेटवर्क खंडित झाले आहे. चेंडूच्या डावीकडे किंवा उजवीकडे क्लिक करा!', hint: '👉 दिशा ठरवण्यासाठी चेंडूवर क्लिक करा!', home: '🏠 डॅशबोर्डवर परत जा', retry: '🔄 कनेक्शन पुन्हा तपासा' },
+            'gu': { heading: 'અરે! પૃષ્ઠ મળ્યું નથી', subtext: 'તમે શોધી રહ્યા છો તે પૃષ્ઠ અસ્તિત્વમાં નથી અથવા નેટવર્ક કનેક્શન ખોવાઈ ગયું છે. દડાની ડાબી કે જમણી બાજુ ક્લિક કરો!', hint: '👉 લક્ષ્ય રાખવા માટે ક્લિક કરો!', home: '🏠 ડેશબોર્ડ પર પાછા જાઓ', retry: '🔄 કનેક્શન ફરીથી પ્રયાસ કરો' },
+            'pa': { heading: 'ਉפּਸ! ਪੇਜ ਨਹੀਂ ਮਿਲਿਆ', subtext: 'ਜਿਹੜਾ ਪੇਜ ਤੁਸੀਂ ਲੱਭ ਰਹੇ ਹੋ ਉਹ ਮੌਜੂਦ ਨਹੀਂ ਹੈ। ਗੇਂਦ ਨੂੰ ਸੇਧ ਦੇਣ ਲਈ ਖੱਬੇ ਜਾਂ ਸੱਜੇ ਕਲਿਕ ਕਰੋ!', hint: '👉 ਗੇਂਦ ਨੂੰ ਕਿੱਕ ਕਰਨ ਲਈ ਕਲਿੱਕ ਕਰੋ!', home: '🏠 ਡੈਸ਼ਬોર્ਡ ਤੇ ਵਾਪਸ ਜਾਓ', retry: '🔄 ਕਨੈਕਸ਼ਨ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ' },
+            'bn': { heading: 'ওপস! পেজ পাওয়া যায়নি', subtext: 'আপনি যে পৃষ্ঠাটি খুঁজছেন তা বিদ্যমান নেই। গোল করতে বলের বামে বা ডানে ক্লিক করুন!', hint: '👉 লক্ষ্য ঠিক করতে বলের পাশে ক্লিক করুন!', home: '🏠 ড্যাশবোর্ডে ফিরে যান', retry: '🔄 সংযোগ পুনরায় চেষ্টা করুন' },
+            'te': { heading: 'అయ్యో! పేజీ కనుగొనబడలేదు', subtext: 'మీరు వెతుకుతున్న పేజీ కనుగొనబడలేదు. గోల్ చేయడానికి బంతికి ఎడమ లేదా కుడి వైపు క్లిక్ చేయండి!', hint: '👉 బంతిని గురిపెట్టడానికి క్లిక్ చేయండి!', home: '🏠 డ్యాష్‌బోర్డ్‌కి తిరిగి వెళ్లండి', retry: '🔄 కనెక్షన్‌ని మళ్లీ ప్రయత్నించండి' },
+            'ta': { heading: 'அச்சச்சோ! பக்கம் கிடைக்கவில்லை', subtext: 'நீங்கள் தேடும் பக்கம் இல்லை. கோல் அடிக்க பந்தின் இடது அல்லது வலதுபுறம் கிளிக் செய்யவும்!', hint: '👉 பந்தை இலக்கு வைத்து அடிக்கவும்!', home: '🏠 டாஷ்போர்டுக்கு திரும்பு', retry: '🔄 இணைப்பை மீண்டும் முயற்சிக்கவும்' },
+            'kn': { heading: 'ಪುಟ ಸಿಗಲಿಲ್ಲ', subtext: 'ನೀವು ಹುಡುಕುತ್ತಿರುವ ಪುಟ ಅಸ್ತಿತ್ವದಲ್ಲಿಲ್ಲ. ಗೋಲು ಬಾರಿಸಲು ಚೆಂಡಿನ ಎಡ ಅಥವಾ ಬಲಕ್ಕೆ ಕ್ಲಿಕ್ ಮಾಡಿ!', hint: '👉 ಗುರಿ ಇಡಲು ಚೆಂಡಿನ ಬಳಿ ಕ್ಲಿಕ್ ಮಾಡಿ!', home: '🏠 ಡ್ಯಾಶ್‌ಬોર્ಡ್‌ಗೆ ಹಿಂತಿರುಗಿ', retry: '🔄 ಸಂಪರ್ಕವನ್ನು ಮರುಪ್ರಯತ್ನಿಸಿ' },
+            'ml': { heading: 'ഓപ്സ്! പേജ് കണ്ടെത്താനായില്ല', subtext: 'നിങ്ങൾ തിരയുന്ന പേജ് നിലവിലില്ല. ഗോൾ അടിക്കാൻ പന്തിന്റെ ഇടത്തോ വലത്തോ ക്ലിക്ക് ചെയ്യുക!', hint: '👉 ലക്ഷ്യം വെക്കാൻ ക്ലിക്ക് ചെയ്യുക!', home: '🏠 ഡാഷ്‌ബോർഡിലേക്ക് മടങ്ങുക', retry: '🔄 കണക്ഷൻ വീണ്ടും ശ്രമിക്കുക' },
+            'or': { heading: 'ଓପ୍ସ! ପୃଷ୍ଠା ମିଳିଲା ନାହିଁ', subtext: 'ଆପଣ ଖୋଜୁଥିବା ପୃଷ୍ଠା ମହଜୁଦ ନାହିଁ। ଗୋଲ୍ କରିବାକୁ ବଲ୍ର ବାମ କିମ୍ବା ଡାହାଣକୁ କ୍ଲିକ୍ କରନ୍ତୁ!', hint: '👉 ଲକ୍ଷ୍ୟ ରଖିବାକୁ କ୍ଲିକ୍ କରନ୍ତୁ!', home: '🏠 ଡ୍ୟାସବୋର୍ଡକୁ ଫେରନ୍ତୁ', retry: '🔄 ସଂଯୋଗ ପୁନଃଚେଷ୍ଟା କରନ୍ତୁ' },
+            'as': { heading: 'ওপচ! পেজ পোৱা নগ’ল', subtext: 'আপুনি বিচাৰি থকা পেজখন নাই। গ’ল কৰিবলৈ বলটোৰ বাওঁফালে বা সোঁফালে ক্লিক কৰক!', hint: '👉 লক্ষ্য নিৰ্ধাৰণ কৰিবলৈ ক্লিক কৰক!', home: '🏠 ডেচব’ৰ্ডলৈ ঘূৰি যাওক', retry: '🔄 সংযোগ পুনৰ চেষ্টা কৰক' },
+            'ur': { heading: 'اوہ! صفحہ نہیں ملا', subtext: 'جو صفحہ آپ تلاش کر رہے ہیں وہ موجود نہیں ہے۔ گول کرنے کے لیے گیند کے بائیں یا دائیں کلک کریں!', hint: '👉 نشانہ بنانے کے لیے کلک کریں!', home: '🏠 ڈیش بورڈ پر واپس جائیں', retry: '🔄 کنکشن دوبارہ کوشش کریں' }
+        };
+
+        function toggleLanguage() {
+            const lang = document.getElementById('langToggle').value;
+            localStorage.setItem('kisaan-portal-lang', lang);
+            if (translations[lang]) {
+                document.getElementById('errorHeading').innerText = translations[lang].heading;
+                document.getElementById('errorSubtext').innerText = translations[lang].subtext;
+                document.getElementById('gameHint').innerText = translations[lang].hint;
+                document.getElementById('homeBtn').innerText = translations[lang].home;
+                document.getElementById('retryBtn').innerText = translations[lang].retry;
+            }
+        }
+
+        // Load saved language preference on startup
+        const savedLang = localStorage.getItem('kisaan-portal-lang');
+        if (savedLang && translations[savedLang]) {
+            document.getElementById('langToggle').value = savedLang;
+            toggleLanguage();
+        } else {
+            toggleLanguage();
+        }
+    </script>
+</body>
+</html>
