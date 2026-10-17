@@ -421,20 +421,10 @@ if (languageSelector) {
         window.setPortalLanguage?.(languageSelector.value);
     });
 }
-<<<<<<< HEAD
-const guideMsgEl = document.getElementById("guideMessage");
-if (guideMsgEl) {
-    guideMsgEl.textContent = getLanguage() === "hi"
-        ? "नमस्ते! अपनी चुनी हुई भाषा में आगे बढ़ें।"
-        : "Choose email or mobile, then request a verification code.";
-}
-=======
 window.addEventListener("portal-language-changed", () => {
     updateGuideMessage();
     updateContactMethod();
 });
 updateGuideMessage();
->>>>>>> ecb5e66e4e18235b56e551205063f87fded9ebfd
 updateContactMethod();
 initAuthStateListener();
-

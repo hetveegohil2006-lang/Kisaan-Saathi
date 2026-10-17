@@ -157,7 +157,7 @@ graph TD
 | **Charts & Maps** | Chart.js, Leaflet.js | Interactive trend charts and weather geographical maps |
 | **Authentication** | Firebase Authentication (v11 Modular SDK) | Email/Password & Mobile session authorization |
 | **Database** | Cloud Firestore | Serverless NoSQL document database with owner-scoped subcollections |
-| **Backend Functions** | Firebase Cloud Functions (v2, Node.js 18) | Server-side email OTP verification and verified account creation |
+| **Backend Functions** | Firebase Cloud Functions (v2, Node.js 20) | Email OTP, verified account creation, and authenticated Gemini farming advice |
 | **Deployment** | Firebase Hosting & Security Rules | Production static hosting and user data protection |
 
 ---
@@ -186,7 +186,8 @@ Kisaan-Saathi/
 │   │   ├── landing-polish.css    # Landing page animations
 │   │   └── mobile-polish.css     # Mobile viewport responsiveness
 │   ├── js/                       # Client Utilities
-│   │   └── portal-language.js    # 13-Language Translation Engine
+│   │   ├── portal-language.js    # 13-Language Translation Engine
+│   │   └── chatbot.js            # Authenticated Gemini chat client
 │   ├── firebase/                 # Firebase SDK Modules
 │   │   ├── firebase-config.js    # Web App Configuration Credentials
 │   │   ├── auth.js               # Auth Listener & Profile Sync
@@ -196,7 +197,7 @@ Kisaan-Saathi/
 │
 ├── backend/                      # Server-Side Backend Code
 │   └── functions/                # Firebase Cloud Functions (v2)
-│       ├── index.js              # OTP Mailer & Account Creation Backend Services
+│       ├── index.js              # OTP, account creation, and Gemini chat functions
 │       └── package.json          # Node.js dependencies for Functions
 │
 ├── docs/                         # Documentation
@@ -305,6 +306,11 @@ erDiagram
    - **Purpose:** Creates a verified user account server-side after OTP validation.
    - **Payload:** `{ "email": "farmer@example.com", "password": "...", "fullname": "..." }`
 
+3. **`askFarmAssistant`** (v2 Callable Function)
+   - **Purpose:** Sends authenticated farming questions and optional crop images to Gemini; the API key is stored in Firebase Secret Manager.
+   - **Limits:** 15 requests per signed-in user per minute, up to ten recent messages, and JPEG/PNG/WebP images up to 3 MB.
+   - **Setup:** Set the `GEMINI_API_KEY` Firebase secret and deploy Functions as described in [AUTH_SETUP.md](./AUTH_SETUP.md).
+
 ---
 
 ## 🤖 AI & Media Features
@@ -395,6 +401,12 @@ service cloud.firestore {
 ---
 
 ## 🚀 Deployment
+
+### Deploying the frontend to Vercel
+
+Import the repository in Vercel with the repository root as the project root. The checked-in `vercel.json` publishes `frontend/` (the maintained app) and enables clean URLs such as `/signup` and `/login`.
+
+Firebase Cloud Functions and Firestore rules are separate from the Vercel frontend deployment; deploy them with the Firebase CLI below.
 
 ### Deploying Hosting & Firestore Rules to Firebase
 ```bash

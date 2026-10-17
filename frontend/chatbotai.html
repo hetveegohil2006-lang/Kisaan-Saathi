@@ -85,6 +85,9 @@
             font-weight: 500;
         }
 
+        .status-banner[data-state="error"] { background: rgba(220, 38, 38, 0.12); }
+        .status-banner[data-state="ready"] { background: rgba(22, 163, 74, 0.12); }
+
         .chat-messages {
             flex: 1;
             padding: 20px;
@@ -159,6 +162,8 @@
             cursor: pointer;
         }
 
+        .send-btn:disabled, .tool-icon-btn:disabled { cursor: wait; opacity: 0.6; }
+
         @media (max-width: 768px) {
             .main-content { padding: 15px; }
             .top-header h1 { font-size: clamp(18px, 5vw, 22px); }
@@ -184,8 +189,8 @@
 
             <!-- Chat Wrapper Container -->
             <div class="chat-wrapper">
-                <div class="status-banner">
-                    <span>💡 Ask any farming question or upload a crop leaf image for instant advisory.</span>
+                <div class="status-banner" id="chatStatus" role="status" aria-live="polite">
+                    Sign in to ask farming questions or upload a crop photo for advice.
                 </div>
                 
                 <div class="chat-messages" id="chatMessages">
@@ -193,97 +198,17 @@
                 </div>
 
                 <div class="chat-input-area">
-                    <button class="tool-icon-btn" onclick="triggerCamera()" title="Take Photo">📷</button>
-                    <button class="tool-icon-btn" onclick="triggerUpload()" title="Attach File">📎</button>
-                    <input type="file" id="fileInput" style="display:none" accept="image/*" onchange="handleImageUpload(event)">
-                    <button class="tool-icon-btn" onclick="triggerVoice()" title="Voice Input">🎤</button>
-                    <input type="text" id="userInput" placeholder="Type your question here...">
-                    <button class="send-btn" onclick="sendMessage()">Send</button>
+                    <button class="tool-icon-btn" id="cameraButton" type="button" title="Take Photo" aria-label="Take photo">📷</button>
+                    <button class="tool-icon-btn" id="uploadButton" type="button" title="Attach File" aria-label="Attach image">📎</button>
+                    <input type="file" id="fileInput" hidden accept="image/jpeg,image/png,image/webp">
+                    <button class="tool-icon-btn" id="voiceButton" type="button" title="Voice Input" aria-label="Use voice input">🎤</button>
+                    <input type="text" id="userInput" maxlength="2000" placeholder="Type your question here..." aria-label="Your farming question">
+                    <button class="send-btn" id="sendButton" type="button">Send</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <script>
-        const companionName = localStorage.getItem('aiCompanionName') || 'Guide';
-        document.getElementById('headerTitleText').innerText = `(${companionName})`;
-
-        const themes = ['theme-light-yellow', 'theme-light-pink', 'theme-light-orange', 'theme-light-blue', 'theme-light-black'];
-        const savedThemeIndex = localStorage.getItem('kisaan-portal-theme-index');
-        if (savedThemeIndex !== null) {
-            document.getElementById('appBody').className = themes[parseInt(savedThemeIndex)];
-        }
-
-        function triggerCamera() {
-            document.getElementById('fileInput').click();
-        }
-
-        function triggerUpload() {
-            document.getElementById('fileInput').click();
-        }
-
-        function triggerVoice() {
-            if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
-                alert("Voice input is not supported in your browser.");
-                return;
-            }
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            const recognition = new SpeechRecognition();
-            recognition.lang = 'hi-IN';
-            recognition.start();
-
-            recognition.onresult = function(event) {
-                const transcript = event.results[0][0].transcript;
-                document.getElementById('userInput').value = transcript;
-                sendMessage();
-            };
-        }
-
-        function handleImageUpload(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const container = document.getElementById('chatMessages');
-                const userMsg = document.createElement('div');
-                userMsg.className = 'chat-bubble user';
-                userMsg.innerText = `[Image Uploaded: ${file.name}]`;
-                container.appendChild(userMsg);
-                container.scrollTop = container.scrollHeight;
-
-                setTimeout(() => {
-                    const botMsg = document.createElement('div');
-                    botMsg.className = 'chat-bubble ai';
-                    botMsg.innerText = `${companionName}: Image analyzed successfully. Leaf condition appears healthy with slight nitrogen deficiency. Recommended action: apply organic compost or bio-fertilizer.`;
-                    container.appendChild(botMsg);
-                    container.scrollTop = container.scrollHeight;
-                }, 1000);
-            }
-        }
-
-        function sendMessage() {
-            const input = document.getElementById('userInput');
-            const container = document.getElementById('chatMessages');
-            const text = input.value.trim();
-            if (!text) return;
-
-            const userMsg = document.createElement('div');
-            userMsg.className = 'chat-bubble user';
-            userMsg.innerText = text;
-            container.appendChild(userMsg);
-            input.value = '';
-            container.scrollTop = container.scrollHeight;
-
-            setTimeout(() => {
-                const botMsg = document.createElement('div');
-                botMsg.className = 'chat-bubble ai';
-                botMsg.innerText = `${companionName}: Regarding "${text}", for optimal crop health make sure to balance irrigation and inspect soil moisture regularly.`;
-                container.appendChild(botMsg);
-                container.scrollTop = container.scrollHeight;
-            }, 800);
-        }
-
-        document.getElementById('userInput').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') sendMessage();
-        });
-    </script>
+    <script type="module" src="js/chatbot.js"></script>
 </body>
 </html>

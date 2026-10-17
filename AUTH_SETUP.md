@@ -7,7 +7,7 @@ Authentication requires Firebase Hosting, Firebase Authentication, Cloud Functio
 1. Create a Firebase project and register a Web app.
 2. Enable Email/Password and Phone in **Authentication → Sign-in method**.
 3. Enable Firestore and Cloud Functions. Deploy from a trusted Node.js 20 environment with the Firebase CLI.
-4. Add your Hosting domain to **Authentication → Settings → Authorized domains**. Phone authentication requires the Firebase reCAPTCHA verifier and must run on an authorized HTTPS host (Firebase Hosting is recommended).
+4. Add your Hosting or Vercel domain to **Authentication → Settings → Authorized domains**. Phone authentication requires the Firebase reCAPTCHA verifier and must run on an authorized HTTPS host.
 5. In **App Check**, register the web app with the reCAPTCHA v3 provider, add your Hosting domain to its allowed domains, and enable App Check enforcement for Cloud Functions.
 6. Copy the Web app's public config values and the reCAPTCHA v3 site key into `firebase-config.js`. Restrict the web API key to your Hosting domain in Google Cloud; never put service-account keys or SMTP credentials in this file.
 
@@ -22,18 +22,19 @@ firebase functions:secrets:set SMTP_USER
 firebase functions:secrets:set SMTP_PASSWORD
 firebase functions:secrets:set SMTP_FROM
 firebase functions:secrets:set OTP_HMAC_SECRET
+firebase functions:secrets:set GEMINI_API_KEY
 ```
 
-Use an SMTP provider account and app password/API credential. `OTP_HMAC_SECRET` should be a unique random value of at least 32 characters. Then install and deploy:
+Use an SMTP provider account and app password/API credential. `OTP_HMAC_SECRET` should be a unique random value of at least 32 characters. Set `GEMINI_API_KEY` to a Google Gemini API key; keep it in Firebase Secret Manager and never put it in frontend code. The dashboard chatbot requires a signed-in Firebase user and allows up to 15 requests per user per minute. Then install and deploy the active Functions source:
 
 ```text
-cd functions
+cd backend/functions
 npm install
-cd ..
-firebase deploy --only functions,firestore:rules,hosting
+cd ../..
+firebase deploy --only functions
 ```
 
-Cloud Functions and SMS usage can require a Firebase billing-enabled plan. Review provider pricing and enable usage alerts before deploying to production.
+Cloud Functions, Gemini API, and SMS usage can require paid billing plans or have provider quotas. Review provider pricing and enable usage alerts before deploying to production. The Vercel frontend is deployed separately from Firebase Functions.
 
 ## Verification behavior
 
